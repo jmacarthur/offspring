@@ -1,0 +1,72 @@
+# Plans for Millihertz5, or the Small-scale acrylic machine
+
+The plan is to create a 16-bit version of the Manchester Small-scale-experimental machine (SSEM, or Baby).
+
+Since the SSEM only requires a subtractor rather than a general logic unit, we can use a mechanical binary adder, modified to perform subtraction instead of addition. The subtractor can store state, and as such acts as the accumulator as well as ALU.
+
+The largest single parts are the subtractor and memory.
+
+A subtractor can be made in a very simiar style to existing designs for marble-based binary adders. For both an adder and subtractor, it's necessary to feed in the added value sequentially, from bit 0 to bit 31, leaving time for the previous value to drop. However, this is much quicker and simpler than building a binary adder from discrete mechanical logic gates. A basic discrete-gate version would require something on the order of 160 gates for 32 bits and have at least a 90-gate delay.
+
+For a demonstration of a simple sequential subtractor operating in a similar manner to one of the 'marble adders', ee subtractor-simulator.py.
+
+We need to construct two adder-subtractor units; one 16-bit subtractor for the main 16-bit accumulator and one 5-bit adder for the program counter. It's probably worth making the program counter 6-bit or larger, in case we want to increase memory size later.
+
+Each adder/subtractor unit needs to be able to be read in a non-destructive fashion. We could add output rods for each toggle, but this adds a joint which could be difficult for the weight of a ball bearing. Instead, we can extend the toggles into a second plane; the second plane is purely for reading. Dropping 16 ball bearings into the top releases the pattern of ball bearings representing the state into one channel; the other half are discarded.
+
+# Sequence of operation
+
+On the start of the cycle, the program counter should be set up with the address of the next instruction.
+
+## Phase 1: instruction fetch
+
+* Set up the address multiplexer to read from the program counter register
+* Issue a read against the program counter register
+* Add 1 to the program counter.
+
+* Cycle the address sender to set up the memory cell.
+* Cycle the memory unit to eject all data from the selected row
+* Tell the memory unit to set up to receive data
+* Tell the memory sender to regenerate data into memory
+* Set up the address multiplexer to read from the instruction register.
+* Tell the memory sender to eject data into the instruction register.
+
+(The address part of the instruction falls straight into the address sender)
+
+## Phase 2: Set up address
+
+Almost all instructions use the address part of the instruction, so we:
+
+* Set up the address register from the instruction register
+
+
+## Phase 2: Instruction processing
+
+There are six instructions, ignoring 'HLT', which is not necessary.
+
+    | Reads memory? | Regenerate memory? | 
+JMP | Y             | Y
+JRP | Y             | Y
+LDN | Y             | Y
+STO | N             | N
+SUB | Y             | Y
+CMP | N             | N (didn't read)?
+
+Since most instructions require memory, we
+
+* Cycle the address sender to set up the memory cell (from the address in the instruction)
+* if JMP is active, clear the current PC.
+* If JMP or JRP are active, set the memory sender to eject data to the program counter.
+* If LDN is active, clear the accumulator.
+* If LDN or SUB is active, set the memory sender to eject data into the accumulator.
+* If STO is active, tell the accumulator output to send data into memory.
+* If STO is not active, tell the memory sender to regenerate data from the memory sender.
+* If CMP is active, send an extra bearing into the program counter.
+
+Memory sender asserts memory if JMP, JRP, LDN or SUB. It will probably assert in CMP as well since we will eject memory in all cases.
+
+Finally:
+* Eject data from memory
+* Wait 5 seconds
+* Inject data into memory - this may be from the accumlator or memory sender.
+

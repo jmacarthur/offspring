@@ -1,0 +1,6 @@
+# Tasks remaining on millihertz 5
+
+* Design the 16-bit word RAM cell. This needs to be able to work in a vertical position, for better visibility.
+  Assume 5 address inputs, 16 bits of data dropped in at the top and 16 bits of data dropped out at the bottom, no other input or output. 'Write' and 'Read' are separate logic inputs, independent of address.
+* Design the 2-plane adder/subtractor units. These should take one row of 'data' inputs and one row of 'read' inputs and drop the resulting data out of the bottom.
+* 'Sequencer' mechanical unit. This should be capable of sending all the signals required to each part of the machine. It may be sufficient to use a single cam.
