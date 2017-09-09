@@ -63,6 +63,12 @@ Since most instructions require memory, we
 * If STO is not active, tell the memory sender to regenerate data from the memory sender.
 * If CMP is active, send an extra bearing into the program counter.
 
+Which means:
+* Clear PC if and only if JMP
+* Memory to Program counter if JMP or JRP
+* Clear accumulator only if LDN.
+* 
+
 Memory sender asserts memory if JMP, JRP, LDN or SUB. It will probably assert in CMP as well since we will eject memory in all cases.
 
 Finally:
