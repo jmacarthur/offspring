@@ -1,5 +1,9 @@
 /* Global definitions for millihertz 5 */
 
+ball_bearing_diameter = 6;
+
+pipe_outer_diameter = 11;
+
 /* All dimensions are in millimetres */
 memory_slope = 10; // Degrees
 
