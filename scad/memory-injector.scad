@@ -16,13 +16,18 @@ module ejector_plate()
 {
   difference() {
     union() {
-      translate([-5,-5]) square([70,10]);
+      translate([-5,-5]) square([100,10]);
       translate([-5,-45]) square([10,40]);
     }
     circle(d=3);
+    translate([90,0]) circle(d=3);
+    translate([70,0]) circle(d=3);
   }
 }
 
+
+// No longer in use. This is a horizontal connector for use if the data bus is
+// solid rods - as we're using string, this isn't necessary any more.
 module bus_connector()
 {
   linear_extrude(height=3) {
@@ -30,6 +35,7 @@ module bus_connector()
       square([50,10]);
       translate([40,5]) circle(d=3);
       translate([40,5-1.5]) square([20,3]);
+      translate([0,5-1.5]) square([10,3]);
     }
   }
 }
@@ -129,8 +135,6 @@ for(bit=[0:31]) {
   translate([0,injector_pitch*bit,0])
     rotate([90,0,0])
     linear_extrude(height=3) ejector_plate();
-  translate([50,-5+injector_pitch*bit,0])
-    bus_connector();
 }
 
 for(support_y = support_positions) {
