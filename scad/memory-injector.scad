@@ -16,12 +16,13 @@ module ejector_plate()
 {
   difference() {
     union() {
-      translate([-5,-5]) square([100,10]);
+      translate([-60,-5]) square([155,10]);
       translate([-5,-45]) square([10,40]);
     }
     circle(d=3);
     translate([90,0]) circle(d=3);
     translate([70,0]) circle(d=3);
+    translate([-55,0]) circle(d=3);
   }
 }
 
