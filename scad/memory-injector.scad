@@ -51,6 +51,7 @@ module support() {
 		      [15,-20], [15,-10], [-8,-10]]);
       translate([20,50]) circle(d=3);
       translate([14,-6]) square([3,10]);
+      translate([45,15]) square([50,3]);
     }
   }
 }
@@ -60,13 +61,31 @@ module base_plate() {
     difference() {
       translate([-5,-20]) square([80,32 * injector_pitch + 50]);
       for(support_y = support_positions) {
-	// -3 on Y accounts for the rotation of the support
 	translate([0,support_y-3]) square([tab_width, 3]);
 	translate([30,support_y-3]) square([tab_width, 3]);
       }
       // Mounting holes
       for(y = [0:5]) {
 	translate([30,y * 100 + 20]) circle(d=6);
+      }
+    }
+  }
+}
+
+module comb() {
+  linear_extrude(height=3) {
+    difference() {
+      clearance = 0.5;
+      translate([-30,-20]) square([50,500]);
+      for(slot = [0:31]) {
+	translate([-31,slot * injector_pitch-3-clearance/2]) {
+	  square([20,3+clearance]);
+	}
+      }
+      for(slot = support_positions) {
+	translate([-1,slot-3]) {
+	  square([10,3]);
+	}
       }
     }
   }
@@ -117,6 +136,8 @@ for(bit=[0:31]) {
 for(support_y = support_positions) {
   translate([-20,support_y,-50])  rotate([90,0,0]) support();
 }
+
+translate([20,0,-35]) comb();
 
 /* data */
 for(y=[0:32*3]) translate([-5-3,-1.5+6*y,-45+1]) sphere(d=6);
