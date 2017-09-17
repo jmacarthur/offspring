@@ -34,13 +34,40 @@ module bus_connector()
   }
 }
 
+tab_width = 15;
 
 module support() {
   linear_extrude(height=3) {
     difference() {
-      polygon(points=[[-10,0], [20,0], [15,55], [25,55], [30,-10], [-8,-10]]);
+      polygon(points=[[-10,0], [20,0], [15,55], [25,55], [80,-10], [80,-20],
+		      // Tab to plug into the base plate
+		      [50+tab_width, -20], [50+tab_width, -23],
+		      [50, -23], [50, -20],
+
+		      // Second tab
+		      [20+tab_width, -20], [20+tab_width, -23],
+		      [20, -23], [20, -20],
+
+		      [15,-20], [15,-10], [-8,-10]]);
       translate([20,50]) circle(d=3);
       translate([14,-6]) square([3,10]);
+    }
+  }
+}
+
+module base_plate() {
+  linear_extrude(height=3) {
+    difference() {
+      translate([-5,-20]) square([80,32 * injector_pitch + 50]);
+      for(support_y = support_positions) {
+	// -3 on Y accounts for the rotation of the support
+	translate([0,support_y-3]) square([tab_width, 3]);
+	translate([30,support_y-3]) square([tab_width, 3]);
+      }
+      // Mounting holes
+      for(y = [0:5]) {
+	translate([30,y * 100 + 20]) circle(d=6);
+      }
     }
   }
 }
@@ -58,7 +85,7 @@ module pipe_holder_bar()
 {
   difference() {
     translate([0,-20,0])
-    cube([3,34*injector_pitch,20]);
+      cube([3,34*injector_pitch,20]);
     for(bit = [0:31]) {
       translate([-1,bit*injector_pitch-connector_gap/2-1.5,-1]) cube([5,connector_gap,10]);
     }
@@ -99,3 +126,8 @@ translate([-22.5,0,-66]) pipe_connector();
 // Bearing support bar
 
 translate([-6,-20,-56]) cube([3,34*injector_pitch,10]);
+
+
+// Base plate
+
+translate([0,0,-80]) base_plate();
