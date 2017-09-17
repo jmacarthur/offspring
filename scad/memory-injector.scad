@@ -1,4 +1,4 @@
-include <globs.scad>
+include <globs.scad>;
 
 $fn = 20;
 
@@ -52,7 +52,7 @@ module support_2d() {
 		    [20+tab_width, -20], [20+tab_width, -23],
 		    [20, -23], [20, -20],
 
-		    [15,-20], [15,-10], [-8,-10]]);
+		    [15,-20], [10,-10], [-8,-10]]);
     translate([20,50]) circle(d=3);
     translate([14,-6]) square([3,10]);
     translate([45,15]) square([50,3]);
