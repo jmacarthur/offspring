@@ -1,0 +1,17 @@
+Report on the first injector test (commit a38ac62b9e9f42b00ca45dd6d0c3af85378d828e).
+
+Use test-injector-v1.dxf. This did not load immediately into the laser cutter software at MadFabLab, but loading it into LibreCAD and saving again seemed to fix that.
+
+Design fits together well on a 0.1mm kerf and the tolerance on the comb is good.
+
+We need some way to adjust the spacing between the front bars. We can either add spacers in there which hold things a fixed distance apart, or add screws which can adjust it manually. The 3mm spacing between the input bars is not quite enough; ball bearings tend to get pushed out of place from here with the simple force of a slope.
+
+A slope of 20mm raise over 200mm seems sufficient to keep the ball bearings moving. We might be able to reduce that by polishing the input rails.
+
+The holders for the 1mm plastic tube need to be adjusted; the gaps are too wide to grip the tube unless the output rails are very close togehter, and then ball bearings will not fall into them.
+
+Ball bearings are 6.28mm, not 6mm, and we need to adjust the pitch of all components for this. We can re-use the ejectors and frame.
+
+Ejecting ball bearings from the input rail works well as long as the levers are roughly aligned with the ball bearings.
+
+Assembly of the device is very difficult. It would be easier if we could glue components together.
