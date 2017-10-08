@@ -96,8 +96,9 @@ clearance = 0.5;
 connector_separation = ball_bearing_diameter + clearance;
 s = connector_separation;
 p = pipe_outer_diameter;
+
 // Reduce the connector gap a little so the tube is a tight fit
-connector_gap = sqrt(p*p - s*s)-0.5;
+connector_gap = sqrt(p*p - s*s)-2.0;
 
 module pipe_holder_bar()
 {
@@ -153,7 +154,7 @@ for(support_y = support_positions) {
 translate([20,0,-35]) linear_extrude(height=3) comb_2d();
 
 /* data */
-for(y=[0:32*3]) translate([-5-3,-1.5+6*y,-45+1]) sphere(d=6);
+for(y=[0:32*3]) translate([-5-3,-1.5+ball_bearing_diameter*y,-45+1]) sphere(d=ball_bearing_diameter);
 
 translate([-22.5,0,-66]) pipe_connector();
 

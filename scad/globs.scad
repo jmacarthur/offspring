@@ -1,6 +1,6 @@
 /* Global definitions for millihertz 5 */
 
-ball_bearing_diameter = 6;
+ball_bearing_diameter = 6.28;
 
 pipe_outer_diameter = 11;
 
