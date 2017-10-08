@@ -100,21 +100,6 @@ p = pipe_outer_diameter;
 // Reduce the connector gap a little so the tube is a tight fit
 connector_gap = sqrt(p*p - s*s)-2.0;
 
-module pipe_holder_bar()
-{
-  difference() {
-    translate([0,-20,0])
-      cube([3,34*injector_pitch,20]);
-    for(bit = [0:31]) {
-      translate([-1,bit*injector_pitch-connector_gap/2-1.5,-1]) cube([5,connector_gap,10]);
-    }
-    // Cut some holes for the supports
-    for(y=support_positions) {
-      translate([-1,y-3,6]) cube([5,3,10]);
-    }
-  }
-}
-
 module pipe_holder_bar_2d()
 {
   difference() {
