@@ -112,6 +112,11 @@ module pipe_holder_bar_2d()
     for(y=support_positions) {
       translate([y-3,6]) square([3,10]);
     }
+    // Holes for distance adjustment
+    for(y=[0:15]) {
+      translate([y*ball_bearing_diameter*12+ball_bearing_diameter+1.5,15]) circle(d=3);
+    }
+
   }
 }
 
@@ -122,6 +127,17 @@ module pipe_connector()
   translate([3+connector_separation,0,0]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) pipe_holder_bar_2d();
 }
 
+
+module input_rail()
+{
+  difference() {
+    square([34*injector_pitch,10]);
+    // Holes for distance adjustment
+    for(y=[0:15]) {
+      translate([y*ball_bearing_diameter*12+ball_bearing_diameter+1.5+20,5]) circle(d=3);
+    }
+  }
+}
 
 
 /* -------------------- Test section ------------------------ */
@@ -141,12 +157,12 @@ translate([20,0,-35]) linear_extrude(height=3) comb_2d();
 /* data */
 for(y=[0:32*3]) translate([-5-3,-1.5+ball_bearing_diameter*y,-45+1]) sphere(d=ball_bearing_diameter);
 
-translate([-22.5,0,-66]) pipe_connector();
+// Distance between the pipe connectors and input rail is critical
+input_rail_separation = 4; // MM between input rails
+translate([-6-6-connector_separation-input_rail_separation,0,-66]) pipe_connector();
 
 // Bearing support bar
-
-translate([-6,-20,-56]) cube([3,34*injector_pitch,10]);
-
+translate([-6,-20,-56]) rotate([0,0,90]) rotate([90,0,0]) linear_extrude(height=3) input_rail();
 
 // Base plate
 
