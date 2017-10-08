@@ -74,5 +74,9 @@ offset(delta = kerf, chamfer = true) {
 
 
   // Bearing support bar - just a rectangle
-  translate([190,5]) square(size=[220, 10]);
+  translate([190,5])
+    intersection() {
+    square([220,20]);
+    input_rail_2d();
+  }
 }

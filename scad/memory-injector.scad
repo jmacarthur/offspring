@@ -128,7 +128,7 @@ module pipe_connector()
 }
 
 
-module input_rail()
+module input_rail_2d()
 {
   difference() {
     square([34*injector_pitch,10]);
@@ -162,7 +162,7 @@ input_rail_separation = 4; // MM between input rails
 translate([-6-6-connector_separation-input_rail_separation,0,-66]) pipe_connector();
 
 // Bearing support bar
-translate([-6,-20,-56]) rotate([0,0,90]) rotate([90,0,0]) linear_extrude(height=3) input_rail();
+translate([-6,-20,-56]) rotate([0,0,90]) rotate([90,0,0]) linear_extrude(height=3) input_rail_2d();
 
 // Base plate
 
