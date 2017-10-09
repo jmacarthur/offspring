@@ -4,13 +4,15 @@ $fn = 20;
 
 // Subtractor - accumulator unit for millihertz 5
 
-memory_pitch_x = 22;
-memory_pitch_y = 27;
+subtractor_pitch_x = 22;
+subtractor_pitch_y = 27;
 
 hex_bar_af = 5; // TODO: Not actually 5mm! It's 6BA
 
 // Calculate the max radius of the bar
 hex_bar_max_radius = (hex_bar_af / 2) / cos(30);
+
+channel_width = 6.5;
 
 // Layer 1 - the input layer
 
@@ -24,9 +26,9 @@ module input_toggle_2d()
       circle(r=5);
     }
     // Round corners
-    translate([2.5+6, top+6]) circle(r=6); 
+    translate([2.5+6, top+6]) circle(r=6);
     translate([-2.5-6, top+6]) circle(r=6);
-   
+
     // Cutout for hexagon bar
     r = hex_bar_max_radius;
     polygon(points = [ [ r * cos(0), r * sin(0) ],
@@ -38,10 +40,62 @@ module input_toggle_2d()
   }
 }
 
+module input_guard_a_2d()
+{
+  difference() {
+    translate([-subtractor_pitch_x + channel_width/2,-2.5]) square([20,40]);
+    circle(r=18, $fn=50);
+    // Top input channel
+    translate([-channel_width/2,0]) square([channel_width, 100]);
+    // Left escape channel
+    translate([0,6]) rotate(90+20) translate([-channel_width/2,0]) square([channel_width, 100]);
+
+    // Mounting holes
+    translate([-12.5,20]) circle(d=3);
+    translate([-12.5,30]) circle(d=3);
+  }
+}
+
+module input_guard_b_2d()
+{
+  difference() {
+    translate([-20,-20]) square([40,20]);
+    // Make a cut-out using the input toggle in two positions
+    offset(0.5) {
+      union() {
+	rotate(20) input_toggle_2d();
+	rotate(-20) input_toggle_2d();
+	circle(r=5);
+      }
+    }
+
+    // Cutout of the next toggle
+    translate([-subtractor_pitch_x, -subtractor_pitch_y]) circle(r=18, $fn=50);
+    // Top input channel
+    translate([-channel_width/2,0]) square([channel_width, 100]);
+    // Right escape channel
+    translate([0,6]) rotate(-90-20) translate([-channel_width/2,0]) square([channel_width, 100]);
+    // Escape channel of the next toggle
+    translate([-subtractor_pitch_x, -subtractor_pitch_y+6]) rotate(-90-20) translate([-channel_width/2,0]) square([channel_width, 100]);
+    // Left escape channel
+    translate([0,6]) rotate(90+20) translate([-channel_width/2,0]) square([channel_width, 100]);
+
+    // Mounting holes
+    translate([15,-15]) circle(d=3);
+    translate([0,-12.5]) circle(d=3);
+  }
+}
+
 
 
 
 
 // Example layout
 
-  linear_extrude(height=3) input_toggle_2d();
+for(i=[0:7]) {
+  translate([-i*subtractor_pitch_x, -i*subtractor_pitch_y]) {
+    linear_extrude(height=3) rotate(20) input_toggle_2d();
+    linear_extrude(height=3) input_guard_a_2d();
+    linear_extrude(height=3) input_guard_b_2d();
+  }
+ }
