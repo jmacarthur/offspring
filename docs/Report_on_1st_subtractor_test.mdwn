@@ -1,0 +1,8 @@
+3mm holes for screws are very slightly too small; screws fit but it's a hassle.
+
+Hex bars are slightly stiff and occasionally the balls don't have enough force to turn them. Might be better with thinner hex bar, but it broadly works (and might need breaking in)
+
+We need lots of:
+* 30mm x 3mm machine screws
+* Spacers: 7mm, 4mm and 2mm M3 spacers
+* M3 nuts
