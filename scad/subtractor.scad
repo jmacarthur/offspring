@@ -47,10 +47,15 @@ module input_guard_b_holes()
   translate([0,-12.5]) circle(d=3);
 }
 
+module generic_support_plate()
+{
+  polygon(points = [[-180,-220], [-180,-165], [-180+215/tan(slope),50], [10,15], [40,0], [40-220/tan(slope),-220]]);
+}
+
 // Layer 0 - Top plate
 module top_layer_2d() {
   difference() {
-    translate([-80,-80]) square([100,100]);
+    generic_support_plate();
 
     for(i=[0:7]) {
       translate([-subtractor_pitch_x*i, -subtractor_pitch_y*i]) {
@@ -136,7 +141,7 @@ module input_guard_b_2d()
 // Layer 2 - Support and separation between input and output layer
 module io_support_layer_2d() {
   difference() {
-    translate([-80,-80]) square([100,100]);
+    generic_support_plate();
 
     for(i=[0:7]) {
       translate([-subtractor_pitch_x*i, -subtractor_pitch_y*i]) {
@@ -210,7 +215,7 @@ module output_guard_a_2d()
 // Layer 4 - Rear support plate
 module back_layer_2d() {
   difference() {
-    translate([-80,-80]) square([100,100]);
+    generic_support_plate();
 
     for(i=[0:7]) {
       translate([-subtractor_pitch_x*i, -subtractor_pitch_y*i]) {
@@ -246,9 +251,9 @@ module reset_lever_2d() {
     rotate(reset_rot) {
       difference() {
 	union() {
-	  circle(r=2.5);
-	  translate([-2.5,-20]) square([5,20]);
-	  translate([0,-20]) circle(r=2.5);
+	  circle(r=5);
+	  translate([-5,-20]) square([10,20]);
+	  translate([0,-20]) circle(r=5);
 	}
 	translate([0,0]) circle(d=3);
 	translate([0,-20]) circle(d=3);
@@ -263,12 +268,13 @@ module reset_bar_2d() {
     rotate(270+slope) {
       difference() {
 	union() {
-	  circle(r=2.5);
-	  translate([-2.5,-200]) square([5,210]);
-	  translate([0,-200]) circle(r=2.5);
+	  translate([-7.5,-200]) square([10,210]);
 	}
+	dx = subtractor_pitch_x;
+	dy = subtractor_pitch_y;
+	dist = sqrt(dx*dx+dy*dy);
 	translate([0,0]) circle(d=3);
-	translate([0,-200]) circle(d=3);
+	translate([0,-dist*4]) circle(d=3);
       }
     }
   }
@@ -301,7 +307,7 @@ for(i=[0:7]) {
   }
   translate([-i*subtractor_pitch_x, -i*subtractor_pitch_y,-12]) {
     color([0.5,0.5,0.5]) linear_extrude(height=3) rotate(rot) reset_toggle_2d();
-    translate([0,0,-3]) color([1.0,1.0,0.5]) linear_extrude(height=3) reset_lever_2d(); // Reset lever is already rotated, as it's offset
+    if(i % 4 == 0) translate([0,0,-3]) color([1.0,1.0,0.5]) linear_extrude(height=3) reset_lever_2d(); // Reset lever is already rotated, as it's offset
   }
   translate([0,0,-12]) color([1.0,1.0,0.5]) linear_extrude(height=3) reset_bar_2d(); // Reset lever is already rotated, as it's offset
 }
