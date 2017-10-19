@@ -1,0 +1,5 @@
+The parts we cut weren't sufficient to re-assemble - we need to cut most of the remaining parts since the supports have moved further apart with the new spacing. The levers themselves can stay.
+
+The holes to screw the tube holders together would be better at the bottom of the bracket - as they are at the top at the moment, the brackets tend to lever closer at the top and leave the bottom loose.
+
+Our distances are still slightly off - over the course of the 8-bit ejector the ball bearings still appear to be larger. Over 27 bearings, the bearings are larger by 2mm than where we think we are. Hence, we should add on 0.07mm to each bearing. However, since we are seeing alignment problems on the 8-bit injector prototype, it may be time to rethink this and make a more robust version that doesn't rely on each ball bearing diameters.

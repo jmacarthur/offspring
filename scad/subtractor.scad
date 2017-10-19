@@ -9,7 +9,7 @@ subtractor_pitch_y = 27;
 
 slope = atan2(subtractor_pitch_y, subtractor_pitch_x);
 
-hex_bar_af = 5; // TODO: Not actually 5mm! It's 6BA
+hex_bar_af = 4.75; // 6BA hex bar from Noggin End Metals measured as 4.75mm AF.
 
 // Calculate the max radius of the bar
 hex_bar_max_radius = (hex_bar_af / 2) / cos(30);

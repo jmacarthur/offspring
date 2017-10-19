@@ -1,0 +1,13 @@
+
+
+-------
+    3mm reset toggle
+    1mm clearance
+    3mm back plate
+    7mm output plane
+    3mm mid plate
+    7mm input plane
+    3mm top plate
+-------
+
+Total length of hex rod we need for each bit: 27mm.
