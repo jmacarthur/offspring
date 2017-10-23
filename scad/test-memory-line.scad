@@ -12,4 +12,10 @@ difference() {
       }
     }
   }
+
+  // A set of holes for 6mm strip
+  for(x=[1:9]) {
+    offset(r=(x-5)*0.02)
+    translate([x*10, 5]) square([0.8,6]);
+  }
 }
