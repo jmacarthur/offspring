@@ -1,0 +1,87 @@
+# Sequencer details
+
+Starting position: Instruction register should be clear, nothing asserted on the address bus. Memory bank should be deactivated.
+
+## Instruction fetch
+
+* Pulse PC reader to read program counter
+* Switch destination registers to instruction register.
+* Assert program counter onto address bus
+* Activate memory bank
+  -- Delay for memory to read into regenerator --
+* Regenerate memory
+  -- Delay for memory to regen and instruction register to read in --
+
+## Decode
+
+* Deactivate memory
+* Instruction regsiter diversion off
+* (Instruction logic) set up program counter / accumulator
+* If store is active, raise memory ejector
+* Assert instruction register onto address bus
+* Activate memory cell
+
+  --  Delay while waiting for memory to read in
+
+* Meanwhile, if LDN, dump the accumulator.
+* If STO, Fire the accumulator reader.
+* If JMP, dump the program counter.
+
+* Regen memory. Note that if store was on, no data is in the regenerator,
+  so nothing happens.
+
+Following this, data fells either into the accumulator or instruction reg.
+
+
+ -- Delay while the subtractor works
+
+* For STO, activate the accumulator sender.
+
+ -- Delay to read into memory
+
+* Deactivate memory cell.
+
+* Clear instruction register.
+
+Repeat cycle.
+
+## Outputs from the sequencer
+
+### Signals not dependent on instruction
+
+* PC reader
+* Redirector 1 (to instruction register)
+* Memory cell activate [1]
+* Instruction register clear
+* Assert instruction reg section to address bus
+* Regenerate memory (STO does not need it, but there will be nothing in it, so asserting it does nothing)
+* Accumulator sender (only does anything if we hit 'read accumulator')
+* Assert PC to address bus
+
+[1] It's an optimisation to not read memory on the second cycle if we have a CMP/STOP
+
+### Signals dependent on instructions
+
+* Read accumulator (Only for STO)
+* Redirector 2 (to program counter) - only if JMP/JRP
+* Clear program counter - only for JMP
+* Clear accumulator - only for LDN
+* Memory output dump - only for STO
+* Add one to PC (CMP and accumulator top bit set)
+
+# Instructions (written LSB on the right, unlike the original type)
+
+000 JMP
+001 JRP
+010 LDN
+011 STO
+100 SUB
+101 Also SUB
+110 CMP
+111 STOP
+
+We don't implement STOP as JMP can put the processor in a halt loop.
+
+Optimisation: For CMP and STOP, we don't need to read memory, so don't bother - it means we have to recirculate more ball bearings.
+
+
