@@ -1,4 +1,4 @@
-# Millihertz Model F
+# Millihertz Model F ("Offspring")
 
 This is a project to create a working replica of the Manchester small-scale experimental machine, otherwise known as the Manchester Baby.
 
