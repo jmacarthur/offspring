@@ -1,0 +1,14 @@
+# Report on the memory line test
+
+This is a report on the file scad/test-memory-line.scad as of revision c7d5a33b9fb6b9c075aeb098dcb14b1a78f85e44 and prepared with MadFadLab's LaserScript cutter.
+
+Brass strips are from Albion Alloys, labelled 6mm * 0.8mm * 305mm and 12mm * 0.4 * 305mm.
+
+12mm strip is 12.1mm and 6mm strip is 6.3mm wide as measured on my vernier micrometer, other measurements are accurate.
+
+Cuts for memory profiles are too wide; the 0.4mm strip fits loosely within the smallest cut. However, this is not necessarily a problem. It would be better to err on the side of a wider slot.
+
+Forming the metal for the memory profiles is very difficult by hand and we will need some sort of former for them. The brass required is 44mm long, meaning we will get 6 (maybe just 7) out of a strip, meaning we would need 42 packs at a price of £269 (not assuming any volume discount) . We should find a cheaper metal or a different supplier.
+
+The 6.3mm strips fit into all the holes width-wise; the smallest hole (0.08mm offset, hence 0.8-0.16mm wide) is only slightly too big; we should do another run starting from 0.8-0.16mm and downwards.
+The strip fits snugly into the 6th slot which would be 6+0.04mm tall.
