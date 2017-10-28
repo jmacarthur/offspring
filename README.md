@@ -9,3 +9,5 @@ The finished machine should be a complete, binary-compatible implementation of t
 It will be significantly slower than the original machine. It is meant to operate at about one cycle every 10 seconds (100mHz) compared to the 1kHz+ operation of the original machine.
 
 The goal of this machine is to act as a visual demonstration of the operation of a stored-program computer, and to demonstrate that computation is a concept independent of current technologies such as photo-etched silicon.
+
+![Overview diagram](millihertz5.png)
