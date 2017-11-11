@@ -1,0 +1,127 @@
+/* Vertical 16x16 memory cell, 3D assembly */
+
+include <globs.scad>;
+
+columns = 16;
+rows = 16;
+column_width = 7; // Must be bigger than bb diameter
+cell_height = 14;
+cell_drop = 2;
+
+deflector_angle = 10;
+
+memory_translate_x = -7;
+
+joiner_extension = 2; // If nonzero, this allows a strip to connect all memory cells vertically.
+column_spacing = (column_width*3+joiner_extension);
+
+module memory_cell()
+{
+  difference() {
+    polygon(points = [[0,0], [column_width,cell_drop], [column_width,0], [column_width*2 + joiner_extension,0], [column_width*2+joiner_extension, cell_height], [column_width*2, cell_height], [column_width*2, cell_height-1],
+		      [column_width, cell_height - column_width*sin(deflector_angle)-1],
+		      [column_width, cell_height - ball_bearing_diameter],
+		      [0, cell_height/2]]);
+    // Cutout for the ball to rise into while retracting row
+    translate([column_width-ball_bearing_diameter/2,8.5]) circle(d=ball_bearing_diameter, $fn=20);
+    // Alignment hole
+    translate([column_width*1.5,5]) circle(d=3, $fn=20);
+  }
+}
+
+module deflector_section()
+{
+  translate([0.8*sin(deflector_angle),-6.3*sin(deflector_angle)-0.8])  rotate(deflector_angle) square([6.3, 0.8]);
+}
+
+module comb_section()
+{
+  square([6.3, 0.8]);
+}
+
+module deflector()
+{
+  /* Deflector is made from Albion alloys brass strip, 6mm x 0.8mm as sold.
+     it's actually 6.3mm wide and 0.8mm thick. */
+ linear_extrude(height=10) deflector_section();
+}
+
+module row_selector() {
+  difference() {
+    translate([-30,0]) square([column_spacing*columns+60, cell_height - 1]);
+    for(col=[0:columns-1]) {
+      translate([7+column_spacing*col,7]) deflector_section();
+    }
+    translate([-30+5,cell_height/2]) circle(d=3, $fn=20);
+    translate([column_spacing*columns+25,cell_height/2]) circle(d=3, $fn=20);
+  }
+}
+
+module row_comb() {
+  difference() {
+    square([10, cell_height * rows]);
+    for(r=[0:rows-1]) {
+      translate([2,cell_height*r+6]) comb_section();
+    }
+  }
+}
+
+module side_wall() {
+  union() {
+    square([7,cell_height*rows]);
+    translate([0,cell_height*2]) square([10,10]);
+    translate([0,cell_height*(rows-2)]) square([10,10]);
+  }
+}
+
+/* 3D assembly */
+
+for(row=[0:15]) {
+  translate([column_spacing*row, 0, 0]) {
+    union() {
+      for(col=[0:15]) {
+	translate([0,cell_height*col,-3]) linear_extrude(height=6) memory_cell();
+      }
+    }
+  }
+ }
+
+
+translate([column_spacing,0,0])
+for(col=[0:columns-1])
+{
+  translate([memory_translate_x,0,3]) translate([0,cell_height*col, 0]) translate([0,0,-10]) deflector();
+}
+
+translate([memory_translate_x-7,cell_height-7,-7]) linear_extrude(height=3) row_selector();
+
+module comb_assembly() {
+  for(tb=[0:1]) {
+    translate([-10-column_width,0,-10*tb]) linear_extrude(height=3) row_comb();
+  }
+
+  // Row combs
+  for(r=[0:rows-1]) {
+    translate([-10-column_width+2,cell_height*r+6,-10]) color([1.0,0.5,0.0]) linear_extrude(height=13) comb_section();
+  }
+}
+
+translate([-3,0,0]) comb_assembly();
+translate([column_width+joiner_extension+4+column_spacing*columns,0,0]) comb_assembly();
+
+translate([-column_width,0,-4]) rotate([0,-90,0]) linear_extrude(height=3) side_wall();
+translate([column_spacing*columns-4,0,-4]) rotate([0,-90,0]) linear_extrude(height=3) side_wall();
+
+
+/* ---------- Example memory ---------- */
+// Entering memory
+translate([0, 10.5]) circle(d=ball_bearing_diameter, $fn=20);
+
+// In memory during row return
+translate([7 - ball_bearing_diameter/2, 8.7+cell_height]) color([1.0,0,0]) circle(d=ball_bearing_diameter, $fn=20);
+
+// In memory, idle
+translate([7 - ball_bearing_diameter/2, 11.8+cell_height*2]) color([1.0,0,0]) circle(d=ball_bearing_diameter, $fn=20);
+
+
+
