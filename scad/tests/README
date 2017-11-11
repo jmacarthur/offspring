@@ -1,0 +1,3 @@
+This directory is for SCAD files which are meant for test prints or
+laser cuts.  They are usually cut-down versions of larger files in the
+parent directory and should not be used for reference.
