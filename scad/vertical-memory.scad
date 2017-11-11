@@ -2,8 +2,8 @@
 
 include <globs.scad>;
 
-columns = 16;
-rows = 16;
+columns = 8;
+rows = 8;
 column_width = 7; // Must be bigger than bb diameter
 cell_height = 14;
 cell_drop = 2;
@@ -74,18 +74,32 @@ module side_wall() {
   }
 }
 
-/* 3D assembly */
+module base_plate()
+{
+  difference() {
+    translate([-20,0]) square([column_spacing*columns+30, cell_height*(rows+1)]);
+    for(x=[-column_width-3,column_spacing*columns-column_width]) {
+      translate([x,cell_height*2]) square([3,10]);
+      translate([x,cell_height*(rows-2)]) square([3,10]);
+    }
+    for(col=[0:columns-1]) {
+      translate([column_width*1.5+column_spacing*col,5])circle(d=3, $fn=20);
+      translate([column_width*1.5+column_spacing*col,5+rows*cell_height])circle(d=3, $fn=20);
+    }
+  }
+}
 
-for(row=[0:15]) {
-  translate([column_spacing*row, 0, 0]) {
+/* -------------------- 3D assembly -------------------- */
+
+for(col=[0:columns-1]) {
+  translate([column_spacing*col, 0, 0]) {
     union() {
-      for(col=[0:15]) {
-	translate([0,cell_height*col,-3]) linear_extrude(height=6) memory_cell();
+      for(row=[0:rows]) {
+	translate([0,cell_height*row,-3]) linear_extrude(height=6) memory_cell();
       }
     }
   }
- }
-
+}
 
 translate([column_spacing,0,0])
 for(col=[0:columns-1])
@@ -112,6 +126,7 @@ translate([column_width+joiner_extension+4+column_spacing*columns,0,0]) comb_ass
 translate([-column_width,0,-4]) rotate([0,-90,0]) linear_extrude(height=3) side_wall();
 translate([column_spacing*columns-4,0,-4]) rotate([0,-90,0]) linear_extrude(height=3) side_wall();
 
+translate([0,0,5]) linear_extrude(height=3) base_plate();
 
 /* ---------- Example memory ---------- */
 // Entering memory
