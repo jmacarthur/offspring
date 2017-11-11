@@ -59,10 +59,12 @@ module row_selector() {
 
 module row_comb() {
   difference() {
-    square([10, cell_height * rows]);
-    for(r=[0:rows-1]) {
+    square([10, cell_height * (rows+1)]);
+    for(r=[0:rows]) {
       translate([2,cell_height*r+6]) comb_section();
     }
+    translate([5,3]) circle(d=3,$fn=20);
+    translate([5,cell_height*rows+10]) circle(d=3,$fn=20);
   }
 }
 
@@ -82,9 +84,16 @@ module base_plate()
       translate([x,cell_height*2]) square([3,10]);
       translate([x,cell_height*(rows-2)]) square([3,10]);
     }
+    for(x=[-15, column_spacing*columns+1]) {
+      translate([x,3]) circle(d=3,$fn=20);
+      translate([x,cell_height*rows+10]) circle(d=3,$fn=20);
+    }
+
     for(col=[0:columns-1]) {
-      translate([column_width*1.5+column_spacing*col,5])circle(d=3, $fn=20);
-      translate([column_width*1.5+column_spacing*col,5+rows*cell_height])circle(d=3, $fn=20);
+      translate([column_width*1.5+column_spacing*col,0]) {
+	translate([0,5])circle(d=3, $fn=20);
+	translate([0,5+rows*cell_height])circle(d=3, $fn=20);
+      }
     }
   }
 }
@@ -115,7 +124,7 @@ module comb_assembly() {
   }
 
   // Row combs
-  for(r=[0:rows-1]) {
+  for(r=[0:rows]) {
     translate([-10-column_width+2,cell_height*r+6,-10]) color([1.0,0.5,0.0]) linear_extrude(height=13) comb_section();
   }
 }
