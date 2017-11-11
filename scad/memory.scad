@@ -1,3 +1,7 @@
+/* An earlier demonstration of the diagonal memory cell. For a full
+   16x16 diagonal memory cell, see memory-cell-16.scad. This diagonal
+   memory system is now obsolete. */
+
 include <globs.scad>;
 
 $fn = 20;
@@ -5,18 +9,6 @@ $fn = 20;
 /** delta_y is how much a cell moves down for each cell across we move. */
 delta_y  = memory_cell_pitch_x * tan(memory_slope);
 
-
-/*
-
-       |
-       |
-       |
-       |
-       |
-       |
-       |
-
-*/
 
 /** Memory block - the shape which holds and releases a ball bearing. This is designed for a 6mm ball bearing - it will have to be redesigned if not. */
 module memory_block()

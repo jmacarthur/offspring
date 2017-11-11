@@ -1,4 +1,6 @@
-/* A 16x16 memory cell */
+/* A complete 3D assembly for a 16x16 memory cell using the older
+   diagonal memory system. */
+
 include <globs.scad>;
 use <memory.scad>;
 
@@ -73,7 +75,7 @@ for(x = [0:16]) {
       translate([column_width/2,column_height-10,-1]) cylinder(d=3,h=5);
       translate([column_width/2,10,-1]) cylinder(d=3,h=5);
     }
-    
+
     // Deflector plates
     for(y = [0:16]) {
       xpos = border_width;
