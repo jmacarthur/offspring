@@ -2,6 +2,9 @@ include <globs.scad>;
 
 $fn = 20;
 
+
+/* OBSOLETE. Now replaced by injector.scad */
+
 /* Memory injector. Sits on top of the machine attached to the data bus bars, and
    sends data into the memory when one is pulled low. */
 
