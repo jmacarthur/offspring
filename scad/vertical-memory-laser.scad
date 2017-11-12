@@ -6,6 +6,10 @@ use <vertical-memory.scad>;
 rows = 8;
 cell_height = 14;
 
+kerf = 0.1;
+
+offset(r=kerf) {
+
 for(col=[0:7]) {
   union() {
     for(row=[0:rows]) {
@@ -21,3 +25,11 @@ for(y=[0:7]) translate([30,260+15*y]) row_selector();
 
 for(x=[0:3])
 translate([220+15*x,130]) row_comb();
+
+translate([240,5]) side_wall();
+translate([255,5]) side_wall();
+}
+
+// A3 page
+
+color([0,0,0]) translate([0,0,-3]) square([297, 420]);
