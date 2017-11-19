@@ -24,6 +24,21 @@
     <marker
        inkscape:isstock="true"
        style="overflow:visible"
+       id="marker5699"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         inkscape:connector-curvature="0"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#f60000;fill-opacity:1;fill-rule:evenodd;stroke:#f60000;stroke-width:1.00000003pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5697" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
        id="marker1303"
        refX="0"
        refY="0"
@@ -225,8 +240,8 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="62.321168"
-     inkscape:cy="937.04502"
+     inkscape:cx="373.79859"
+     inkscape:cy="463.10504"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -1626,5 +1641,11 @@
          x="21.166666"
          y="16.541666"
          style="stroke-width:0.26458332">Millihertz 5 datapath / overview</tspan></text>
+    <path
+       sodipodi:nodetypes="ccc"
+       inkscape:connector-curvature="0"
+       id="path5695"
+       d="m 206.37499,225.5625 -50.27082,-50.27083 0,-2.64583"
+       style="fill:none;stroke:#f60000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker5699)" />
   </g>
 </svg>
