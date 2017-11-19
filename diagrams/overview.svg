@@ -15,7 +15,10 @@
    version="1.1"
    id="svg8"
    inkscape:version="0.92.1 r15371"
-   sodipodi:docname="overview.svg">
+   sodipodi:docname="overview.svg"
+   inkscape:export-filename="/home/jimmacarthur/personal/millihertz5/millihertz5.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
   <defs
      id="defs2">
     <marker
@@ -219,11 +222,11 @@
      pagecolor="#ffffff"
      bordercolor="#666666"
      borderopacity="1.0"
-     inkscape:pageopacity="0.0"
+     inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="476.32116"
-     inkscape:cy="377.04504"
+     inkscape:cx="62.321168"
+     inkscape:cy="937.04502"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -251,7 +254,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -1623,16 +1626,5 @@
          x="21.166666"
          y="16.541666"
          style="stroke-width:0.26458332">Millihertz 5 datapath / overview</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="-74.083328"
-       y="90.625"
-       id="text316"><tspan
-         sodipodi:role="line"
-         id="tspan314"
-         x="-74.083328"
-         y="90.625"
-         style="stroke-width:0.26458332">#</tspan></text>
   </g>
 </svg>
