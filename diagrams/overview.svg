@@ -19,19 +19,19 @@
   <defs
      id="defs2">
     <marker
-       inkscape:stockid="Arrow1Lend"
-       orient="auto"
-       refY="0"
-       refX="0"
-       id="marker1629"
+       inkscape:isstock="true"
        style="overflow:visible"
-       inkscape:isstock="true">
+       id="marker1303"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
       <path
-         id="path1627"
-         d="M 0,0 5,-5 -12.5,0 5,5 Z"
-         style="fill:#0000ff;fill-opacity:1;fill-rule:evenodd;stroke:#0000ff;stroke-width:1.00000003pt;stroke-opacity:1"
+         inkscape:connector-curvature="0"
          transform="matrix(-0.8,0,0,-0.8,-10,0)"
-         inkscape:connector-curvature="0" />
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path1301" />
     </marker>
     <marker
        inkscape:stockid="Arrow1Lend"
@@ -221,9 +221,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.7071068"
-     inkscape:cx="293.3644"
-     inkscape:cy="546.75066"
+     inkscape:zoom="1"
+     inkscape:cx="476.32116"
+     inkscape:cy="377.04504"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -1407,8 +1407,8 @@
       <rect
          style="fill:#ffffff;stroke:#000000;stroke-width:0.26458332;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="rect3113"
-         width="29.104151"
-         height="15.874995"
+         width="29.104166"
+         height="29.10417"
          x="150.81252"
          y="230.85417" />
       <flowRoot
@@ -1419,10 +1419,11 @@
            id="flowRegion3161"><rect
              y="882.51971"
              x="580"
-             height="60"
-             width="90"
+             height="100.00002"
+             width="90.000069"
              id="rect3163" /></flowRegion><flowPara
-           id="flowPara3165">Instruction register</flowPara></flowRoot>    </g>
+           id="flowPara3165"
+           style="font-size:18.66666603px">Instruction register &amp; decode logic</flowPara></flowRoot>    </g>
     <g
        id="g3184"
        transform="translate(1.3229187,-3.7454641)">
@@ -1447,7 +1448,8 @@
                height="60"
                width="90"
                id="rect3176" /></flowRegion><flowPara
-             id="flowPara3180">Instruction counter</flowPara></flowRoot>      </g>
+             id="flowPara3180"
+             style="font-size:18.66666691px">Instruction counter</flowPara></flowRoot>      </g>
     </g>
     <path
        style="fill:none;stroke:#ff0000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -1553,7 +1555,8 @@
            x="630"
            y="82.519684"
            style="font-size:16px" /></flowRegion><flowPara
-         id="flowPara1295">Ball bearing datapath under gravity</flowPara></flowRoot>    <path
+         id="flowPara1295"
+         style="font-size:18.66666691px">Ball bearing datapath under gravity</flowPara></flowRoot>    <path
        sodipodi:nodetypes="cc"
        inkscape:connector-curvature="0"
        id="path1303"
@@ -1572,7 +1575,8 @@
            height="70"
            width="120"
            id="rect1305" /></flowRegion><flowPara
-         id="flowPara1309">Feedback via cable</flowPara></flowRoot>    <path
+         id="flowPara1309"
+         style="font-size:18.66666691px">Feedback via cable</flowPara></flowRoot>    <path
        sodipodi:nodetypes="cc"
        inkscape:connector-curvature="0"
        id="path1617"
@@ -1591,7 +1595,8 @@
            height="70"
            width="120"
            id="rect1619" /></flowRegion><flowPara
-         id="flowPara1623">Loose ball bearing return</flowPara></flowRoot>    <path
+         id="flowPara1623"
+         style="font-size:18.66666691px">Loose ball bearing return</flowPara></flowRoot>    <path
        inkscape:connector-curvature="0"
        id="path2279"
        d="m 161.39583,214.97917 5.29167,-5.29167"
@@ -1618,5 +1623,16 @@
          x="21.166666"
          y="16.541666"
          style="stroke-width:0.26458332">Millihertz 5 datapath / overview</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="-74.083328"
+       y="90.625"
+       id="text316"><tspan
+         sodipodi:role="line"
+         id="tspan314"
+         x="-74.083328"
+         y="90.625"
+         style="stroke-width:0.26458332">#</tspan></text>
   </g>
 </svg>
