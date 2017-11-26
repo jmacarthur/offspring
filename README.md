@@ -23,7 +23,7 @@ Below the memory is a unit called the regenerator which achieves this. The regen
 
 The regnerator also passes the ball bearings it samples on to the subtractor, so the data is duplicated - one copy to refresh the memory and one copy to do the calculation requested.
 
-The subtractor - accumulator has its own page at [[docs/subtractor-accumulator.md]].
+The subtractor - accumulator has its own page at [docs/subtractor-accumulator.md](docs/subtractor-accumulator.md).
 
 The output from memory, after regeneration, can also be diverted into the instr
 uction register (during instruction fetch) and instruction counter (during a branch operation). Most of the data word is discarded during this, as the instruction register is only 8 bits wide, and the instruction counter is only 5 bits wide. The instruction counter is a 5-bit version of the same technology used for the subtractor-accumulator.
