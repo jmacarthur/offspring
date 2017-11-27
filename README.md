@@ -30,3 +30,10 @@ Parts not yet described are:
 * A second regenerator below the subtractor-accumulator reads the values in the accumulator and sends them to the injector, for use in store operations.
 
 Finally, at the bottom, all discarded ball bearings are collected and recirculated (perhaps by conveyor belt) to the distributor.
+
+# Directories
+
+* `scad` - CAD files in OpenSCAD format
+* `diagrams` - high-level 2D drawings in DXF format for reference - showing interfaces between parts as well as some concept sketches.
+* `docs` - Descriptions of parts with illustrative (not authoritative) diagrams, and reports on past experiments and prototypes.
+* `lasercut-tests` - Laser cutting files generated from OpenSCAD are committed here to go alongside reports on prototypes in the `docs` directory. These should not be used other than as a reference for those documents.
