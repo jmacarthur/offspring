@@ -24,3 +24,11 @@ frame_internal_height = 2200;
 
 /** Frame will probably be 50mm angle iron */
 frame_width = 50;
+
+/* Bowden cable specs based on lightweight 'snake' cable */
+
+bowden_cable_inner_diameter = 2;
+bowden_cable_outer_diameter = 3.5;
+
+
+

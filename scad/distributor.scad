@@ -18,6 +18,12 @@ centre_x = ball_bearing_diameter*16;
 stage2_total_width = 33*stage2_output_pitch;
 stage2_half_width = stage2_total_width/2;
 
+assembly_rotation = 10; // How much is the whole assembly tilted?
+
+// x-positions of the angled support plates
+support1x = 20;
+support2x = 210;
+
 module input_riser()
 {
   difference() {
@@ -88,6 +94,9 @@ module stage1_base_plate() {
     for(x=[-16:16]) {
       translate([ball_bearing_diameter*16 - x*(ball_bearing_diameter*stage1_expansion), 0]) circle(d=wire_diameter);
     }
+    // Holes to clip in the support plate
+    translate([support1x,25]) square([3,10]);
+    translate([support2x,25]) square([3,10]);
   }
 }
 
@@ -106,37 +115,82 @@ module stage2_plate() {
     translate([8*stage2_output_pitch+5,5]) circle(d=3);
     translate([2*stage2_output_pitch+5,5]) circle(d=3);
     translate([17.5*stage1_output_pitch-5,155]) circle(d=3);
+
+    // Holes for the support plate tab
+    // We include holes for both support1x and support2x here. If the support plates
+    // are equidistant from the centre, the holes will coincide. If not, one
+    // set of holes will need to be filled in.
+    translate([-support1x+centre_x-3,155-15]) square([3,10]);
+    translate([support2x-centre_x,155-15]) square([3,10]);
+    translate([-support1x+centre_x-3,20]) square([3,10]);
+    translate([support2x-centre_x,20]) square([3,10]);
+
   }
   echo(stage2_half_width);
+}
+
+// Bracket aligned with the whole structure
+
+module angled_support_bracket() {
+    union() {
+        difference() {
+            translate([-10,-20]) square([62,50]);
+            // Cut away the whole top for the lifter mechanism
+            translate([-11,-21]) square([31,11]);
+            // Wider hole for the raiser beam
+            translate([-1,-11]) square([5,11]);
+            // Close-fit slots for the walls
+            translate([-5,-11]) square([3,11]);
+            translate([5,-11]) square([3,11]);
+            // Holes to allow a coupling rod for the lifter cranks to pass through
+            translate([-8,10]) square([6,11]);
+            translate([12,10]) square([5,11]);
+            // Mounting holes
+            translate([-5,25]) circle(d=3);
+            translate([5,25]) circle(d=3);
+            // Holes for a Bowden cable to pass, to control the lifter
+            translate([3,10]) circle(d=bowden_cable_inner_diameter+0.5);
+
+        }
+        // Tab to fit into the stage1 plate
+        translate([20,-23]) square([10,4]);
+        // Tab to fit into the stage2 plate
+        translate([51,-10]) square([4,10]);
+    }
+}
+
+module lower_angled_support_bracket() {
+    union() {
+        difference() {
+            translate([10,100]) square([42,30]);
+            // Mounting holes
+            translate([20,105]) circle(d=3);
+            translate([20,125]) circle(d=3);
+
+        }
+        // Tab to fit into the stage2 plate
+        translate([51,110]) square([4,10]);
+    }
+}
+
+module support_bracket() {
+    difference() {
+        translate([-20,20]) square([30,115]);
+        // Mounting holes
+        rotate(assembly_rotation) {
+            translate([20,105]) circle(d=3);
+            translate([20,125]) circle(d=3);
+            translate([-5,25]) circle(d=3);
+            translate([5,25]) circle(d=3);
+        }
+    }
 }
 
 
 /* -------------------- 3D Assembly -------------------- */
 
-rotate([90,0,0]) linear_extrude(height=3) input_riser();
-
-translate([0,-5,0]) rotate([90,0,0]) linear_extrude(height=3) channel_wall(1);
-translate([0,5,0]) rotate([90,0,0]) linear_extrude(height=3) channel_wall(0);
-
-for(x=[0,slot_distance]) {
-  translate([x-15,10,10]) rotate([0,13,0]) rotate([90,0,0]) linear_extrude(height=3) raiser_crank();
-  translate([x-15,-10,10]) rotate([0,13,0]) rotate([90,0,0]) linear_extrude(height=3) raiser_crank();
-}
-
-translate([0,-55,20]) linear_extrude(height=3) stage1_base_plate();
-translate([0,-55,30]) linear_extrude(height=3) stage1_top_plate();
-
-module stage2_assembly() {
-  linear_extrude(height=3) stage2_plate();
-  linear_extrude(height=3) scale([-1,1,1]) stage2_plate();
-  translate([0,0,10]) linear_extrude(height=3) stage2_plate();
-  translate([0,0,10]) linear_extrude(height=3) scale([-1,1,1]) stage2_plate();
-}
-
-translate([centre_x, -52, -140]) rotate([90,0,0]) stage2_assembly();
-
 /* Purely illustrative module to show how the second stage distributor wires should be arranged.*/
-
+    
 module distributor_wires()
 {
 
@@ -166,7 +220,51 @@ module distributor_wires()
     }
 }
 
-translate([0,-73,80]) rotate([90,0,0]) color([1,0.5,0]) linear_extrude(height=1) distributor_wires();
 
-// A row of bearings in the injector hopper
-for(x=[0:31]) translate([ball_bearing_diameter*x+ball_bearing_diameter/2, -1.75, 13+ball_bearing_diameter/2]) sphere(d=ball_bearing_diameter);
+// There are two parts to this - functional assembly holds all the parts that touch ball bearings.
+// The whole function assembly is then rotated and slots into the support assembly, which is kept
+// othogonal to the machine's frame.
+
+module functional_assembly() {
+    rotate([90,0,0]) linear_extrude(height=3) input_riser();
+
+    translate([0,-5,0]) rotate([90,0,0]) linear_extrude(height=3) channel_wall(1);
+    translate([0,5,0]) rotate([90,0,0]) linear_extrude(height=3) channel_wall(0);
+
+    for(x=[0,slot_distance]) {
+        translate([x-15,10,10]) rotate([0,13,0]) rotate([90,0,0]) linear_extrude(height=3) raiser_crank();
+        translate([x-15,-10,10]) rotate([0,13,0]) rotate([90,0,0]) linear_extrude(height=3) raiser_crank();
+    }
+
+    translate([0,-55,20]) linear_extrude(height=3) stage1_base_plate();
+    //translate([0,-55,30]) linear_extrude(height=3) stage1_top_plate();
+    
+    module stage2_assembly() {
+        linear_extrude(height=3) stage2_plate();
+        linear_extrude(height=3) scale([-1,1,1]) stage2_plate();
+        //translate([0,0,10]) linear_extrude(height=3) stage2_plate();
+        //translate([0,0,10]) linear_extrude(height=3) scale([-1,1,1]) stage2_plate();
+    }
+    
+    translate([centre_x, -52, -140]) rotate([90,0,0]) stage2_assembly();
+
+    translate([0,-73,80]) rotate([90,0,0]) color([1,0.5,0]) linear_extrude(height=1) distributor_wires();
+
+    // A row of bearings in the injector hopper
+    for(x=[0:31]) translate([ball_bearing_diameter*x+ball_bearing_diameter/2, -1.75, 13+ball_bearing_diameter/2]) sphere(d=ball_bearing_diameter);
+    color([0.5,1,1]) {
+        for(x=[support1x, support2x])  {
+            translate([x,0,0]) rotate([0,0,-90]) rotate([-90,0,0]) linear_extrude(height=3) angled_support_bracket();
+            translate([x,0,0]) rotate([0,0,-90]) rotate([-90,0,0]) linear_extrude(height=3) lower_angled_support_bracket();
+        }
+    }
+    
+}
+    
+module support_assembly(){
+    translate([support1x-3,0,0]) rotate([0,0,-90]) rotate([-90,0,0]) linear_extrude(height=3) support_bracket();}
+    translate([support2x-3,0,0]) rotate([0,0,-90]) rotate([-90,0,0]) linear_extrude(height=3) support_bracket();
+
+
+rotate([assembly_rotation,0,0]) functional_assembly();
+support_assembly();
