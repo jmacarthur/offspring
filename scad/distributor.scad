@@ -260,11 +260,17 @@ module functional_assembly() {
     }
     
 }
-    
-module support_assembly(){
-    translate([support1x-3,0,0]) rotate([0,0,-90]) rotate([-90,0,0]) linear_extrude(height=3) support_bracket();}
-    translate([support2x-3,0,0]) rotate([0,0,-90]) rotate([-90,0,0]) linear_extrude(height=3) support_bracket();
 
+module support_assembly(){
+    translate([support1x-3,0,0]) rotate([0,0,-90]) rotate([-90,0,0]) linear_extrude(height=3) support_bracket();
+    translate([support2x-3,0,0]) rotate([0,0,-90]) rotate([-90,0,0]) linear_extrude(height=3) support_bracket();
+}
 
 rotate([assembly_rotation,0,0]) functional_assembly();
 support_assembly();
+
+// Marker for output row
+rotate([assembly_rotation,0,0]) translate([0,-52-3-3.5,-140]) sphere(d=6);
+
+
+echo("Output ball-bearing centre distance from wall is ",20+58.5*cos(assembly_rotation)-140*sin(assembly_rotation));
