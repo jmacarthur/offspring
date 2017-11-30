@@ -77,9 +77,10 @@ module top_layer_2d() {
 module input_toggle_2d()
 {
   difference() {
-    top = 2.5;
+      top = 2.75;
+      base = -2.5;
     union() {
-      polygon(points=[[-15, top], [-2.5-6,top], [-2.5, top+6], [-2.5,top+12], [2.5,top+12], [2.5,top+6], [2.5+6,top], [15,top], [10,-top], [-10,-top]]);
+      polygon(points=[[-15, top], [-2.5-6,top], [-2.5, top+6], [-2.5,top+12], [2.5,top+12], [2.5,top+6], [2.5+6,top], [15,top], [10,base], [-10,base]]);
       translate([0,top+12]) circle(r=2.5);
       circle(r=5);
     }
