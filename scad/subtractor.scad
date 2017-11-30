@@ -4,7 +4,7 @@ $fn = 20;
 
 // Subtractor - accumulator unit for millihertz 5
 
-subtractor_pitch_x = 22;
+subtractor_pitch_x = 23;
 subtractor_pitch_y = 27;
 
 slope = atan2(subtractor_pitch_y, subtractor_pitch_x);
@@ -18,7 +18,7 @@ channel_width = 6.5;
 
 axle_clearance = 0.1;
 
-rot = -20;
+rot = 20;
 
 module hex_bar_2d() {
     r = hex_bar_max_radius;
@@ -49,7 +49,8 @@ module input_guard_b_holes()
 
 module generic_support_plate()
 {
-  polygon(points = [[-180,-220], [-180,-165], [-180+215/tan(slope),50], [10,15], [40,0], [40-220/tan(slope),-220]]);
+    left_edge = -8*subtractor_pitch_x;
+    polygon(points = [[left_edge,-220], [left_edge,-165], [left_edge+215/tan(slope),50], [10,15], [40,0], [40-220/tan(slope),-220]]);
 }
 
 // Layer 0 - Top plate
@@ -235,7 +236,7 @@ module back_layer_2d() {
 
 // Layer 4 - Reset toggles
 
-reset_rot = 30;
+reset_rot = 0;
 module reset_toggle_2d() {
   difference() {
     union() {
@@ -268,7 +269,7 @@ module reset_bar_2d() {
     rotate(270+slope) {
       difference() {
 	union() {
-	  translate([-7.5,-200]) square([10,210]);
+	  translate([-7.5,-250]) square([10,260]);
 	}
 	dx = subtractor_pitch_x;
 	dy = subtractor_pitch_y;
@@ -285,7 +286,7 @@ module reset_bar_2d() {
 
 for(i=[0:7]) {
   translate([0,0,3]) {
-    color([0.5,0.5,0.5]) linear_extrude(height=3) top_layer_2d();
+      color([0.5,0.5,0.5]) linear_extrude(height=3) top_layer_2d();
   }
 
   if(1) {
@@ -296,18 +297,18 @@ for(i=[0:7]) {
     }
   }
   translate([-i*subtractor_pitch_x, -i*subtractor_pitch_y,-6]) {
-    color([0,1,0]) linear_extrude(height=3) rotate(rot) output_toggle_2d();
-    linear_extrude(height=3) output_guard_a_2d();
+      color([0,1,0]) linear_extrude(height=3) rotate(rot) output_toggle_2d();
+      linear_extrude(height=3) output_guard_a_2d();
   }
   translate([0,0,-3]) {
-    color([0.5,0.5,0.5]) linear_extrude(height=3) io_support_layer_2d();
+      color([0.5,0.5,0.5]) linear_extrude(height=3) io_support_layer_2d();
   }
   translate([0,0,-9]) {
-    color([0.5,0.5,0.5]) linear_extrude(height=3) back_layer_2d();
+      color([0.5,0.5,0.5]) linear_extrude(height=3) back_layer_2d();
   }
   translate([-i*subtractor_pitch_x, -i*subtractor_pitch_y,-12]) {
-    color([0.5,0.5,0.5]) linear_extrude(height=3) rotate(rot) reset_toggle_2d();
-    if(i % 4 == 0) translate([0,0,-3]) color([1.0,1.0,0.5]) linear_extrude(height=3) reset_lever_2d(); // Reset lever is already rotated, as it's offset
+      color([0.5,0.5,0.5]) linear_extrude(height=3) rotate(rot) reset_toggle_2d();
+      if(i % 4 == 0) translate([0,0,-3]) color([1.0,1.0,0.5]) linear_extrude(height=3) reset_lever_2d(); // Reset lever is already rotated, as it's offset
   }
   translate([0,0,-12]) color([1.0,1.0,0.5]) linear_extrude(height=3) reset_bar_2d(); // Reset lever is already rotated, as it's offset
 }
