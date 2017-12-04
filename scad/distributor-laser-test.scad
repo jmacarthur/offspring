@@ -26,7 +26,7 @@ offset(kerf) {
     translate([5,5]) stage2_plate();
     translate([45,170]) stage1_base_plate();
     translate([45,230]) stage1_top_plate();
-    translate([300,100]) strip_grading_plate();
+    translate([300,125]) strip_grading_plate();
 
     translate([300,150]) {
       for(col=[0:3]) {
@@ -40,6 +40,9 @@ offset(kerf) {
       }
       }
     }
+
+    translate([240,135]) angled_support_bracket();
+    translate([340,-20]) lower_angled_support_bracket();
 
 }
 
