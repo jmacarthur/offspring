@@ -1,6 +1,10 @@
 /* Global definitions for millihertz 5 */
 
-ball_bearing_diameter = 6.28;
+// Ball bearings are sold as 3. They're actually closer to 1/4" (6.35 mm).
+// 32 in a row measure at 203mm, giving 6.34mm each.
+// Vernier says 6.35 each or 6.35/16.
+
+ball_bearing_diameter = 6.35;
 
 pipe_outer_diameter = 11;
 
