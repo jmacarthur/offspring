@@ -14,8 +14,10 @@ stage2_output_pitch = 23;
 // Distance between raiser slots
 slot_distance = ball_bearing_diameter * 30;
 
+centre_gap = 50; // Split in the middle of the two lanes to join cells together
+
 centre_x = ball_bearing_diameter*16;
-stage2_total_width = 33*stage2_output_pitch;
+stage2_total_width = 33*stage2_output_pitch+centre_gap;
 stage2_half_width = stage2_total_width/2;
 
 assembly_rotation = 10; // How much is the whole assembly tilted?
@@ -23,6 +25,7 @@ assembly_rotation = 10; // How much is the whole assembly tilted?
 // x-positions of the angled support plates
 support1x = 20;
 support2x = 210;
+
 
 module input_riser()
 {
@@ -124,18 +127,36 @@ module stage1_top_plate() {
   stage1_plate();
 }
 
+// Module to show where to place the curve in the stage2 guide.
+module turn_guide(x)
+{
+  scale([-1,1]) {
+    translate([-x*stage1_output_pitch, -188+x*stage1_output_pitch*0.99]) difference() {
+      intersection() {
+	circle(r=9.5);
+	rotate(30) translate([0,-50]) square([50,50]);
+	translate([0,-50]) square([50,50]);
+      }
+
+      circle(r=8.5);
+    }
+  }
+}
+
+
+
 module stage2_plate() {
   difference() {
     polygon(points=[[0,0], [stage2_half_width,0], [stage2_half_width, 30], [stage1_output_pitch*16+10, 160], [0,160]]);
     for(x=[0:16]) {
       translate([x*stage1_output_pitch,155]) circle(d=stage2_wire_diameter);
-      translate([x*stage2_output_pitch,5]) circle(d=stage2_wire_diameter);
+      translate([centre_gap/2 + x*stage2_output_pitch,5]) circle(d=stage2_wire_diameter);
+      translate([1,220]) turn_guide(x);
     }
     translate([15*stage2_output_pitch+5,5]) circle(d=3);
     translate([8*stage2_output_pitch+5,5]) circle(d=3);
     translate([2*stage2_output_pitch+5,5]) circle(d=3);
     translate([17.5*stage1_output_pitch-5,155]) circle(d=3);
-
     // Holes for the support plate tab
     // We include holes for both support1x and support2x here. If the support plates
     // are equidistant from the centre, the holes will coincide. If not, one
@@ -210,31 +231,25 @@ module support_bracket() {
 /* -------------------- 3D Assembly -------------------- */
 
 /* Purely illustrative module to show how the second stage distributor wires should be arranged.*/
-    
+
+
 module distributor_wires()
 {
 
   translate([centre_x-1,0,0])
-    for(x=[1:17]) {
-      if(x>1) {
-	translate([-x*stage1_output_pitch, -200+x*stage1_output_pitch, 20]) difference() {
-	  intersection() {
-	    circle(r=10);
-	    rotate(30) translate([0,-50]) square([50,50]);
-	    translate([0,-50]) square([50,50]);
-	  }
-	  circle(r=8);
-	}
-      }
-      translate([-x*stage1_output_pitch-4, -200+x*stage1_output_pitch+1, 20]) {
-	rotate(-90-64) square([x*16.5-6,2]);
+    for(x=[0:17]) {
+
+      // Long diagonals
+      translate([-x*stage1_output_pitch-4, -188+x*stage1_output_pitch*0.99+1, 20]) {
+	rotate(-90-64) square([x*17+20,2]);
       }
 
-      translate([-x*stage1_output_pitch, -200+x*stage1_output_pitch+8, 20]) {
+      translate([-x*stage1_output_pitch, -190+x*stage1_output_pitch+8, 20]) {
 	square([2,130-x*stage1_output_pitch]);
       }
 
-      translate([-x*stage2_output_pitch, -215, 20]) {
+      // Base output channels
+      translate([-x*stage2_output_pitch-2, -215, 20]) {
 	square([2,18+x*0.5]);
       }
     }
@@ -271,7 +286,7 @@ module functional_assembly() {
     
     translate([centre_x, -52, -140]) rotate([90,0,0]) stage2_assembly();
 
-    translate([0,-73,80]) rotate([90,0,0]) color([1,0.5,0]) linear_extrude(height=1) distributor_wires();
+    //translate([0,-56,80]) rotate([90,0,0]) color([1,0.5,0]) linear_extrude(height=1) distributor_wires();
 
     // A row of bearings in the injector hopper
     for(x=[0:31]) translate([ball_bearing_diameter*x+ball_bearing_diameter/2, -1.75, 13+ball_bearing_diameter/2]) sphere(d=ball_bearing_diameter);
