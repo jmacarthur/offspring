@@ -6,7 +6,7 @@ columns = 8;
 rows = 8;
 column_width = 7; // Must be bigger than bb diameter
 cell_height = 14;
-cell_drop = 2;
+cell_drop = 1; // Amount of slope holding data in place
 
 deflector_angle = 10;
 
