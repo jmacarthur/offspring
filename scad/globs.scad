@@ -14,8 +14,8 @@ memory_cell_pitch_y = 28 * cos(memory_slope);
 /* Number of bits used in the data. This must be 32. */
 bits = 32;
 
-/** Accumulator / subtractor unit. Pitch is the horizontal spacing between both input and output. */
-accumulator_input_pitch = 22;
+/* Global pitch - the horizontal spacing between each bit */
+pitch = 23;
 
 /** Frame */
 
