@@ -15,7 +15,7 @@ memory_translate_x = -7;
 joiner_extension = 2; // If nonzero, this allows a strip to connect all memory cells vertically.
 column_spacing = (column_width*3+joiner_extension);
 
-module memory_cell()
+module memory_cell(hole)
 {
   difference() {
     polygon(points = [[0,0], [column_width,cell_drop], [column_width,0], [column_width*2 + joiner_extension,0],
@@ -27,7 +27,9 @@ module memory_cell()
     // Cutout for the ball to rise into while retracting row
     translate([column_width-ball_bearing_diameter/2,8.5]) circle(d=ball_bearing_diameter, $fn=20);
     // Alignment hole
-    translate([column_width*1.5,5]) circle(d=3, $fn=20);
+    if(hole) {
+      translate([column_width*1.5,5]) circle(d=3, $fn=20);
+    }
   }
 }
 
@@ -108,7 +110,7 @@ for(col=[0:columns-1]) {
   translate([column_spacing*col, 0, 0]) {
     union() {
       for(row=[0:rows]) {
-	translate([0,cell_height*row,-3]) linear_extrude(height=6) memory_cell();
+	translate([0,cell_height*row,-3]) linear_extrude(height=6) memory_cell((row % 4==0) || row==rows);
       }
     }
   }

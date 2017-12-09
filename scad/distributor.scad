@@ -149,8 +149,13 @@ module stage2_plate() {
   difference() {
     polygon(points=[[0,0], [stage2_half_width,0], [stage2_half_width, 30], [stage1_output_pitch*16+10, 160], [0,160]]);
     for(x=[0:16]) {
+      // Holes at the top to push wire through
       translate([x*stage1_output_pitch,155]) circle(d=stage2_wire_diameter);
+      // Gaps at the top to allow the stage1 wires to fold under their plate
+      translate([x*stage1_output_pitch,160]) circle(d=5);
+      // Holes at the bottom to secure wire to
       translate([centre_gap/2 + x*stage2_output_pitch,5]) circle(d=stage2_wire_diameter);
+      // Arc-shaped hole which is a guide for the wire - no functional purpose
       translate([1,220]) turn_guide(x);
     }
     translate([15*stage2_output_pitch+5,5]) circle(d=3);
