@@ -31,9 +31,8 @@ module memory_cell()
 
 /* Deflector is made from Albion alloys brass strip, 6mm x 0.8mm as sold.
    it's actually 6.3mm wide and 0.8mm thick. */
-strip_adjust = 0.25;
-strip_height = 6.3 - strip_adjust;
-strip_width = 0.8 - 0.16;
+strip_height = 6.3 - 0.25 + 0.2; // Values adjusted by laser-cut grading plate.
+strip_width = 0.8 - 0.16 + 0.1;
 module deflector_section()
 {
   translate([strip_width*sin(deflector_angle),-strip_height*sin(deflector_angle)-strip_width])  rotate(deflector_angle) square([strip_height, strip_width]);
