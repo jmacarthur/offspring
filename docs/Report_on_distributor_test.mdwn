@@ -1,0 +1,11 @@
+Report on the laser cut of scad/distributor-laser-test.scad at revision af14f06856878f7a3ae221c243ae15b7d1da79d8.
+
+The first stage distributor works well - I've added all the SWG17 copper wire and it functions correctly. The spacers on the entry side need to be slightly more than 7mm to avoid jamming - a thin washer is necessary as well as the usual 7mm spacer.
+
+The length of the first stage distributor means it flexes a lot in the middle. We can't easily fit in another post, but we could put ribs on the outside of the distributor to make it more rigid.
+
+The second stage distributor hasn't been tested yet.
+
+The newly cut memory cells are nearly working. The top of the rounded section is very slightly too low and catches the ball bearings on the way in. We should raise this by 0.5mm.
+
+The strip grading plate shows hole 3 is a good fit for the brass bar. We should use the second hole's width and the third hole's height.
