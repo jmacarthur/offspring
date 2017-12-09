@@ -18,10 +18,12 @@ column_spacing = (column_width*3+joiner_extension);
 module memory_cell()
 {
   difference() {
-    polygon(points = [[0,0], [column_width,cell_drop], [column_width,0], [column_width*2 + joiner_extension,0], [column_width*2+joiner_extension, cell_height], [column_width*2, cell_height], [column_width*2, cell_height-1],
+    polygon(points = [[0,0], [column_width,cell_drop], [column_width,0], [column_width*2 + joiner_extension,0],
+		      [column_width*2+joiner_extension, cell_height], // Bottom right corner
+		      [column_width*2, cell_height], [column_width*2, cell_height-1],
 		      [column_width, cell_height - column_width*sin(deflector_angle)-1],
 		      [column_width, cell_height - ball_bearing_diameter],
-		      [0, cell_height/2]]);
+		      [0, cell_height/2-0.5]]); // 0.5 adjustment following testing
     // Cutout for the ball to rise into while retracting row
     translate([column_width-ball_bearing_diameter/2,8.5]) circle(d=ball_bearing_diameter, $fn=20);
     // Alignment hole
