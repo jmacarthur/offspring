@@ -51,12 +51,13 @@ module channel_wall(notch)
 
       // Axle hole for raiser crank
       translate([x-15,10]) circle(d=3);
+
+      // If 'notch' is on, add a hole for the stage1 wire
       if(notch == 1) {
 	for(x=[0:32]) {
-	  translate([x*ball_bearing_diameter-wire_diameter/2, 20-wire_diameter]) square([wire_diameter,5]);
+	  translate([x*ball_bearing_diameter, 20]) circle(d=5);
 	}
       }
-      
     }
     translate([ball_bearing_diameter*32+15,5]) circle(d=3);
     translate([ball_bearing_diameter*32+35,5]) circle(d=3);
