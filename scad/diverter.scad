@@ -24,6 +24,8 @@ crank_offset_x = 10;
 crank_offset_y = 10;
 extend_down = 10;
 extend_up = 10;
+
+// The bit that connects the moving plate to the axle
 module rotating_bar_support()
 {
   difference() {
@@ -33,11 +35,14 @@ module rotating_bar_support()
       translate([0,-5-crank_offset_y]) square([crank_offset_x,10]);
       translate([crank_offset_x-10,5-crank_offset_y-3]) square([13,3]);
     }
+    // Axle hole
     translate([0,0]) circle(d=3);
   }
 }
 
 output_gap = 10;
+
+// The bit that rotates to divert ball bearings
 module diverter_plate()
 {
   difference() {
@@ -55,6 +60,13 @@ module diverter_plate()
   }
 }
 
+// Optional separator plates
+module separator_plate()
+{
+	polygon(points = [[5,0], [10,5], [20,5],[30,0], [20,0], [20,-3],[10,-3], [10,0]]);
+}
+
+// The wall with output holes for diverted ball bearings
 module side_wall()
 {
   difference() {
@@ -71,6 +83,12 @@ module diverter_swing_assembly()
 {
   for(x=[10,8*pitch-13]) translate([x,0,0]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) rotating_bar_support();
   translate([0,crank_offset_x+3,-5-crank_offset_y]) rotate([90,0,0]) linear_extrude(height=3) diverter_plate();
+  
+    for(i=[0:7]) {
+    translate([0.5*pitch+pitch*i-output_gap/2-3,10+3,5]) rotate([0,90,0]) linear_extrude(height=3) separator_plate();
+    translate([0.5*pitch+pitch*i-output_gap/2+10,10+3,5]) rotate([0,90,0]) linear_extrude(height=3) separator_plate();// TODO Rationalise calculation
+    }
+    
 }
 
 module diverter() {
