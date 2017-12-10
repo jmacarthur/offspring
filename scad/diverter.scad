@@ -110,6 +110,5 @@ module diverter() {
   translate([0,20,3]) rotate([90,0,0]) linear_extrude(height=3) side_wall();
 }
 
-
-
 diverter();
+color([0.5,0,0]) translate([8*pitch,0,0]) diverter();
