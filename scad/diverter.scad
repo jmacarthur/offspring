@@ -1,6 +1,7 @@
 // Experimental 8-way chainable diverter
 
 include <globs.scad>;
+use <interconnect.scad>;
 
 mounting_holes_y = [4,16];
 mounting_holes_x = [0.2*pitch, 4*pitch, 0.8*pitch+7*pitch];
@@ -135,10 +136,22 @@ module diverter() {
   translate([0,-crank_offset_x,crank_offset_y+9+extend_down]) rotate([$t*45,0,0]) diverter_swing_assembly();
   translate([0,20,3]) rotate([90,0,0]) linear_extrude(height=3) side_wall();
   for(x=[0, 8*pitch-3]) {
-    color([0.5,0.5,0]) translate([x,0,3]) rotate([0,0,90]) rotate([90,0,0]) linear_extrude(height=3) end_wall(x==0);
+    color([0.5,0.5,0]) translate([x,0,3]) rotate([0,0,90]) rotate([90,0,0]) linear_extrude(height=3) end_wall(x!=0);
   }
 }
 
 diverter();
+
+
 color([0.5,0,0]) translate([8*pitch,0,0]) diverter();
 color([0,0.5,0]) translate([8*pitch,0,43]) diverter();
+
+
+
+ module interconnect_assembly() {
+    rotate([0,90,0]) linear_extrude(height=3) bowden_cable_stator();
+    translate([-3,0,-42]) rotate([0,90,0]) linear_extrude(height=3) stator_clamp();
+    translate([0,5,-5-bowden_cable_travel])  color([0.5,0.5,0.5]) rotate([0,90,0]) linear_extrude(height=3) cable_connector_2d();
+  }
+
+ translate([8*pitch-6,-28,10])  interconnect_assembly();

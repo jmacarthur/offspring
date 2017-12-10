@@ -34,5 +34,4 @@ frame_width = 50;
 bowden_cable_inner_diameter = 2;
 bowden_cable_outer_diameter = 3.5;
 
-
-
+bowden_cable_travel = 10;
