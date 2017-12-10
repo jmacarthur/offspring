@@ -112,8 +112,12 @@ module end_wall(mount_plate) {
     }
     if(mount_plate) {
       // Dropped section to attach bowden cable
-      translate([-20,-13]) square([20,35]);
-      translate([-20,0]) square([30,10]); // This just joins the two sections
+      difference() {
+        translate([-28,-3]) square([28,25]);
+        translate([-23,2]) circle(d=3);
+translate([-5,2]) circle(d=3, $fn=10);
+      }
+      translate([-1,0]) square([2,25]); // This just joins the two sections
     }
   }
 }
