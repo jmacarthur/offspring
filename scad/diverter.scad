@@ -2,6 +2,10 @@
 
 include <globs.scad>;
 
+mounting_holes_y = [4,16];
+mounting_holes_x = [0.2*pitch, 4*pitch, 0.8*pitch+7*pitch];
+m3_nut_space = 5.4;
+
 // A grate that allows ball bearings in through holes in the top. Also includes mounting points.
 module input_plate()
 {
@@ -12,8 +16,8 @@ module input_plate()
       translate([0.5*pitch+i*pitch, 10]) circle(d=11);
     }
     // Mounting holes
-    for(y=[4,16]) {
-      for(x=[0.2*pitch, 4*pitch, 0.8*pitch+7*pitch]) {
+    for(y=mounting_holes_y) {
+      for(x=mounting_holes_x) {
 	translate([x,y]) circle(d=3, $fn=10);
       }
     }
@@ -70,11 +74,21 @@ module separator_plate()
 module side_wall()
 {
   difference() {
-    square([8*pitch, 40]);
+    square([8*pitch, 37]);
     for(i=[0:7]) {
       translate([0.5*pitch+i*pitch-output_gap/2,17]) square([output_gap, 10]);
     }
+    for(i=[0:7]) {
+      translate([0.5*pitch+i*pitch-output_gap/2,17]) square([output_gap, 10]);
+    }
+    for(x=mounting_holes_x) {
+      for(y=[-1,37-3]) translate([x-m3_nut_space/2,y]) square([m3_nut_space,4]);
+    }
   }
+}
+
+module end_wall() {
+  square([10,37]);
 }
 
 // ------ 3D assembly ------
@@ -83,12 +97,10 @@ module diverter_swing_assembly()
 {
   for(x=[10,8*pitch-13]) translate([x,0,0]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) rotating_bar_support();
   translate([0,crank_offset_x+3,-5-crank_offset_y]) rotate([90,0,0]) linear_extrude(height=3) diverter_plate();
-  
-    for(i=[0:7]) {
+  for(i=[0:7]) {
     translate([0.5*pitch+pitch*i-output_gap/2-3,10+3,5]) rotate([0,90,0]) linear_extrude(height=3) separator_plate();
     translate([0.5*pitch+pitch*i-output_gap/2+10,10+3,5]) rotate([0,90,0]) linear_extrude(height=3) separator_plate();// TODO Rationalise calculation
-    }
-    
+  }
 }
 
 module diverter() {
