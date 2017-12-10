@@ -87,7 +87,10 @@ module side_wall()
     difference() {
     square([8*pitch, 37]);
     for(i=[0:7]) {
-      translate([0.5*pitch+i*pitch-output_gap/2,17]) square([output_gap, 10]);
+    hull() {
+      translate([0.5*pitch+i*pitch,20]) circle(d=output_gap);
+      translate([0.5*pitch+i*pitch,25]) circle(d=ball_bearing_diameter);
+    }
     }
     for(x=mounting_holes_x) {
       for(y=[-1,37-3]) translate([x-m3_nut_space/2,y]) square([m3_nut_space,4]);
