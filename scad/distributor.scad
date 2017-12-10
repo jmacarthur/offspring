@@ -2,25 +2,35 @@
 
 include <globs.scad>;
 
-ball_bearing_diameter = 6.35; // Overrides globs.
-
 // Max wire diameter is 1.59mm for 6.35mm ball bearings.
-wire_diameter = 1.45; // Equivalent to AWG 15 / SWG 17.
-  stage2_wire_diameter = 2.337; // SWG 13
+stage1_wire_diameter = 1.45; // Equivalent to AWG 15 / SWG 17.
+stage2_wire_diameter = 2.337; // SWG 13
+
 $fn = 20;
+
+// Pitch of ball bearings after passing through each stage:
 stage1_output_pitch = 8;
 stage2_output_pitch = 23;
 
-// Distance between raiser slots
+// Distance between the slots cut in the raiser walls to
+// allow the raiser to slide up and down:
 slot_distance = ball_bearing_diameter * 30;
 
-centre_gap = 50; // Split in the middle of the two lanes to join cells together
+// centre_gap is a split in the middle of the two lanes
+// to join cells together (since we will likely have two
+// 16-bit memory cells, and 2 16-bit adders, there will
+// be a gap needed to join them.
+centre_gap = 50;
 
+// Zero X is the far edge of the first ball bearing on input.
+// Centre of the whole machine is between the two sets of 16
+// ball bearings.
 centre_x = ball_bearing_diameter*16;
 stage2_total_width = 33*stage2_output_pitch+centre_gap;
 stage2_half_width = stage2_total_width/2;
 
-assembly_rotation = 10; // How much is the whole assembly tilted?
+// How much is the whole assembly tilted?
+assembly_rotation = 10;
 
 // x-positions of the angled support plates
 support1x = 20;
@@ -113,10 +123,10 @@ module stage1_base_plate() {
   difference() {
     stage1_plate();
     for(x=[0:32]) {
-      translate([x*ball_bearing_diameter, 50]) circle(d=wire_diameter);
+      translate([x*ball_bearing_diameter, 50]) circle(d=stage1_wire_diameter);
     }
     for(x=[-16:16]) {
-      translate([ball_bearing_diameter*16 - x*(ball_bearing_diameter*stage1_expansion), 0]) circle(d=wire_diameter);
+      translate([ball_bearing_diameter*16 - x*(ball_bearing_diameter*stage1_expansion), 0]) circle(d=stage1_wire_diameter);
     }
     // Holes to clip in the support plate
     translate([support1x,25]) square([3,10]);
@@ -173,7 +183,7 @@ module stage2_plate() {
     translate([support2x-centre_x,20]) square([3,10]);
 
   }
-  echo(stage2_half_width);
+  echo("Half of stage2 width is",stage2_half_width);
 }
 
 // Bracket aligned with the whole structure
@@ -302,7 +312,6 @@ module functional_assembly() {
             translate([x,0,0]) rotate([0,0,-90]) rotate([-90,0,0]) linear_extrude(height=3) lower_angled_support_bracket();
         }
     }
-    
 }
 
 module support_assembly(){
