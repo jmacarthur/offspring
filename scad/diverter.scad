@@ -2,6 +2,9 @@
 
 include <globs.scad>;
 use <interconnect.scad>;
+use <generic_conrods.scad>;
+
+$fn=20;
 
 mounting_holes_y = [4,16];
 mounting_holes_x = [0.2*pitch, 4*pitch, 0.8*pitch+7*pitch];
@@ -40,13 +43,15 @@ module rotating_bar_support()
 {
   difference() {
     union() {
-      translate([-5,-5-crank_offset_y]) square([10,10+crank_offset_y]);
+      translate([-35,-5-crank_offset_y]) square([40,10+crank_offset_y]);
       translate([crank_offset_x-10,-5-crank_offset_y]) square([13,3]);
       translate([0,-5-crank_offset_y]) square([crank_offset_x,10]);
       translate([crank_offset_x-10,5-crank_offset_y-3]) square([13,3]);
     }
     // Axle hole
     translate([0,0]) circle(d=3, $fn=20);
+    // Drive hole
+    translate([-10,0]) circle(d=3, $fn=20);
   }
 }
 
@@ -145,17 +150,18 @@ module diverter() {
 }
 
 diverter();
-
-
 color([0.5,0,0]) translate([8*pitch,0,0]) diverter();
 color([0,0.5,0]) translate([8*pitch,0,43]) diverter();
+color([0.5,0,0]) translate([8*pitch,0,0]) diverter();
+color([0,0.5,0.5]) translate([0,0,43]) diverter();
 
 
-
- module interconnect_assembly() {
+module interconnect_assembly() {
     rotate([0,90,0]) linear_extrude(height=3) bowden_cable_stator();
     translate([-3,0,-42]) rotate([0,90,0]) linear_extrude(height=3) stator_clamp();
-    translate([0,5,-5-bowden_cable_travel])  color([0.5,0.5,0.5]) rotate([0,90,0]) linear_extrude(height=3) cable_connector_2d();
-  }
+    translate([0,5,-10-bowden_cable_travel])  color([0.5,0.5,0.5]) rotate([0,90,0]) linear_extrude(height=3) cable_connector_2d();
+    translate([-4,11.5,-14-bowden_cable_travel+10]) rotate([180+3,0,0]) rotate([0,90,0]) linear_extrude(height=3) conrod(35);
+}
 
- translate([8*pitch-6,-28,10])  interconnect_assembly();
+translate([8*pitch-6,-28,10])  interconnect_assembly();
+
