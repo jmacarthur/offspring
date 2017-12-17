@@ -152,6 +152,25 @@ module turn_guide(x)
 }
 
 
+module raiser_connector()
+{
+  l = 190;
+  drop = 5;
+  difference() {
+    union() {
+      circle(d=10);
+      translate([l, 0]) circle(d=10);
+      translate([20,-drop]) circle(d=10);
+      translate([l-20, -drop]) circle(d=10);
+      rotate(-atan2(drop,20)) translate([0,-5]) square([20,10]);
+      translate([l,0]) rotate(180+atan2(drop,20)) translate([0,-5]) square([20,10]);
+      translate([20,-drop]) translate([0,-3]) square([l-40,6]);
+    }
+    translate([0, 0]) circle(d=3);
+    translate([l, 0]) circle(d=3);
+  }
+}
+
 
 module stage2_plate() {
   difference() {
@@ -286,6 +305,7 @@ module functional_assembly() {
         translate([x-15,10,10]) rotate([0,13,0]) rotate([90,0,0]) linear_extrude(height=3) raiser_crank();
         translate([x-15,-10,10]) rotate([0,13,0]) rotate([90,0,0]) linear_extrude(height=3) raiser_crank();
     }
+    color([1.0,1.0,1.0]) translate([-20,7,-10]) rotate([90,0,0]) linear_extrude(height=3) raiser_connector();
 
     translate([0,-55,20]) linear_extrude(height=3) stage1_base_plate();
     //translate([0,-55,30]) linear_extrude(height=3) stage1_top_plate();
