@@ -64,7 +64,7 @@ module diverter_plate()
     union() {
       translate([4,-extend_down]) square([8*pitch-4*2, 10+extend_down+extend_up]);
     }
-    for(i=[1:6]) {
+    for(i=[0:7]) {
       translate([0.5*pitch+i*pitch-(output_gap/2)-3,0]) {
 	square([3,10]);
       }
@@ -72,6 +72,12 @@ module diverter_plate()
 	square([3,10]);
       }
     }
+    for(x=[10,8*pitch-13])
+    translate([x,0]) {
+      square([3,3]);
+      translate([0,7]) square([3,3]);
+    }
+
   }
 }
 
