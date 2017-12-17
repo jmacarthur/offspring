@@ -143,12 +143,9 @@ module turn_guide(x)
 {
   scale([-1,1]) {
     translate([-x*stage1_output_pitch, -188+x*stage1_output_pitch*0.99]) difference() {
-      intersection() {
-	circle(r=9.5);
-	rotate(30) translate([0,-50]) square([50,50]);
-	translate([0,-50]) square([50,50]);
-      }
-
+      circle(r=9.5);
+      translate([-10,0]) square([20,10]);
+      rotate(30) translate([-10,-10]) square([10,20]);
       circle(r=8.5);
     }
   }
@@ -167,7 +164,7 @@ module stage2_plate() {
       // Holes at the bottom to secure wire to
       translate([centre_gap/2 + x*stage2_output_pitch,5]) circle(d=stage2_wire_diameter);
       // Arc-shaped hole which is a guide for the wire - no functional purpose
-      translate([1,220]) turn_guide(x);
+      if(x<16) translate([1,220]) turn_guide(x);
     }
     translate([15*stage2_output_pitch+5,5]) circle(d=3);
     translate([8*stage2_output_pitch+5,5]) circle(d=3);
