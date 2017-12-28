@@ -185,10 +185,13 @@ module stage2_plate() {
       // Arc-shaped hole which is a guide for the wire - no functional purpose
       if(x<16) translate([1,220]) turn_guide(x);
     }
-    translate([15*stage2_output_pitch+5,5]) circle(d=3);
-    translate([8*stage2_output_pitch+5,5]) circle(d=3);
-    translate([2*stage2_output_pitch+5,5]) circle(d=3);
+
+    // Holes to add screws to hold top and bottom plate together
+    translate([17*stage2_output_pitch+5,5]) circle(d=3);
+    translate([9*stage2_output_pitch-5,5]) circle(d=3);
+    translate([0*stage2_output_pitch+5,5]) circle(d=3);
     translate([17.5*stage1_output_pitch-5,155]) circle(d=3);
+    translate([12.5*stage2_output_pitch,80]) circle(d=3);
     // Holes for the support plate tab
     // We include holes for both support1x and support2x here. If the support plates
     // are equidistant from the centre, the holes will coincide. If not, one
