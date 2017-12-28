@@ -185,6 +185,8 @@ module stage2_plate() {
       // Arc-shaped hole which is a guide for the wire - no functional purpose
       if(x<16) translate([1,220]) turn_guide(x);
     }
+    // Single gap at the top to allow space for the stage1 separator screws
+    translate([16*stage1_output_pitch,157.5]) square([10,6]);
 
     // Holes to add screws to hold top and bottom plate together
     translate([17*stage2_output_pitch+5,5]) circle(d=3);
