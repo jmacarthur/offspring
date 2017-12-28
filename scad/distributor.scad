@@ -41,7 +41,7 @@ module input_riser()
 {
   difference() {
     union() {
-      translate([-10,0]) square([ball_bearing_diameter * 32 + 10, 13]);
+      translate([-10,0]) square([ball_bearing_diameter * 32 + 10, 15]);
       translate([-10,0]) square([10, 20]);
     }
     for(x=[0,slot_distance]) {
@@ -53,7 +53,7 @@ module input_riser()
 module channel_wall(notch)
 {
   difference() {
-    translate([-20,0]) square([ball_bearing_diameter * 32 + 60, 20]);
+    translate([-20,0]) square([ball_bearing_diameter * 32 + 60, 20 + (notch==1?0:5)]);
     for(x=[0,slot_distance]) {
       translate([x+5,5]) circle(d=3);
       translate([x+5,15]) circle(d=3);
@@ -67,6 +67,8 @@ module channel_wall(notch)
 	for(x=[0:32]) {
 	  translate([x*ball_bearing_diameter, 20]) circle(d=5);
 	}
+	translate([-14, 17]) square([9,5]);
+	translate([33*ball_bearing_diameter-2, 17]) square([9,5]);
       }
     }
     translate([ball_bearing_diameter*32+15,5]) circle(d=3);
@@ -78,7 +80,7 @@ module channel_wall(notch)
 
 module input_track() {
   difference() {
-    translate([-10,0]) square([50, 13]);
+    translate([-10,0]) square([50, 15]);
     translate([5,5]) circle(d=3);
     translate([25,5]) circle(d=3);
   }
@@ -298,10 +300,10 @@ module distributor_wires()
 // othogonal to the machine's frame.
 
 module functional_assembly() {
-    rotate([90,0,0]) linear_extrude(height=3) input_riser();
+  translate([0,0,10]) rotate([90,0,0]) linear_extrude(height=3) input_riser();
     translate([ball_bearing_diameter*32+10,0,0]) rotate([90,0,0]) linear_extrude(height=3) input_track();
-    translate([ball_bearing_diameter*32+50,-10-1.5,29]) rotate([0,90,0]) linear_extrude(height=3) input_pipe_holder();
-    translate([ball_bearing_diameter*32+45,-10-1.5,29]) rotate([0,90,0]) linear_extrude(height=3) input_pipe_holder();
+    translate([ball_bearing_diameter*32+50,-10-1.5,31]) rotate([0,90,0]) linear_extrude(height=3) input_pipe_holder();
+    translate([ball_bearing_diameter*32+45,-10-1.5,31]) rotate([0,90,0]) linear_extrude(height=3) input_pipe_holder();
 
     translate([0,-5,0]) rotate([90,0,0]) linear_extrude(height=3) channel_wall(1);
     translate([0,5,0]) rotate([90,0,0]) linear_extrude(height=3) channel_wall(0);
