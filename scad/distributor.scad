@@ -343,8 +343,14 @@ module support_assembly(){
     translate([support2x-3,0,0]) rotate([0,0,-90]) rotate([-90,0,0]) linear_extrude(height=3) support_bracket();
 }
 
-rotate([assembly_rotation,0,0]) functional_assembly();
-support_assembly();
+
+module distributor_assembly() {
+
+  rotate([assembly_rotation,0,0]) functional_assembly();
+  support_assembly();
+}
+
+distributor_assembly();
 
 // Marker for output row
 rotate([assembly_rotation,0,0]) translate([0,-52-3-3.5,-140]) sphere(d=6);
