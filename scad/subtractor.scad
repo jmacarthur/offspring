@@ -50,7 +50,15 @@ module input_guard_b_holes()
 module generic_support_plate()
 {
     left_edge = -8*subtractor_pitch_x;
-    polygon(points = [[left_edge,-220], [left_edge,-165], [left_edge+215/tan(slope),50], [10,15], [40,0], [40-220/tan(slope),-220]]);
+    /* Plate is a six-sided arrow shape */
+    /*     C
+          /|_E
+         / D/
+       B/  /
+        |_/
+       A  F
+    */
+    polygon(points = [[left_edge+10, -220+20], [left_edge,-165], [left_edge+215/tan(slope),50], [10,15], [40,0], [40-220/tan(slope)+5,-220+5]]);
 }
 
 // Layer 0 - Top plate
@@ -285,31 +293,42 @@ module reset_bar_2d() {
 
 // Example layout
 
-for(i=[0:7]) {
+module subtractor_assembly() {
+
   translate([0,0,3]) {
-      color([0.5,0.5,0.5]) linear_extrude(height=3) top_layer_2d();
+    color([0.5,0.5,0.5]) linear_extrude(height=3) top_layer_2d();
   }
 
-  if(1) {
-    translate([-i*subtractor_pitch_x, -i*subtractor_pitch_y,0]) {
-      color([1.0,0,0]) linear_extrude(height=3) rotate(rot) input_toggle_2d();
-      linear_extrude(height=3) input_guard_a_2d();
-      linear_extrude(height=3) input_guard_b_2d();
-    }
+  translate([0,0,-3]) {
+    color([0.5,0.5,0.5]) linear_extrude(height=3) io_support_layer_2d();
   }
-  translate([-i*subtractor_pitch_x, -i*subtractor_pitch_y,-6]) {
+
+  translate([0,0,-9]) {
+    color([0.5,0.5,0.5]) linear_extrude(height=3) back_layer_2d();
+  }
+
+  for(i=[0:7]) {
+
+    if(1) {
+      translate([-i*subtractor_pitch_x, -i*subtractor_pitch_y,0]) {
+	color([1.0,0,0]) linear_extrude(height=3) rotate(rot) input_toggle_2d();
+	linear_extrude(height=3) input_guard_a_2d();
+	linear_extrude(height=3) input_guard_b_2d();
+      }
+    }
+    translate([-i*subtractor_pitch_x, -i*subtractor_pitch_y,-6]) {
       color([0,1,0]) linear_extrude(height=3) rotate(rot) output_toggle_2d();
       linear_extrude(height=3) output_guard_a_2d();
-  }
-  translate([0,0,-3]) {
-      color([0.5,0.5,0.5]) linear_extrude(height=3) io_support_layer_2d();
-  }
-  translate([0,0,-9]) {
-      color([0.5,0.5,0.5]) linear_extrude(height=3) back_layer_2d();
-  }
-  translate([-i*subtractor_pitch_x, -i*subtractor_pitch_y,-12]) {
+    }
+    translate([-i*subtractor_pitch_x, -i*subtractor_pitch_y,-12]) {
       color([0.5,0.5,0.5]) linear_extrude(height=3) rotate(rot) reset_toggle_2d();
       if(i % 4 == 0) translate([0,0,-3]) color([1.0,1.0,0.5]) linear_extrude(height=3) reset_lever_2d(); // Reset lever is already rotated, as it's offset
+    }
   }
+
   translate([0,0,-12]) color([1.0,1.0,0.5]) linear_extrude(height=3) reset_bar_2d(); // Reset lever is already rotated, as it's offset
 }
+
+
+subtractor_assembly();
+translate([-8*pitch,-8*subtractor_pitch_y]) subtractor_assembly();
