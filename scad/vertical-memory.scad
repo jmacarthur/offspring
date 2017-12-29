@@ -52,14 +52,24 @@ module deflector()
  linear_extrude(height=10) deflector_section();
 }
 
-module row_selector() {
+module row_selector(selector_end) {
+  selector_length = (selector_end==1 ? 8*pitch+50+9 : 8*pitch+50-9);
+  selector_offset = (selector_end==1 ? -24: -18);
   difference() {
-    translate([-30,0]) square([column_spacing*columns+60, cell_height - 1]);
+    union() {
+      translate([selector_offset,0]) square([selector_length, cell_height - 1]);
+      h = (cell_height)/2;
+      translate([selector_length+selector_offset,0]) polygon(points=[[-1,0], [-1,h-1.5], [0,h-1.5], [3,h+1.5], [3,0], [0,0]]);
+      if(selector_end==1) translate([selector_offset,0]) polygon(points=[[-3,cell_height-1], [-3,h-1.5], [0,h+1.5], [1,h+1.5], [1,cell_height-1]]);
+      if(selector_end==0) {
+	translate([selector_offset-20,0]) square([30,cell_height-1]);
+      }
+    }
     for(col=[0:columns-1]) {
       translate([7+column_spacing*col,7]) deflector_section();
     }
-    translate([-30+5,cell_height/2]) circle(d=3, $fn=20);
-    translate([column_spacing*columns+25,cell_height/2]) circle(d=3, $fn=20);
+    if(selector_end==0) translate([-30,cell_height/2]) circle(d=3, $fn=20);
+    if(selector_end) translate([column_spacing*columns+25,cell_height/2]) circle(d=3, $fn=20);
   }
 }
 
@@ -106,23 +116,25 @@ module base_plate()
 
 /* -------------------- 3D assembly -------------------- */
 
-for(col=[0:columns-1]) {
-  translate([column_spacing*col, 0, 0]) {
-    union() {
-      for(row=[0:rows]) {
-	translate([0,cell_height*row,-3]) linear_extrude(height=6) memory_cell((row % 4==0) || row==rows);
+module cell_assembly() {
+  for(col=[0:columns-1]) {
+    translate([column_spacing*col, 0, 0]) {
+      union() {
+	for(row=[0:rows]) {
+	  translate([0,cell_height*row,-3]) linear_extrude(height=6) memory_cell((row % 4==0) || row==rows);
+	}
       }
     }
   }
 }
 
-translate([column_spacing,0,0])
-for(col=[0:columns-1])
-{
-  translate([memory_translate_x,0,3]) translate([0,cell_height*col, 0]) translate([0,0,-10]) deflector();
+module deflector_assembly() {
+  translate([column_spacing,0,0])
+    for(col=[0:columns-1])
+      {
+	translate([memory_translate_x,0,3]) translate([0,cell_height*col, 0]) translate([0,0,-10]) deflector();
+      }
 }
-
-translate([memory_translate_x-7,cell_height-7,-7]) linear_extrude(height=3) row_selector();
 
 module comb_assembly() {
   for(tb=[0:1]) {
@@ -135,15 +147,28 @@ module comb_assembly() {
   }
 }
 
-translate([-3,0,0]) comb_assembly();
-translate([column_width+joiner_extension+4+column_spacing*columns,0,0]) comb_assembly();
+module memory_cell_assembly(selector_end) {
+  cell_assembly();
+  deflector_assembly();
+  translate([memory_translate_x-7,cell_height-7,-7]) linear_extrude(height=3) row_selector(selector_end);
 
-translate([-column_width,0,-4]) rotate([0,-90,0]) linear_extrude(height=3) side_wall();
-translate([column_spacing*columns-4,0,-4]) rotate([0,-90,0]) linear_extrude(height=3) side_wall();
+  translate([-3,0,0]) comb_assembly();
+  translate([column_width+joiner_extension+4+column_spacing*columns,0,0]) comb_assembly();
 
-translate([0,0,5]) linear_extrude(height=3) base_plate();
+  translate([-column_width,0,-4]) rotate([0,-90,0]) linear_extrude(height=3) side_wall();
+  translate([column_spacing*columns-4,0,-4]) rotate([0,-90,0]) linear_extrude(height=3) side_wall();
 
-/* ---------- Example memory ---------- */
+  translate([0,0,5]) linear_extrude(height=3) base_plate();
+}
+
+memory_cell_assembly(1);
+
+// There is a gap of 50mm between paths in the centre of the machine in addition to the
+// usual 23mm pitch.
+color([0,0.7,0.7]) translate([-columns*pitch-50,0]) memory_cell_assembly(0);
+
+
+/* ---------- Example memory bearings ---------- */
 // Entering memory
 translate([0, 10.5]) circle(d=ball_bearing_diameter, $fn=20);
 
