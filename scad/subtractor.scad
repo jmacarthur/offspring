@@ -1,11 +1,8 @@
+// Subtractor - accumulator unit for millihertz 5
+
 include <globs.scad>;
 
 $fn = 20;
-
-// Subtractor - accumulator unit for millihertz 5
-
-subtractor_pitch_x = 23;
-subtractor_pitch_y = 27;
 
 slope = atan2(subtractor_pitch_y, subtractor_pitch_x);
 

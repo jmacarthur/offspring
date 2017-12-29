@@ -35,3 +35,7 @@ bowden_cable_inner_diameter = 2;
 bowden_cable_outer_diameter = 3.5;
 
 bowden_cable_travel = 10;
+
+/* Specific names for the subtractor */
+subtractor_pitch_x = pitch;
+subtractor_pitch_y = 27;
