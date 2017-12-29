@@ -2,7 +2,7 @@
 
 include <globs.scad>;
 
-columns = 8;
+columns = memory_columns_per_cell;
 rows = 8;
 column_width = 7; // Must be bigger than bb diameter
 cell_height = 14;
