@@ -15,7 +15,7 @@ channel_radius = (ball_bearing_diameter+1)/2;
 ejecting = 1;
 
 //channel_rotation = (ejecting==1? -45: 45);
-channel_rotation = 45-90*$t;
+channel_rotation = 45-80*$t;
 
 module rotating_input_channel() {
   difference() {
@@ -45,7 +45,7 @@ module part_circle() {
     // Centre axle hole
     translate([0,0,-1]) cylinder(d=3,h=5);
     // Cut off the bottom of the circle
-    rotate([0,0,-30]) translate([-50,-20,-1]) cube([100,15,11]);
+    rotate([0,0,-20]) translate([-50,-20,-1]) cube([100,15,11]);
 
     // Mounting hole which is also meant to act as an end stop
     rotate([0,0,45]) translate([-1.5,10,-1]) cylinder(d=2.5,h=5);
@@ -124,7 +124,7 @@ module stage1_distributor() {
 }
 
 module stage1_assembly() {
-  rotate([0,30,0]) {
+  rotate([0,20,0]) {
     translate([61,-0,-5]) {
       stage1_distributor();
       translate([0,0,5+ball_bearing_diameter/2+1]) {
