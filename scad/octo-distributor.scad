@@ -82,8 +82,8 @@ mounting_position_y2 = floor(channel_length/2+5);
 
 module mounting_holes() {
   // Mounting holes
-  translate([-4, mounting_position_y1, -1]) cylinder(d=3,h=plate_thickness+2);
-  translate([-4, -mounting_position_y1, -1]) cylinder(d=3,h=plate_thickness+2);
+  translate([-14, mounting_position_y1, -1]) cylinder(d=3,h=plate_thickness+2);
+  translate([-14, -mounting_position_y1, -1]) cylinder(d=3,h=plate_thickness+2);
   translate([-35, mounting_position_y2, -1]) cylinder(d=3,h=plate_thickness+2);
   translate([-35, -mounting_position_y2, -1]) cylinder(d=3,h=plate_thickness+2);
 }
@@ -92,9 +92,9 @@ module mounting_holes() {
 module top_plate() {
   difference() {
     union () {
-      translate([-45,-channel_length/2,0]) cube([40,channel_length, 3]);
-      translate([-40,-stage1_output_length/2-4,0]) cube([40,stage1_output_length+8, 3]);
-      translate([-8,-stage1_output_length/2-8,0]) cube([8,stage1_output_length+16, 3]);
+      translate([-45,-channel_length/2,0]) cube([35,channel_length, 3]);
+      translate([-40,-stage1_output_length/2-4,0]) cube([30,stage1_output_length+8, 3]);
+      translate([-18,-stage1_output_length/2-8,0]) cube([8,stage1_output_length+16, 3]);
     }
     mounting_holes();
   }
@@ -105,9 +105,9 @@ module stage1_distributor() {
     union() {
       // Joiner, which connects the distributor to the input wheels
       translate([-50,-channel_length/2-5,0]) cube([5, channel_length+10, plate_thickness]);
-      translate([-50,-channel_length/2,0]) cube([50, channel_length, plate_thickness]);
-      translate([-38,-stage1_output_length/2,0]) cube([38,stage1_output_length, plate_thickness]);
-      translate([-8,-stage1_output_length/2-8,0]) cube([8,stage1_output_length+16, plate_thickness]);
+      translate([-50,-channel_length/2,0]) cube([30, channel_length, plate_thickness]);
+      translate([-38,-stage1_output_length/2,0]) cube([28,stage1_output_length, plate_thickness]);
+      translate([-18,-stage1_output_length/2-8,0]) cube([8,stage1_output_length+16, plate_thickness]);
       translate([-35, -mounting_position_y2, 0]) cylinder(d=8,h=plate_thickness);
       translate([-35, mounting_position_y2, 0]) cylinder(d=8,h=plate_thickness);
 
@@ -134,7 +134,7 @@ module stage1_assembly() {
     translate([61,-0,-5]) {
       stage1_distributor();
       translate([0,0,5+ball_bearing_diameter/2+1]) {
-	//top_plate();
+	top_plate();
       }
     }
   }
