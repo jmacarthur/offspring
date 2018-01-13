@@ -16,12 +16,6 @@ stage2_output_pitch = 23;
 // allow the raiser to slide up and down:
 slot_distance = ball_bearing_diameter * 30;
 
-// centre_gap is a split in the middle of the two lanes
-// to join cells together (since we will likely have two
-// 16-bit memory cells, and 2 16-bit adders, there will
-// be a gap needed to join them.
-centre_gap = 50;
-
 // Zero X is the far edge of the first ball bearing on input.
 // Centre of the whole machine is between the two sets of 16
 // ball bearings.
