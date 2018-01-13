@@ -20,20 +20,18 @@ channel_rotation = 45-80*$t;
 module rotating_input_channel() {
   difference() {
     union() {
-      cylinder(d=8, h=3);
-      translate([0,0,channel_length-3]) cylinder(d=8,h=3);
-      translate([0,0,channel_length/2]) cylinder(d=8,h=3);
+      for(z = [0, channel_length-3, channel_length/2]) {
+	translate([0,0,z]) cylinder(d=8,h=3);
+	// End stops to stop the channel rotating too far
+	translate([0,-2.5,z]) cube([10,3,3]);
+      }
       difference() {
 	cube([10,12,channel_length]);
 	translate([7,7,-1]) cylinder(r=channel_radius,h=channel_length+10);
 	translate([7,7-channel_radius,-1]) cube([10,2*channel_radius, channel_length+10]);
       }
-      // End stops to stop the channel rotating too far
-      translate([7,-2.5,0]) cube([3,3,5]);
-      translate([7,-2.5,channel_length-5]) cube([3,3,5]);
-
       // Blanking plate to stop more data entering
-      translate([-6,5,0]) cube([10,7,3]);
+      translate([-7.8,5,0]) cube([10,7,3]);
     }
     translate([0,0,-1]) cylinder(d=3, h=110);
   }
@@ -46,16 +44,15 @@ module part_circle() {
     translate([0,0,-1]) cylinder(d=3,h=5);
     // Cut off the bottom of the circle
     rotate([0,0,-20]) translate([-50,-20,-1]) cube([100,15,11]);
-
-    // Mounting hole which is also meant to act as an end stop
-    rotate([0,0,45]) translate([-1.5,10,-1]) cylinder(d=2.5,h=5);
   }
 }
 
 module input_plate() {
   difference() {
-    part_circle();
-    rotate([0,0,45]) translate([7,7,-1]) cylinder(r=channel_radius,h=5);
+    union () {
+      part_circle();
+    }
+    rotate([0,0,45]) translate([7,7,-10]) cylinder(r=channel_radius,h=15);
   }
 }
 
@@ -63,14 +60,21 @@ module end_stop() {
   part_circle();
 }
 
-module input_assembly() {
+module input_fixed_assembly() {
   translate([0,channel_length/2,0])
   rotate([90,0,0]) {
-    rotate([0,0,channel_rotation]) rotating_input_channel();
     translate([0,0,channel_length+0.5]) end_stop();
     translate([0,0,-3.5]) input_plate();
   }
 }
+
+module input_rotating_assembly() {
+  translate([0,channel_length/2,0])
+  rotate([90,0,0]) {
+    rotate([0,0,channel_rotation]) rotating_input_channel();
+  }
+}
+
 
 plate_thickness = 5;
 mounting_position_y1 = floor(stage1_output_length/2+5);
@@ -99,6 +103,8 @@ module top_plate() {
 module stage1_distributor() {
   difference() {
     union() {
+      // Joiner, which connects the distributor to the input wheels
+      translate([-50,-channel_length/2-5,0]) cube([5, channel_length+10, plate_thickness]);
       translate([-50,-channel_length/2,0]) cube([50, channel_length, plate_thickness]);
       translate([-38,-stage1_output_length/2,0]) cube([38,stage1_output_length, plate_thickness]);
       translate([-8,-stage1_output_length/2-8,0]) cube([8,stage1_output_length+16, plate_thickness]);
@@ -128,12 +134,13 @@ module stage1_assembly() {
     translate([61,-0,-5]) {
       stage1_distributor();
       translate([0,0,5+ball_bearing_diameter/2+1]) {
-	top_plate();
+	//top_plate();
       }
     }
   }
 }
 
 
-input_assembly();
+input_fixed_assembly();
+input_rotating_assembly();
 stage1_assembly();
