@@ -12,7 +12,7 @@ follower_spacing = 14; // Spacing between each input follower
 $fn = 20;
 explode = 30; // Moves parts apart for easier inspection
 gap_adjust = 0.2; // In case of thicker than 3mm acrylic, make this positive to increase the width of the slots for the followers.
-
+memory_travel = 14;
 
 // Number of inputs. This was originally defined for 5 inputs;
 // other numbers may work, but are in development.
@@ -38,6 +38,18 @@ raise_position = n_positions-1-(input_data[0] + input_data[1]*2+input_data[2]*4+
 x_internal_space = follower_spacing*n_positions;
 
 thin = 0.1;
+
+// Extend_back moves the follower axis backwards, reducing the load on the enumerator rods.
+extend_back = 50;
+
+// How much does the single dropped lever rotate from orthogonal?
+drop_angle = atan2(10,85-18+extend_back+6);
+
+// Attachment distance is the distance from the axis of the follower to the point we should
+// attach to get the correct travel.
+attachment_distance = memory_travel / sin(drop_angle);
+
+
 
 // Enumerator rod - one per input; follower rods drop into the gaps in these.
 
@@ -76,12 +88,14 @@ for(s=[0:n_inputs-1]) {
 // The follower levers. These drop into the enumeration rods.
 module lever_2d()
 {
+  follower_length = attachment_distance+10;
   difference() {
     union() {
-      translate([-120,-5]) square(size=[120,10]);
+      translate([-follower_length,-5]) square(size=[follower_length,10]);
       circle(d=10);
     }
     circle(d=3);
+    translate([-attachment_distance,0,0]) circle(d=3);
   }
 }
 
@@ -94,10 +108,15 @@ module lever()
 
 color([0.5,0,0]) {
   for(i=[0:n_positions-1]) {
-    rot = (i==raise_position?7.5:0);
-    translate([10+follower_spacing*i+1,-18,30]) translate([0,85,5]) rotate([rot,0,0]) lever();
+    rot = (i==raise_position?drop_angle:0);
+    translate([10+follower_spacing*i+1,85-18+extend_back,35]) rotate([rot,0,0]) lever();
   }
 }
+
+// Display a marker at the attachment point
+
+translate([0, 85-18+extend_back-attachment_distance, 0]) sphere(d=5);
+
 
 module front_lifter_lever_2d() {
   len = 30;
