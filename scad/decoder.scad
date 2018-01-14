@@ -19,7 +19,7 @@ memory_travel = 14;
 n_inputs = 4;
 
 // Mid-section gap - allows a gap in between two sets of follower rods
-gap = 50;
+gap = 50; // 50 is entirely arbitrary to test with
 gap_position = 8;
 
 
@@ -28,7 +28,7 @@ input_data = [ 0, 1, 1, 1, 0 ];
 
 // Enumerator supports still have to be manually placed when changing n_inputs.
 // For n=5, we suggest [64,225].
-enumerator_support_x = [64, 135];
+enumerator_support_x = [64, 135, 230];
 
 // Calculated globals
 n_positions = pow(2,n_inputs);
@@ -213,8 +213,8 @@ module follower_slots(slotStart, slotHeight) {
 module lifter_bar_axles()
 {
     // Mounts for lifter bar
-    translate([45,-5]) circle(d=3);
-    translate([15+x_internal_space,-5]) circle(d=3);
+    translate([45,-4]) circle(d=3);
+    translate([x_internal_space+5,-4]) circle(d=3);
 }
 
 module enumerator_support_slots()
@@ -472,7 +472,7 @@ reinforcing_strip();
 
 translate([0,-9,10]) lifter_bar();
 translate([15,-6,10]) rotate([0,17,0]) front_lifter_lever();
-translate([x_internal_space-15,-6,10]) rotate([0,17,0]) back_lifter_lever();
+translate([x_internal_space-25,-6,10]) rotate([0,17,0]) back_lifter_lever();
 
 
 // The piece of backing plate this is meant to clamp or bolt onto
