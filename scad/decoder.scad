@@ -43,7 +43,7 @@ thin = 0.1;
 extend_back = 50;
 
 // How much does the single dropped lever rotate from orthogonal?
-drop_angle = atan2(10,85-18+extend_back+6);
+drop_angle = atan2(10,85-18+extend_back+12);
 
 // Attachment distance is the distance from the axis of the follower to the point we should
 // attach to get the correct travel.
@@ -81,7 +81,7 @@ module enumerator_rod(value, n_inputs, follower_spacing, travel, rise_height)
     positions = pow(2,n_inputs);
     for(i=[0:positions-1]) {
       align = (floor(i/pow(2,value)) % 2);
-      top_chamfer = 2;
+      top_chamfer = 1;
       bottom_chamfer = 2;
       translate([15+follower_spacing*i+actual_travel*align,10]) polygon(points = [[0,bottom_chamfer], [bottom_chamfer,0], [actual_travel+thin-bottom_chamfer,0], [actual_travel+thin,bottom_chamfer], [actual_travel+thin,rise_height+thin-top_chamfer], [actual_travel+thin+top_chamfer,rise_height+thin], [0-top_chamfer, rise_height+thin], [0, rise_height+thin-top_chamfer]]);
     }
@@ -203,6 +203,9 @@ module xBar_2d(slotStart, slotHeight, height) {
   difference() {
     union() {
       translate([0,-10]) square([xbar_length,height]);
+      // Tabs to connect to side plate
+      translate([20,height-10-thin]) square([10,3+thin]);
+      translate([100,height-10-thin]) square([10,3+thin]);
     }
     follower_slots(slotStart, slotHeight);
     lifter_bar_axles();
@@ -213,10 +216,10 @@ module xBar_2d(slotStart, slotHeight, height) {
     translate([-thin,-10-thin]) square([3+thin,20]);
     translate([xbar_length-3,30]) square([3+thin,15]);
     translate([xbar_length-3,-10-thin]) square([3+thin,20]);
+
   }
 }
 
-// An xBar is one of the 'input combs' which accomodate the followers.
 module top_plate_2d() {
   slotStart = 5;
   slotHeight = 20;
@@ -224,6 +227,9 @@ module top_plate_2d() {
   difference() {
     union() {
       translate([0,-50]) square([xbar_length,height]);
+      // Tabs to connect to side plate
+      translate([20,height-50-thin]) square([10,3+thin]);
+      translate([100,height-50-thin]) square([10,3+thin]);
     }
     follower_slots(slotStart, slotHeight);
     lifter_bar_axles();
@@ -262,7 +268,7 @@ module yComb_2d()
 {
   difference() {
     union() {
-      square([65,10]);
+      translate([-5,0,0]) square([75,10]);
       for(i=[0:4]) {
 	translate([13+i*10,9])
 	  square([7,11]);
@@ -311,7 +317,12 @@ module lifter_bar()
 module triangular_support_plate_2d()
 {
   difference() {
-    polygon(points = [[-3,0], [follower_axis_y+15,0], [follower_axis_y+15,0], [follower_axis_y+15,20], [50,50], [-3, 50]]);
+    union() {
+      polygon(points = [[-3,0], [follower_axis_y+15,0], [follower_axis_y+15,0], [follower_axis_y+15,20], [50,50], [-3, 50]]);
+      // Tabs for side plate
+      translate([10,-3]) square([10,3+thin]);
+      translate([50,-3]) square([10,3+thin]);
+    }
 
     // Cut tabs for x-bars
     translate([-3-thin, -thin]) square([3+thin,10+thin]);
@@ -342,7 +353,7 @@ for(side=[0:1]) {
   translate([3+side*(xbar_length-3),0,0]) triangular_support_plate();
 }
 
-translate([0,-3,10]) lifter_bar();
+translate([0,-9,10]) lifter_bar();
 translate([15,-6,10]) rotate([0,17,0]) front_lifter_lever();
 translate([x_internal_space-15,-6,10]) rotate([0,17,0]) back_lifter_lever();
 
