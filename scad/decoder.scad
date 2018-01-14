@@ -50,6 +50,7 @@ drop_angle = atan2(10,85-18+extend_back+6);
 attachment_distance = memory_travel / sin(drop_angle);
 enumerator_rod_travel = 7;
 
+distance_between_xbars = 55;
 
 // Enumerator rod - one per input; follower rods drop into the gaps in these.
 
@@ -116,10 +117,12 @@ module lever()
   linear_extrude(height=3) lever_2d();
 }
 
+follower_axis_y = 85-18+extend_back;
+
 color([0.5,0,0]) {
   for(i=[0:n_positions-1]) {
     rot = (i==raise_position?drop_angle:0);
-    translate([10+follower_spacing*i,85-18+extend_back,35]) rotate([rot,0,0]) lever();
+    translate([10+follower_spacing*i,follower_axis_y,35]) rotate([rot,0,0]) lever();
   }
 }
 
@@ -267,7 +270,7 @@ module yComb() {
 // Three bars which extend in the x dimension
 
 translate([0,-3,10]) topPlate();
-translate([0,52,10]) xBar(5,20,50); // Middle
+translate([0,-3+distance_between_xbars,10]) xBar(5,20,50); // Middle
 
 translate([enumerator_support_x1,-8,0]) yComb();
 translate([enumerator_support_x2,-8,0]) yComb();
@@ -289,6 +292,32 @@ module lifter_bar()
     lifter_bar_2d();
   }
 }
+
+module triangular_support_plate_2d()
+{
+  difference() {
+    polygon(points = [[-3,0], [follower_axis_y+10,0], [follower_axis_y+10,20], [50,50], [-3, 50]]);
+
+    // Cut tabs for x-bars
+    translate([-3-thin, -thin]) square([3+thin,10+thin]);
+    translate([-3-thin, 45-thin]) square([3+thin,10+thin]);
+    translate([distance_between_xbars-3, 10]) square([3,20]);
+
+    translate([follower_axis_y,15]) circle(d=3);
+    // Gaps for enumerator rods
+    for(rod=[0:4]) {
+      translate([2-gap_adjust/2+10*rod,20]) square([3+gap_adjust, 20]);
+    }
+  }
+}
+
+module triangular_support_plate()
+{
+  translate([0,0,50]) rotate([-90,0,90]) linear_extrude(height=3) triangular_support_plate_2d();
+}
+
+
+triangular_support_plate();
 
 translate([0,-3,10]) lifter_bar();
 translate([15,-6,10]) rotate([0,17,0]) front_lifter_lever();
