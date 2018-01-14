@@ -202,8 +202,8 @@ module yComb() {
 
 // Three bars which extend in the x dimension
 
-translate([0,45,0]) xBar(5,20,50); // Middle
-translate([0,100,0]) xBar(5,20,50); // On the input side
+translate([0,45,0]) xBar(5,20,100); // On the input side
+translate([0,100,0]) xBar(5,20,50); // Middle
 
 translate([enumerator_support_x1,40,-10]) yComb();
 translate([enumerator_support_x2,40,-10]) yComb();
