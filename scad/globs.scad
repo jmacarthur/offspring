@@ -44,6 +44,12 @@ memory_columns_per_cell = 16;
 // Memory cell height
 cell_height = 14;
 
+// Gap between two memory cell units - allows for the last useless row
+// in the cell and a gap of 20 to place a delay unit if necessary. The
+// delay unit may be needed to slow the ball bearing to avoid damage to
+// memory selectors.
+memory_unit_gap = cell_height+20;
+
 // centre_gap is a split in the middle of the two lanes
 // to join cells together (since we will likely have two
 // 16-bit memory cells, and 2 16-bit adders, there will

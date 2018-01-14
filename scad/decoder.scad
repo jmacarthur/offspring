@@ -19,7 +19,7 @@ memory_travel = 14;
 n_inputs = 4;
 
 // Mid-section gap - allows a gap in between two sets of follower rods
-gap = 50; // 50 is entirely arbitrary to test with
+gap = memory_unit_gap;
 gap_position = 8;
 
 

@@ -169,8 +169,7 @@ memory_cell_assembly(1);
 color([0,0.7,0.7]) translate([-columns*pitch-50,0,0]) memory_cell_assembly(0);
 
 // Memory cell below this one
-color([0.7,0.7,0.7]) translate([0,cell_height*(rows+1)+20,0]) memory_cell_assembly(0);
-
+color([0.7,0.7,0.7]) translate([0,cell_height*rows+memory_unit_gap,0]) memory_cell_assembly(0);
 
 
 /* ---------- Example memory bearings ---------- */
