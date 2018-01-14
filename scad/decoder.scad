@@ -348,6 +348,34 @@ module triangular_support_plate()
   translate([0,0,50]) rotate([-90,0,90]) linear_extrude(height=3) triangular_support_plate_2d();
 }
 
+module side_plate_2d() {
+  difference() {
+    square([xbar_length,100]);
+    // Tab holes
+    for(y=[-thin, distance_between_xbars]) {
+      edge = (y==-thin? 1:0);
+      translate([20,y]) square([10,3+thin*edge]);
+      translate([100,y]) square([10,3+thin*edge]);
+    }
+    for(x=[-thin, xbar_length-3]) {
+      translate([x,10+3]) square([3+thin,10]);
+      translate([x,50+3]) square([3+thin,10]);
+    }
+
+    // Slots to hold lever supports
+    for(rod=[0:4]) {
+      translate([10,5+10*rod]) square([5, 3]);
+      translate([35,5+10*rod]) square([15, 3]);
+    }
+  }
+}
+
+
+module side_plate() {
+  linear_extrude(height=3) side_plate_2d();
+}
+
+translate([0,-3,50]) side_plate();
 
 for(side=[0:1]) {
   translate([3+side*(xbar_length-3),0,0]) triangular_support_plate();
