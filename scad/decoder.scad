@@ -174,25 +174,45 @@ module back_lifter_lever() {
   }
 }
 
+module follower_slots(slotStart, slotHeight) {
+  for(i=[1:n_positions]) {
+    // Slots for followers
+    translate([i*follower_spacing-4-gap_adjust/2,5+slotStart]) square([3+gap_adjust,slotHeight]);
+  }
+}
 
-// An xBar is one of the 'input combs' which accomodate the followers.
-module xBar_2d(slotStart, slotHeight, height) {
-  difference() {
-    union() {
-      translate([0,-10]) square([20+x_internal_space,height]);
-    }
-    for(i=[1:n_positions]) {
-      // Slots for followers
-      translate([i*follower_spacing-4-gap_adjust/2,5+slotStart]) square([3+gap_adjust,slotHeight]);
-    }
-
+module lifter_bar_axles()
+{
     // Mounts for lifter bar
     translate([45,-5]) circle(d=3);
     translate([15+x_internal_space,-5]) circle(d=3);
+}
 
+module enumerator_support_slots()
+{
     // Slots to allow enumerator support
     translate([enumerator_support_x1,-11]) square([3,6]);
     translate([enumerator_support_x2,-11]) square([3,6]);
+}
+
+xbar_length = x_internal_space + 20;
+
+// An xBar is one of the 'input combs' which accomodate the followers.
+
+module xBar_2d(slotStart, slotHeight, height) {
+  difference() {
+    union() {
+      translate([0,-10]) square([xbar_length,height]);
+    }
+    follower_slots(slotStart, slotHeight);
+    lifter_bar_axles();
+    enumerator_support_slots();
+
+    // Tabs to connect to the triangular plate
+    translate([-thin,30]) square([3+thin,15]);
+    translate([-thin,-10-thin]) square([3+thin,20]);
+    translate([xbar_length-3,30]) square([3+thin,15]);
+    translate([xbar_length-3,-10-thin]) square([3+thin,20]);
   }
 }
 
@@ -203,20 +223,15 @@ module top_plate_2d() {
   height = 90;
   difference() {
     union() {
-      translate([0,-50]) square([20+x_internal_space,height]);
+      translate([0,-50]) square([xbar_length,height]);
     }
-    for(i=[1:n_positions]) {
-      // Slots for followers
-      translate([i*follower_spacing-4-gap_adjust/2,5+slotStart]) square([3+gap_adjust,slotHeight]);
-    }
+    follower_slots(slotStart, slotHeight);
+    lifter_bar_axles();
+    enumerator_support_slots();
 
-    // Mounts for lifter bar
-    translate([45,-5]) circle(d=3);
-    translate([15+x_internal_space,-5]) circle(d=3);
-
-    // Slots to allow enumerator support
-    translate([enumerator_support_x1,-11]) square([3,6]);
-    translate([enumerator_support_x2,-11]) square([3,6]);
+    // Tabs to connect to the triangular plate
+    translate([-thin,-5]) square([3+thin,35]);
+    translate([xbar_length-3,-5]) square([3+thin,35]);
   }
 }
 
@@ -317,7 +332,9 @@ module triangular_support_plate()
 }
 
 
-triangular_support_plate();
+for(side=[0:1]) {
+  translate([3+side*(xbar_length-3),0,0]) triangular_support_plate();
+}
 
 translate([0,-3,10]) lifter_bar();
 translate([15,-6,10]) rotate([0,17,0]) front_lifter_lever();
