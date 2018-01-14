@@ -341,7 +341,7 @@ module triangular_support_plate_2d()
 {
   difference() {
     union() {
-      polygon(points = [[-3,0], [follower_axis_y+15,0], [follower_axis_y+15,0], [follower_axis_y+15,20], [50,50], [-3, 50]]);
+      polygon(points = [[-3,0], [follower_axis_y+15,0], [follower_axis_y+15,0], [follower_axis_y+15,20], [50,50], [10,90], [0, 90], [0,50], [-3,50]]);
       // Tabs for side plate
       translate([10,-3]) square([10,3+thin]);
       translate([50,-3]) square([10,3+thin]);
@@ -363,6 +363,9 @@ module triangular_support_plate_2d()
     for(rod=[0:4]) {
       translate([2-gap_adjust/2+10*rod,20]) square([3+gap_adjust, 20]);
     }
+
+    // Gap for a reinforcing strip
+    translate([20,65]) square([3,20]);
   }
 }
 
@@ -444,6 +447,17 @@ for(input=[0:4]) {
 for(side=[0:1]) {
   translate([3+side*(xbar_length-3),0,0]) triangular_support_plate();
 }
+
+module reinforcing_strip()
+{
+  translate([-10,20,-35]) difference()
+    {
+      cube([300, 3, 20]);
+      translate([0,-thin,0]) cylinder
+    }
+}
+
+reinforcing_strip();
 
 translate([0,-9,10]) lifter_bar();
 translate([15,-6,10]) rotate([0,17,0]) front_lifter_lever();
