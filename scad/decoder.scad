@@ -52,6 +52,11 @@ enumerator_rod_travel = 7;
 
 distance_between_xbars = 55;
 
+xbar_length = x_internal_space + 20;
+
+mounting_holes_x = [ 20, xbar_length-20, floor(xbar_length/2) ];
+mounting_screw_diameter = 10;
+
 // Enumerator rod - one per input; follower rods drop into the gaps in these.
 
 // Parameters:
@@ -212,8 +217,6 @@ module enumerator_support_slots()
     translate([enumerator_support_x2,-11]) square([3,6]);
 }
 
-xbar_length = x_internal_space + 20;
-
 // An xBar is one of the 'input combs' which accomodate the followers.
 
 module xBar_2d(slotStart, slotHeight, height) {
@@ -257,13 +260,11 @@ module top_plate_2d() {
     translate([xbar_length-3,-5]) square([3+thin,35]);
 
     // Holes to mount the whole assembly to the base
-    translate([15,-35]) circle(d=6);
-    translate([xbar_length-15,-35]) circle(d=6);
-    bolt2_xpos = floor(xbar_length/2);
-    translate([bolt2_xpos,-35]) circle(d=6);
+    for(x=mounting_holes_x) {
+      translate([x,-35]) circle(d=mounting_screw_diameter);
+    }
   }
 }
-
 
 // Fixed sections (chassis)
 module xBar(slotStart, slotHeight, height) {
@@ -450,10 +451,13 @@ for(side=[0:1]) {
 
 module reinforcing_strip()
 {
+  // Intended to be steel or aluminum rather than acrylic.
   translate([-10,20,-35]) difference()
     {
-      cube([300, 3, 20]);
-      translate([0,-thin,0]) cylinder
+      cube([xbar_length+20, 3, 20]);
+      for(x=mounting_holes_x) {
+	translate([x+10,-35,10]) rotate([-90,0,0]) cylinder(d=mounting_screw_diameter,h=100);
+      }
     }
 }
 
@@ -468,7 +472,18 @@ translate([x_internal_space-15,-6,10]) rotate([0,17,0]) back_lifter_lever();
 //color([0.5,0.3,0]) translate([0,0,-200]) cube([300,18,200]);
 
 // False raised plate - to account for the mismatched output height to memory
-color([0.5,0.3,0]) translate([0,-50,-200]) cube([300,18,200]);
+color([0.5,0.3,0]) translate([0,-50,-200]) difference() {
+  cube([300,18,200]);
+  for(x=mounting_holes_x) {
+    translate([x,-50,200-25]) rotate([-90,0,0]) cylinder(d=mounting_screw_diameter,h=100);
+  }
+}
+
 
 // Drift attached behind plate to extend the height
-color([0.5,0.35,0]) translate([0,-32,-50]) cube([300,29,50]);
+color([0.5,0.35,0]) translate([0,-32,-50]) difference() {
+  cube([300,29,50]);
+  for(x=mounting_holes_x) {
+    translate([x,-50,50-25]) rotate([-90,0,0]) cylinder(d=mounting_screw_diameter,h=100);
+  }
+}
