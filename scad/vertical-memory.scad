@@ -160,7 +160,7 @@ module memory_cell_assembly(selector_end) {
   translate([-column_width,0,-4]) rotate([0,-90,0]) linear_extrude(height=3) side_wall();
   translate([column_spacing*columns-4,0,-4]) rotate([0,-90,0]) linear_extrude(height=3) side_wall();
 
-  translate([0,0,5]) linear_extrude(height=3) base_plate();
+  translate([0,0,3]) linear_extrude(height=3) base_plate();
 }
 
 memory_cell_assembly(1);

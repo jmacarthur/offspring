@@ -39,7 +39,7 @@ x_internal_space = follower_spacing*n_positions;
 
 thin = 0.1;
 
-// Extend_back moves the follower axis backwards, reducing the load on the enumerator rods.
+// Extend_back moves the follower axis backwards, reducing the load on the enumerator rod, but making the output higher.
 extend_back = 50;
 
 // How much does the single dropped lever rotate from orthogonal?
@@ -145,6 +145,8 @@ color([0.5,0,0]) {
 // Display a marker at the attachment point
 translate([0, follower_axis_y-attachment_distance, 0]) sphere(d=5);
 echo("Distance of output above plane is ",(follower_axis_y-attachment_distance));
+
+// Note that memory requires a height of only 13mm
 
 module front_lifter_lever_2d() {
   len = 30;
@@ -449,5 +451,10 @@ translate([x_internal_space-15,-6,10]) rotate([0,17,0]) back_lifter_lever();
 
 
 // The piece of backing plate this is meant to clamp or bolt onto
+//color([0.5,0.3,0]) translate([0,0,-200]) cube([300,18,200]);
 
-color([0.5,0.3,0]) translate([0,0,-200]) cube([300,18,200]);
+// False raised plate - to account for the mismatched output height to memory
+color([0.5,0.3,0]) translate([0,-50,-200]) cube([300,18,200]);
+
+// Drift attached behind plate to extend the height
+color([0.5,0.35,0]) translate([0,-32,-50]) cube([300,29,50]);
