@@ -5,7 +5,6 @@ include <globs.scad>;
 columns = memory_columns_per_cell;
 rows = 8;
 column_width = 7; // Must be bigger than bb diameter
-cell_height = 14;
 cell_drop = 1; // Amount of slope holding data in place
 
 deflector_angle = 10;
@@ -167,7 +166,11 @@ memory_cell_assembly(1);
 
 // There is a gap of 50mm between paths in the centre of the machine in addition to the
 // usual 23mm pitch.
-color([0,0.7,0.7]) translate([-columns*pitch-50,0]) memory_cell_assembly(0);
+color([0,0.7,0.7]) translate([-columns*pitch-50,0,0]) memory_cell_assembly(0);
+
+// Memory cell below this one
+color([0.7,0.7,0.7]) translate([0,cell_height*(rows+1)+20,0]) memory_cell_assembly(0);
+
 
 
 /* ---------- Example memory bearings ---------- */
@@ -179,6 +182,4 @@ translate([7 - ball_bearing_diameter/2, 8.7+cell_height]) color([1.0,0,0]) circl
 
 // In memory, idle
 translate([7 - ball_bearing_diameter/2, 11.8+cell_height*2]) color([1.0,0,0]) circle(d=ball_bearing_diameter, $fn=20);
-
-
 

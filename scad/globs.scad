@@ -41,6 +41,9 @@ subtractor_pitch_y = 27;
 
 memory_columns_per_cell = 16;
 
+// Memory cell height
+cell_height = 14;
+
 // centre_gap is a split in the middle of the two lanes
 // to join cells together (since we will likely have two
 // 16-bit memory cells, and 2 16-bit adders, there will
