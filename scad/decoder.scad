@@ -48,7 +48,7 @@ drop_angle = atan2(10,85-18+extend_back+6);
 // Attachment distance is the distance from the axis of the follower to the point we should
 // attach to get the correct travel.
 attachment_distance = memory_travel / sin(drop_angle);
-
+enumerator_rod_travel = 7;
 
 
 // Enumerator rod - one per input; follower rods drop into the gaps in these.
@@ -63,23 +63,35 @@ module enumerator_rod(value, n_inputs, follower_spacing, travel, rise_height)
   actual_travel = (travel==0)?follower_spacing/2:travel;
   difference() {
     union() {
-      square(size=[40+x_internal_space,10]);
-      // End stops
-      translate([0,0]) square(size=[15,15]);
-      positions = pow(2,n_inputs);
+      square(size=[40+x_internal_space,10+rise_height]);
+
+      // Bumps which interrupt the follower lever
+      /*positions = pow(2,n_inputs);
       for(i=[0:positions-1]) {
 	align = 1-(floor(i/pow(2,value)) % 2);
-	translate([20+follower_spacing*i+actual_travel*align,10-thin]) square(size=[actual_travel+thin,rise_height+thin]);
+	if(align==0) {
+	  translate([20+follower_spacing*i+actual_travel*align-2,10-thin]) square(size=[actual_travel+thin,rise_height+thin]);
+	} else {
+	  translate([20+follower_spacing*i+actual_travel,10-thin]) square(size=[actual_travel+thin-2,rise_height+thin]);
+	}
       }
+      */
+    }
+    positions = pow(2,n_inputs);
+    for(i=[0:positions-1]) {
+      align = (floor(i/pow(2,value)) % 2);
+      top_chamfer = 2;
+      bottom_chamfer = 2;
+      translate([15+follower_spacing*i+actual_travel*align,10]) polygon(points = [[0,bottom_chamfer], [bottom_chamfer,0], [actual_travel+thin-bottom_chamfer,0], [actual_travel+thin,bottom_chamfer], [actual_travel+thin,rise_height+thin-top_chamfer], [actual_travel+thin+top_chamfer,rise_height+thin], [0-top_chamfer, rise_height+thin], [0, rise_height+thin-top_chamfer]]);
     }
   }
 }
 
 // Place enumeration rods on 3D diagram
 for(s=[0:n_inputs-1]) {
-  translate([-15+input_data[s]*5,5+10*s,10])
+  translate([-12+1.5-enumerator_rod_travel/2+input_data[s]*enumerator_rod_travel,5+10*s,10])
     rotate([90,0,0]) linear_extrude(height=3) {
-    enumerator_rod(s, n_inputs, follower_spacing, 5, 10);
+    enumerator_rod(s, n_inputs, follower_spacing, 0, 10);
   }
 }
 
@@ -107,7 +119,7 @@ module lever()
 color([0.5,0,0]) {
   for(i=[0:n_positions-1]) {
     rot = (i==raise_position?drop_angle:0);
-    translate([10+follower_spacing*i+1,85-18+extend_back,35]) rotate([rot,0,0]) lever();
+    translate([10+follower_spacing*i,85-18+extend_back,35]) rotate([rot,0,0]) lever();
   }
 }
 
@@ -168,7 +180,7 @@ module xBar_2d(slotStart, slotHeight, height) {
     }
     for(i=[1:n_positions]) {
       // Slots for followers
-      translate([i*follower_spacing-3-gap_adjust/2,5+slotStart]) square([3+gap_adjust,slotHeight]);
+      translate([i*follower_spacing-4-gap_adjust/2,5+slotStart]) square([3+gap_adjust,slotHeight]);
     }
 
     // Mounts for lifter bar
@@ -192,7 +204,7 @@ module top_plate_2d() {
     }
     for(i=[1:n_positions]) {
       // Slots for followers
-      translate([i*follower_spacing-3-gap_adjust/2,5+slotStart]) square([3+gap_adjust,slotHeight]);
+      translate([i*follower_spacing-4-gap_adjust/2,5+slotStart]) square([3+gap_adjust,slotHeight]);
     }
 
     // Mounts for lifter bar
