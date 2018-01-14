@@ -56,10 +56,9 @@ attachment_distance = memory_travel / sin(drop_angle);
 // Parameters:
 // Value - the bit value, 0 for bit 0, 1 for bit 1 (2^1), 2 for bit 2 (2^2) etc.
 // follower_spacing - the spacing between the rods intended to drop into this.
-// stagger - alters the position of the input connector; use this to make some rods longer to stagger input.
 // travel - the amount each rods travels. Rods travel inwards - 0 is out of the unit, 1 is in.
 // rise_height - how much each bump is raised above the baseline.
-module enumerator_rod(value, n_inputs, follower_spacing, stagger, travel, rise_height)
+module enumerator_rod(value, n_inputs, follower_spacing, travel, rise_height)
 {
   actual_travel = (travel==0)?follower_spacing/2:travel;
   difference() {
@@ -73,7 +72,6 @@ module enumerator_rod(value, n_inputs, follower_spacing, stagger, travel, rise_h
 	translate([20+follower_spacing*i+actual_travel*align,10-thin]) square(size=[actual_travel+thin,rise_height+thin]);
       }
     }
-    translate([7,5+stagger]) circle(d=3); // To attach to the input
   }
 }
 
@@ -81,7 +79,7 @@ module enumerator_rod(value, n_inputs, follower_spacing, stagger, travel, rise_h
 for(s=[0:n_inputs-1]) {
   translate([-15+input_data[s]*5,5+10*s,10])
     rotate([90,0,0]) linear_extrude(height=3) {
-    enumerator_rod(s, n_inputs, follower_spacing, 0, 5, 10);
+    enumerator_rod(s, n_inputs, follower_spacing, 5, 10);
   }
 }
 
