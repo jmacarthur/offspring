@@ -32,6 +32,10 @@ module rotating_input_channel() {
       }
       // Blanking plate to stop more data entering
       translate([-7.8,5,0]) cube([10,7,3]);
+
+      // Control lever
+      translate([5,12,0]) cube([5,10,3]);
+
     }
     translate([0,0,-1]) cylinder(d=3, h=110);
   }
@@ -47,17 +51,32 @@ module part_circle() {
   }
 }
 
+module buttress() {
+  translate([0,-5,5]) linear_extrude(height=3) polygon(points=[[0,0], [10,0], [0,19]]);
+}
+
 module input_plate() {
   difference() {
     union () {
       part_circle();
+      rotate([0,0,-20]) translate([5,-5,-7]) cube([11,3,10]);
+      translate([0,0,0]) rotate([20,90,0]) buttress();
     }
     rotate([0,0,45]) translate([7,7,-10]) cylinder(r=channel_radius,h=15);
+    translate([15,3,-4]) rotate([90,0,-20]) cylinder(d=3,h=15);
+
   }
 }
 
 module end_stop() {
-  part_circle();
+  difference() {
+    union() {
+      part_circle();
+      rotate([0,0,-20]) translate([-16,-5,0]) cube([11,3,11]);
+      translate([0,0,3]) rotate([-20,-90,0]) buttress();
+    }
+    translate([-12,3,7]) rotate([90,0,-20]) cylinder(d=3,h=10);
+  }
 }
 
 module input_fixed_assembly() {
@@ -104,7 +123,7 @@ module stage1_distributor() {
   difference() {
     union() {
       // Joiner, which connects the distributor to the input wheels
-      translate([-50,-channel_length/2-5,0]) cube([5, channel_length+10, plate_thickness]);
+      translate([-50,-channel_length/2-3,0]) cube([5, channel_length+6, plate_thickness]);
       translate([-50,-channel_length/2,0]) cube([30, channel_length, plate_thickness]);
       translate([-38,-stage1_output_length/2,0]) cube([28,stage1_output_length, plate_thickness]);
       translate([-18,-stage1_output_length/2-8,0]) cube([8,stage1_output_length+16, plate_thickness]);
@@ -134,13 +153,24 @@ module stage1_assembly() {
     translate([61,-0,-5]) {
       stage1_distributor();
       translate([0,0,5+ball_bearing_diameter/2+1]) {
-	top_plate();
+	//top_plate();
       }
     }
   }
 }
 
 
+
+// Assembled layout
+/*
 input_fixed_assembly();
 input_rotating_assembly();
 stage1_assembly();
+*/
+
+// Printing layout
+rotate([0,-20,0]) {
+input_fixed_assembly();
+stage1_assembly();
+}
+
