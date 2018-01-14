@@ -375,7 +375,48 @@ module side_plate() {
   linear_extrude(height=3) side_plate_2d();
 }
 
+lever_balance_length = 70; // Distance between mounting holes
+module input_lever_2d() {
+  lever_length = lever_balance_length+20;
+  difference() {
+    translate([-lever_length/2,-5]) square([lever_length,10]);
+    translate([-lever_balance_length/2,0]) circle(d=3);
+    translate([lever_balance_length/2,0]) circle(d=3);
+    circle(d=3); // Centre axis
+  }
+}
+
+module input_lever() {
+  rotate([90,90,0]) linear_extrude(height=3) input_lever_2d();
+}
+
+module lever_support_2d() {
+  support_length = 67;
+  difference() {
+    union() {
+      polygon(points = [ [0,-5], [0,5], [support_length-15,5], [support_length,-5], [support_length,-5]]);
+      translate([55,-11]) square([10,6+thin]);
+      translate([60,-5-6]) square([6,3]);
+      translate([56,-5]) circle(d=12);
+      translate([25,-8]) square([5,10]);
+      circle(d=10);
+    }
+    circle(d=3); // Top axis
+  }
+}
+
+module lever_support() {
+  rotate([90,0,0]) linear_extrude(height=3) lever_support_2d();
+}
+
+lever_rotation = atan2(enumerator_rod_travel, (lever_balance_length/2));
+
 translate([0,-3,50]) side_plate();
+
+for(input=[0:4]) {
+  translate([-15,2+10*input,55+3]) rotate([0,-lever_rotation*input_data[input],0]) input_lever();
+  translate([-15,5+10*input,55+3+explode]) lever_support();
+}
 
 for(side=[0:1]) {
   translate([3+side*(xbar_length-3),0,0]) triangular_support_plate();
