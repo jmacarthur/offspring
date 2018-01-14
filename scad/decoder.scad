@@ -164,6 +164,31 @@ module xBar_2d(slotStart, slotHeight, height) {
   }
 }
 
+// An xBar is one of the 'input combs' which accomodate the followers.
+module top_plate_2d() {
+  slotStart = 5;
+  slotHeight = 20;
+  height = 90;
+  difference() {
+    union() {
+      translate([0,-50]) square([20+x_internal_space,height]);
+    }
+    for(i=[1:n_positions]) {
+      // Slots for followers
+      translate([i*follower_spacing-3-gap_adjust/2,5+slotStart]) square([3+gap_adjust,slotHeight]);
+    }
+
+    // Mounts for lifter bar
+    translate([45,-5]) circle(d=3);
+    translate([15+x_internal_space,-5]) circle(d=3);
+
+    // Slots to allow enumerator support
+    translate([enumerator_support_x1,-11]) square([3,6]);
+    translate([enumerator_support_x2,-11]) square([3,6]);
+  }
+}
+
+
 // Fixed sections (chassis)
 module xBar(slotStart, slotHeight, height) {
   color([0.5,0.5,0.5]) {
@@ -180,7 +205,7 @@ module topPlate() {
     translate([0,3,0])
     rotate([90,0,0])
     linear_extrude(height=3) {
-      xBar_2d(5, 20, 50);
+      top_plate_2d();
     }
   }
 }
