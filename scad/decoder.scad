@@ -66,7 +66,7 @@ module enumerator_rod(value, n_inputs, follower_spacing, travel, rise_height)
   difference() {
     union() {
       translate([-extend_above, 0])
-	square(size=[40+x_internal_space+extend_above,10+rise_height]);
+	square(size=[50+x_internal_space+extend_above,10+rise_height]);
 
       // Bumps which interrupt the follower lever
       /*positions = pow(2,n_inputs);
@@ -92,6 +92,14 @@ module enumerator_rod(value, n_inputs, follower_spacing, travel, rise_height)
       translate([0,8]) circle(d=3);
       translate([0,12]) circle(d=3);
       translate([-1.5,8]) square([3,4]);
+    }
+
+    // T-slot to chain to next decoder
+    translate([x_internal_space+40,0]) {
+      nut_width = 5.5;
+      nut_height = 2.5;
+      translate([0,10-nut_width/2]) square([nut_height, nut_width]);
+      translate([-5,10-1.5]) square([20, 3]);
     }
   }
 }
