@@ -18,6 +18,11 @@ memory_travel = 14;
 // other numbers may work, but are in development.
 n_inputs = 4;
 
+// Mid-section gap - allows a gap in between two sets of follower rods
+gap = 50;
+gap_position = 8;
+
+
 // The position of the input rods for this rendering
 input_data = [ 0, 1, 1, 1, 0 ];
 
@@ -35,7 +40,7 @@ raise_position = n_positions-1-(input_data[0] + input_data[1]*2+input_data[2]*4+
 		     input_data[3]*8+input_data[4]*16);
 
 // The spacing between internal plates (i.e. the gap between them plus one thickness)
-x_internal_space = follower_spacing*n_positions;
+x_internal_space = follower_spacing*n_positions+gap;
 
 thin = 0.1;
 
@@ -57,8 +62,11 @@ xbar_length = x_internal_space + 20;
 mounting_holes_x = [ 20, xbar_length-20, floor(xbar_length/2) ];
 mounting_screw_diameter = 10;
 
-// Enumerator rod - one per input; follower rods drop into the gaps in these.
 
+
+
+
+// Enumerator rod - one per input; follower rods drop into the gaps in these.
 // Parameters:
 // Value - the bit value, 0 for bit 0, 1 for bit 1 (2^1), 2 for bit 2 (2^2) etc.
 // follower_spacing - the spacing between the rods intended to drop into this.
@@ -90,7 +98,7 @@ module enumerator_rod(value, n_inputs, follower_spacing, travel, rise_height)
       align = (floor(i/pow(2,value)) % 2);
       top_chamfer = 1;
       bottom_chamfer = 2;
-      translate([15+follower_spacing*i+actual_travel*align,10]) polygon(points = [[0,bottom_chamfer], [bottom_chamfer,0], [actual_travel+thin-bottom_chamfer,0], [actual_travel+thin,bottom_chamfer], [actual_travel+thin,rise_height+thin-top_chamfer], [actual_travel+thin+top_chamfer,rise_height+thin], [0-top_chamfer, rise_height+thin], [0, rise_height+thin-top_chamfer]]);
+      translate([15+follower_spacing*i+actual_travel*align+(i>=gap_position?gap:0),10]) polygon(points = [[0,bottom_chamfer], [bottom_chamfer,0], [actual_travel+thin-bottom_chamfer,0], [actual_travel+thin,bottom_chamfer], [actual_travel+thin,rise_height+thin-top_chamfer], [actual_travel+thin+top_chamfer,rise_height+thin], [0-top_chamfer, rise_height+thin], [0, rise_height+thin-top_chamfer]]);
     }
     // Slot to allow connection to levers
     translate([-1,0]) {
@@ -143,7 +151,7 @@ follower_axis_y = 85-18+extend_back;
 color([0.5,0,0]) {
   for(i=[0:n_positions-1]) {
     rot = (i==raise_position?drop_angle:0);
-    translate([10+follower_spacing*i,follower_axis_y,35]) rotate([rot,0,0]) lever();
+    translate([10+follower_spacing*i+(i>=gap_position?gap:0),follower_axis_y,35]) rotate([rot,0,0]) lever();
   }
 }
 
@@ -199,7 +207,7 @@ module back_lifter_lever() {
 module follower_slots(slotStart, slotHeight) {
   for(i=[1:n_positions]) {
     // Slots for followers
-    translate([i*follower_spacing-4-gap_adjust/2,5+slotStart]) square([3+gap_adjust,slotHeight]);
+    translate([i*follower_spacing-4-gap_adjust/2+(i>gap_position?gap:0),5+slotStart]) square([3+gap_adjust,slotHeight]);
   }
 }
 
