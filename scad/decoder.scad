@@ -8,7 +8,7 @@
 include <globs.scad>;
 
 // Various parameters
-follower_spacing = 10; // Spacing between each input follower
+follower_spacing = 14; // Spacing between each input follower
 $fn = 20;
 explode = 30; // Moves parts apart for easier inspection
 gap_adjust = 0.2; // In case of thicker than 3mm acrylic, make this positive to increase the width of the slots for the followers.
@@ -95,7 +95,7 @@ module lever()
 color([0.5,0,0]) {
   for(i=[0:n_positions-1]) {
     rot = (i==raise_position?7.5:0);
-    translate([10+10*i+1,-18,20]) translate([0,85,5]) rotate([rot,0,0]) lever();
+    translate([10+follower_spacing*i+1,-18,20]) translate([0,85,5]) rotate([rot,0,0]) lever();
   }
 }
 
@@ -151,7 +151,7 @@ module xBar_2d(slotStart, slotHeight, height) {
     }
     for(i=[1:n_positions]) {
       // Slots for followers
-      translate([i*10+1-gap_adjust/2,5+slotStart]) square([3+gap_adjust,slotHeight]);
+      translate([i*follower_spacing-3-gap_adjust/2,5+slotStart]) square([3+gap_adjust,slotHeight]);
     }
 
     // Mounts for lifter bar
