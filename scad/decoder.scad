@@ -28,8 +28,7 @@ input_data = [ 0, 1, 1, 1, 0 ];
 
 // Enumerator supports still have to be manually placed when changing n_inputs.
 // For n=5, we suggest [64,225].
-enumerator_support_x1 = 64;
-enumerator_support_x2 = 135;
+enumerator_support_x = [64, 135];
 
 // Calculated globals
 n_positions = pow(2,n_inputs);
@@ -221,8 +220,8 @@ module lifter_bar_axles()
 module enumerator_support_slots()
 {
     // Slots to allow enumerator support
-    translate([enumerator_support_x1,-11]) square([3,6]);
-    translate([enumerator_support_x2,-11]) square([3,6]);
+  for(x = enumerator_support_x)
+    translate([x,-11]) square([3,6]);
 }
 
 // An xBar is one of the 'input combs' which accomodate the followers.
@@ -325,8 +324,8 @@ module yComb() {
 translate([0,-3,10]) topPlate();
 translate([0,-3+distance_between_xbars,10]) xBar(5,20,50); // Middle
 
-translate([enumerator_support_x1,-8,0]) yComb();
-translate([enumerator_support_x2,-8,0]) yComb();
+for(x=enumerator_support_x)
+  translate([x,-8,0]) yComb();
 
 module lifter_bar_2d()
 {
