@@ -67,7 +67,7 @@ module enumerator_rod(value, n_inputs, follower_spacing, stagger, travel, rise_h
 
 // Place enumeration rods on 3D diagram
 for(s=[0:n_inputs-1]) {
-  translate([-15+input_data[s]*5,5+10*s,0])
+  translate([-15+input_data[s]*5,5+10*s,10])
     rotate([90,0,0]) linear_extrude(height=3) {
     enumerator_rod(s, n_inputs, follower_spacing, 0, 5, 10);
   }
@@ -95,7 +95,7 @@ module lever()
 color([0.5,0,0]) {
   for(i=[0:n_positions-1]) {
     rot = (i==raise_position?7.5:0);
-    translate([10+follower_spacing*i+1,-18,20]) translate([0,85,5]) rotate([rot,0,0]) lever();
+    translate([10+follower_spacing*i+1,-18,30]) translate([0,85,5]) rotate([rot,0,0]) lever();
   }
 }
 
@@ -237,11 +237,11 @@ module yComb() {
 
 // Three bars which extend in the x dimension
 
-translate([0,-3,0]) topPlate();
-translate([0,52,0]) xBar(5,20,50); // Middle
+translate([0,-3,10]) topPlate();
+translate([0,52,10]) xBar(5,20,50); // Middle
 
-translate([enumerator_support_x1,-8,-10]) yComb();
-translate([enumerator_support_x2,-8,-10]) yComb();
+translate([enumerator_support_x1,-8,0]) yComb();
+translate([enumerator_support_x2,-8,0]) yComb();
 
 module lifter_bar_2d()
 {
@@ -261,9 +261,9 @@ module lifter_bar()
   }
 }
 
-translate([0,-3,0]) lifter_bar();
-translate([15,-6,0]) rotate([0,17,0]) front_lifter_lever();
-translate([x_internal_space-15,-6,0]) rotate([0,17,0]) back_lifter_lever();
+translate([0,-3,10]) lifter_bar();
+translate([15,-6,10]) rotate([0,17,0]) front_lifter_lever();
+translate([x_internal_space-15,-6,10]) rotate([0,17,0]) back_lifter_lever();
 
 
 // The piece of backing plate this is meant to clamp or bolt onto
