@@ -78,7 +78,7 @@ module lever_2d()
 {
   difference() {
     union() {
-      translate([-85.5,-5]) square(size=[85.5,10]);
+      translate([-120,-5]) square(size=[120,10]);
       circle(d=10);
     }
     circle(d=3);
