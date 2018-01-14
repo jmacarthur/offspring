@@ -332,7 +332,7 @@ module lifter_bar_2d()
   difference() {
     square([30+x_internal_space,10]);
     translate([17,5]) circle(d=3);
-    translate([x_internal_space-13,5]) circle(d=3);
+    translate([x_internal_space-23,5]) circle(d=3);
   }
 }
 
