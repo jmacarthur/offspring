@@ -147,13 +147,6 @@ module lever()
 
 follower_axis_y = 85-18+extend_back;
 
-color([0.5,0,0]) {
-  for(i=[0:n_positions-1]) {
-    rot = (i==raise_position?drop_angle:0);
-    translate([10+follower_spacing*i+(i>=gap_position?gap:0),follower_axis_y,35]) rotate([rot,0,0]) lever();
-  }
-}
-
 // Display a marker at the attachment point
 translate([0, follower_axis_y-attachment_distance, 0]) sphere(d=5);
 echo("Distance of output above plane is ",(follower_axis_y-attachment_distance));
@@ -319,14 +312,6 @@ module yComb() {
   }
 }
 
-// Three bars which extend in the x dimension
-
-translate([0,-3,10]) topPlate();
-translate([0,-3+distance_between_xbars,10]) xBar(5,20,50); // Middle
-
-for(x=enumerator_support_x)
-  translate([x,-8,0]) yComb();
-
 module lifter_bar_2d()
 {
   difference() {
@@ -445,38 +430,37 @@ module lever_support() {
 
 lever_rotation = atan2(enumerator_rod_travel, (lever_balance_length/2));
 
-translate([0,-3,50]) side_plate();
-
-for(input=[0:4]) {
-  color([0.5,0.5,1.0]) translate([-15,2+10*input,55+3]) rotate([0,-lever_rotation*input_data[input],0]) input_lever();
-  translate([-15,5+10*input,55+3]) lever_support();
-}
-
-for(side=[0:1]) {
-  translate([3+side*(xbar_length-3),0,0]) triangular_support_plate();
-}
-
-module reinforcing_strip()
-{
-  // Intended to be steel or aluminum rather than acrylic.
-  translate([-10,20,-35]) difference()
-    {
-      cube([xbar_length+20, 3, 20]);
-      for(x=mounting_holes_x) {
-	translate([x+10,-35,10]) rotate([-90,0,0]) cylinder(d=mounting_screw_diameter,h=100);
-      }
+module decoder_assembly() {
+  color([0.5,0,0]) {
+    for(i=[0:n_positions-1]) {
+      rot = (i==raise_position?drop_angle:0);
+      translate([10+follower_spacing*i+(i>=gap_position?gap:0),follower_axis_y,35]) rotate([rot,0,0]) lever();
     }
+  }
+
+  // Three bars which extend in the x dimension
+
+  translate([0,-3,10]) topPlate();
+  translate([0,-3+distance_between_xbars,10]) xBar(5,20,50); // Middle
+  
+  for(x=enumerator_support_x)
+    translate([x,-8,0]) yComb();
+
+  translate([0,-3,50]) side_plate();
+
+  for(input=[0:4]) {
+    color([0.5,0.5,1.0]) translate([-15,2+10*input,55+3]) rotate([0,-lever_rotation*input_data[input],0]) input_lever();
+    translate([-15,5+10*input,55+3]) lever_support();
+  }
+
+  for(side=[0:1]) {
+    translate([3+side*(xbar_length-3),0,0]) triangular_support_plate();
+  }
+
+  translate([0,-9,10]) lifter_bar();
+  translate([15,-6,10]) rotate([0,17,0]) front_lifter_lever();
+  translate([x_internal_space-25,-6,10]) rotate([0,17,0]) back_lifter_lever();
 }
-
-reinforcing_strip();
-
-translate([0,-9,10]) lifter_bar();
-translate([15,-6,10]) rotate([0,17,0]) front_lifter_lever();
-translate([x_internal_space-25,-6,10]) rotate([0,17,0]) back_lifter_lever();
-
-
-// The piece of backing plate this is meant to clamp or bolt onto
-//color([0.5,0.3,0]) translate([0,0,-200]) cube([300,18,200]);
 
 // False raised plate - to account for the mismatched output height to memory
 color([0.5,0.3,0]) translate([0,-50,-200]) difference() {
@@ -494,3 +478,18 @@ color([0.5,0.35,0]) translate([0,-32,-50]) difference() {
     translate([x,-50,50-25]) rotate([-90,0,0]) cylinder(d=mounting_screw_diameter,h=100);
   }
 }
+
+module reinforcing_strip()
+{
+  // Intended to be steel or aluminum rather than acrylic.
+  translate([-10,20,-35]) difference()
+    {
+      cube([xbar_length+20, 3, 20]);
+      for(x=mounting_holes_x) {
+	translate([x+10,-35,10]) rotate([-90,0,0]) cylinder(d=mounting_screw_diameter,h=100);
+      }
+    }
+}
+
+reinforcing_strip();
+

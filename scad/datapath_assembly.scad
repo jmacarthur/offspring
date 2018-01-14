@@ -3,6 +3,7 @@ use <subtractor.scad>;
 use <vertical-memory.scad>;
 use <distributor.scad>;
 use <diverter.scad>;
+use <decoder.scad>;
 
 
 
@@ -19,9 +20,9 @@ translate([-16*pitch-50,680,0]) cube([800,50,30]);
 
 for(i=[0:3]) {
 
-  translate([0,200+i*150,0]) {
+  translate([0,200+i*(8*cell_height+memory_unit_gap),0]) {
     rotate([180,0,0]) memory_cell_assembly(1);
-    color([0,0.7,0.7]) translate([-memory_columns_per_cell*pitch-50,0]) rotate([180,0,0])  memory_cell_assembly(0);
+    color([0,0.7,0.7]) translate([-memory_columns_per_cell*pitch-50,0,0]) rotate([180,0,0])  memory_cell_assembly(0);
   }
  }
 
@@ -53,3 +54,5 @@ translate([343,-150,0]) {
 }
 
 translate([0,-700,0]) regenerator_block();
+
+translate([600,630,-60]) rotate([0,90,0]) rotate([0,0,-90]) decoder_assembly();
