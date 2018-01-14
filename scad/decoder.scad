@@ -62,9 +62,11 @@ distance_between_xbars = 55;
 module enumerator_rod(value, n_inputs, follower_spacing, travel, rise_height)
 {
   actual_travel = (travel==0)?follower_spacing/2:travel;
+  extend_above = 10;
   difference() {
     union() {
-      square(size=[40+x_internal_space,10+rise_height]);
+      translate([-extend_above, 0])
+	square(size=[40+x_internal_space+extend_above,10+rise_height]);
 
       // Bumps which interrupt the follower lever
       /*positions = pow(2,n_inputs);
@@ -84,6 +86,12 @@ module enumerator_rod(value, n_inputs, follower_spacing, travel, rise_height)
       top_chamfer = 1;
       bottom_chamfer = 2;
       translate([15+follower_spacing*i+actual_travel*align,10]) polygon(points = [[0,bottom_chamfer], [bottom_chamfer,0], [actual_travel+thin-bottom_chamfer,0], [actual_travel+thin,bottom_chamfer], [actual_travel+thin,rise_height+thin-top_chamfer], [actual_travel+thin+top_chamfer,rise_height+thin], [0-top_chamfer, rise_height+thin], [0, rise_height+thin-top_chamfer]]);
+    }
+    // Slot to allow connection to levers
+    translate([-1,0]) {
+      translate([0,8]) circle(d=3);
+      translate([0,12]) circle(d=3);
+      translate([-1.5,8]) square([3,4]);
     }
   }
 }
@@ -375,7 +383,7 @@ module side_plate() {
   linear_extrude(height=3) side_plate_2d();
 }
 
-lever_balance_length = 70; // Distance between mounting holes
+lever_balance_length = 75; // Distance between mounting holes
 module input_lever_2d() {
   lever_length = lever_balance_length+20;
   difference() {
@@ -414,8 +422,8 @@ lever_rotation = atan2(enumerator_rod_travel, (lever_balance_length/2));
 translate([0,-3,50]) side_plate();
 
 for(input=[0:4]) {
-  translate([-15,2+10*input,55+3]) rotate([0,-lever_rotation*input_data[input],0]) input_lever();
-  translate([-15,5+10*input,55+3+explode]) lever_support();
+  color([0.5,0.5,1.0]) translate([-15,2+10*input,55+3]) rotate([0,-lever_rotation*input_data[input],0]) input_lever();
+  translate([-15,5+10*input,55+3]) lever_support();
 }
 
 for(side=[0:1]) {
