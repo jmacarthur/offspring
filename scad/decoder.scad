@@ -311,14 +311,20 @@ module lifter_bar()
 module triangular_support_plate_2d()
 {
   difference() {
-    polygon(points = [[-3,0], [follower_axis_y+10,0], [follower_axis_y+10,20], [50,50], [-3, 50]]);
+    polygon(points = [[-3,0], [follower_axis_y+15,0], [follower_axis_y+15,0], [follower_axis_y+15,20], [50,50], [-3, 50]]);
 
     // Cut tabs for x-bars
     translate([-3-thin, -thin]) square([3+thin,10+thin]);
     translate([-3-thin, 45-thin]) square([3+thin,10+thin]);
     translate([distance_between_xbars-3, 10]) square([3,20]);
 
+    // Main axle hole
     translate([follower_axis_y,15]) circle(d=3);
+
+    // Mounting holes for a plate to support the axle
+    translate([follower_axis_y+10,15]) circle(d=3);
+    translate([follower_axis_y-10,15]) circle(d=3);
+
     // Gaps for enumerator rods
     for(rod=[0:4]) {
       translate([2-gap_adjust/2+10*rod,20]) square([3+gap_adjust, 20]);
