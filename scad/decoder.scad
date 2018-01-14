@@ -229,3 +229,8 @@ module lifter_bar()
 translate([0,45,0]) lifter_bar();
 translate([15,42,0]) rotate([0,17,0]) front_lifter_lever();
 translate([x_internal_space-15,42,0]) rotate([0,17,0]) back_lifter_lever();
+
+
+// The piece of backing plate this is meant to clamp or bolt onto
+
+color([0.5,0.3,0]) translate([0,0,-200]) cube([200,18,200]);
