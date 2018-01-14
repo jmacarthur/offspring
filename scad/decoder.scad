@@ -135,9 +135,8 @@ color([0.5,0,0]) {
 }
 
 // Display a marker at the attachment point
-
-translate([0, 85-18+extend_back-attachment_distance, 0]) sphere(d=5);
-
+translate([0, follower_axis_y-attachment_distance, 0]) sphere(d=5);
+echo("Distance of output above plane is ",(follower_axis_y-attachment_distance));
 
 module front_lifter_lever_2d() {
   len = 30;
@@ -246,6 +245,12 @@ module top_plate_2d() {
     // Tabs to connect to the triangular plate
     translate([-thin,-5]) square([3+thin,35]);
     translate([xbar_length-3,-5]) square([3+thin,35]);
+
+    // Holes to mount the whole assembly to the base
+    translate([15,-35]) circle(d=6);
+    translate([xbar_length-15,-35]) circle(d=6);
+    bolt2_xpos = floor(xbar_length/2);
+    translate([bolt2_xpos,-35]) circle(d=6);
   }
 }
 
@@ -437,4 +442,4 @@ translate([x_internal_space-15,-6,10]) rotate([0,17,0]) back_lifter_lever();
 
 // The piece of backing plate this is meant to clamp or bolt onto
 
-color([0.5,0.3,0]) translate([0,0,-200]) cube([200,18,200]);
+color([0.5,0.3,0]) translate([0,0,-200]) cube([300,18,200]);
