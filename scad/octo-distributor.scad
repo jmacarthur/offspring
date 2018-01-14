@@ -140,18 +140,20 @@ module stage1_distributor() {
 
     }
     mounting_holes();
+    channel_depth = plate_thickness+1;
+
     for(i=[0:7]) {
       input_y = ball_bearing_diameter*i-7*ball_bearing_diameter/2;
       output_y = stage1_output_pitch*i-7*stage1_output_pitch/2;
-      translate([-51,input_y,plate_thickness]) rotate([0,90,0]) cylinder(d=ball_bearing_diameter, h=21);
-      translate([-30,input_y,plate_thickness]) rotate([0,90,0]) sphere(d=ball_bearing_diameter);
-      translate([-20,output_y,plate_thickness]) rotate([0,90,0]) cylinder(d=ball_bearing_diameter, h=21);
-      translate([-20,output_y,plate_thickness]) rotate([0,90,0]) sphere(d=ball_bearing_diameter);
+      translate([-51,input_y,channel_depth]) rotate([0,90,0]) cylinder(d=ball_bearing_diameter, h=21);
+      translate([-30,input_y,channel_depth]) rotate([0,90,0]) sphere(d=ball_bearing_diameter);
+      translate([-20,output_y,channel_depth]) rotate([0,90,0]) cylinder(d=ball_bearing_diameter, h=21);
+      translate([-20,output_y,channel_depth]) rotate([0,90,0]) sphere(d=ball_bearing_diameter);
       pipe_dx = 10;
       pipe_dy = output_y-input_y;
       pipe_length = sqrt(pipe_dx*pipe_dx + pipe_dy*pipe_dy);
       pipe_rotate = atan2(pipe_dy, pipe_dx);
-      translate([-30,ball_bearing_diameter*i-7*ball_bearing_diameter/2,plate_thickness]) rotate([0,0,pipe_rotate]) rotate([0,90,0]) cylinder(d=ball_bearing_diameter, h=pipe_length);
+      translate([-30,ball_bearing_diameter*i-7*ball_bearing_diameter/2,channel_depth]) rotate([0,0,pipe_rotate]) rotate([0,90,0]) cylinder(d=ball_bearing_diameter, h=pipe_length);
     }
   }
 }
