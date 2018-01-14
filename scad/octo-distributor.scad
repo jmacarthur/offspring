@@ -35,9 +35,12 @@ module rotating_input_channel() {
 
       // Control lever
       translate([5,12,0]) cube([5,10,3]);
+      translate([7.5,22,0]) cylinder(d=6,h=3);
 
     }
     translate([0,0,-1]) cylinder(d=3, h=110);
+    // Hole in control lever
+    translate([7.5,22,-1]) cylinder(d=3,h=5);
   }
 }
 
@@ -62,9 +65,14 @@ module input_plate() {
       rotate([0,0,-20]) translate([5,-5,-7]) cube([11,3,10]);
       translate([0,0,0]) rotate([20,90,0]) buttress();
     }
-    rotate([0,0,45]) translate([7,7,-10]) cylinder(r=channel_radius,h=15);
-    translate([15,3,-4]) rotate([90,0,-20]) cylinder(d=3,h=15);
+    // Input hole
+    rotate([0,0,45]) {
+      translate([7,7,-10]) cylinder(r=channel_radius,h=15);
+      translate([7,7-channel_radius,-10]) cube([2,channel_radius*2,15]);
+      translate([9,7,-10]) cylinder(r=channel_radius,h=15);
+    }
 
+    translate([15,3,-4]) rotate([90,0,-20]) cylinder(d=3,h=15);
   }
 }
 
