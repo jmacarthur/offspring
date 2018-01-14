@@ -15,6 +15,8 @@ memory_translate_x = -7;
 joiner_extension = 2; // If nonzero, this allows a strip to connect all memory cells vertically.
 column_spacing = (column_width*3+joiner_extension);
 
+copper = [1.0,0.5,0.0];
+
 module memory_cell(hole)
 {
   difference() {
@@ -53,7 +55,7 @@ module deflector()
 }
 
 module row_selector(selector_end) {
-  selector_length = (selector_end==1 ? 8*pitch+50+9 : 8*pitch+50-9);
+  selector_length = (selector_end==1 ? columns*pitch+50+9 : columns*pitch+50-9);
   selector_offset = (selector_end==1 ? -24: -18);
   difference() {
     union() {
@@ -132,7 +134,7 @@ module deflector_assembly() {
   translate([column_spacing,0,0])
     for(col=[0:columns-1])
       {
-	translate([memory_translate_x,0,3]) translate([0,cell_height*col, 0]) translate([0,0,-10]) deflector();
+	translate([memory_translate_x,0,3]) translate([column_spacing*(col-1), cell_height, 0]) color(copper) translate([0,0,-10]) deflector();
       }
 }
 
@@ -143,7 +145,7 @@ module comb_assembly() {
 
   // Row combs
   for(r=[0:rows]) {
-    translate([-10-column_width+2,cell_height*r+6,-10]) color([1.0,0.5,0.0]) linear_extrude(height=13) comb_section();
+    translate([-10-column_width+2,cell_height*r+6,-10]) color(copper) linear_extrude(height=13) comb_section();
   }
 }
 
