@@ -8,7 +8,7 @@ use <decoder.scad>;
 
 
 // Plywood board
-translate([-600,-1200,-30]) color([0.7,0.5,0.0]) cube([1200,2400,18]);
+translate([-600,-800,-30]) color([0.2,0.2,0.2,0.5]) cube([1050,2000,18]);
 
 
 translate([-140,950,0]) rotate([-90,0,0]) distributor_assembly();
@@ -55,4 +55,4 @@ translate([343,-150,0]) {
 
 translate([0,-700,0]) regenerator_block();
 
-translate([600,630,-60]) rotate([0,90,0]) rotate([0,0,-90]) decoder_assembly();
+translate([450,630,-60]) rotate([0,90,0]) rotate([0,0,-90]) decoder_assembly();
