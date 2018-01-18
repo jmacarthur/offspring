@@ -80,17 +80,8 @@ module enumerator_rod(value, n_inputs, follower_spacing, travel, rise_height)
       translate([-extend_above, 0])
 	square(size=[50+x_internal_space+extend_above,10+rise_height]);
 
-      // Bumps which interrupt the follower lever
-      /*positions = pow(2,n_inputs);
-      for(i=[0:positions-1]) {
-	align = 1-(floor(i/pow(2,value)) % 2);
-	if(align==0) {
-	  translate([20+follower_spacing*i+actual_travel*align-2,10-thin]) square(size=[actual_travel+thin,rise_height+thin]);
-	} else {
-	  translate([20+follower_spacing*i+actual_travel,10-thin]) square(size=[actual_travel+thin-2,rise_height+thin]);
-	}
-      }
-      */
+      // Stops which prevent the rod travelling too far
+      translate([2,-2]) square([5,24]);
     }
     positions = pow(2,n_inputs);
     for(i=[0:positions-1]) {
@@ -113,6 +104,10 @@ module enumerator_rod(value, n_inputs, follower_spacing, travel, rise_height)
       translate([0,10-nut_width/2]) square([nut_height, nut_width]);
       translate([-5,10-1.5]) square([20, 3]);
     }
+
+    // Slot which can be used to make an end stop
+    translate([x_internal_space+34,18]) square([0.8,5]);
+
   }
 }
 
