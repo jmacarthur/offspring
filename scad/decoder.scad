@@ -214,7 +214,7 @@ module enumerator_support_slots()
 {
     // Slots to allow enumerator support
   for(x = enumerator_support_x)
-    translate([x,-11]) square([3,6]);
+    translate([x,-15]) square([3,10]);
 }
 
 // An xBar is one of the 'input combs' which accomodate the followers.
@@ -222,7 +222,7 @@ module enumerator_support_slots()
 module xBar_2d(slotStart, slotHeight, height) {
   difference() {
     union() {
-      translate([0,-10]) square([xbar_length,height]);
+      translate([0,-20]) square([xbar_length,height+10]);
       // Tabs to connect to side plate
       translate([20,height-10-thin]) square([10,3+thin]);
       translate([100,height-10-thin]) square([10,3+thin]);
