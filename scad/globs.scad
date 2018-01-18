@@ -39,7 +39,7 @@ bowden_cable_travel = 10;
 subtractor_pitch_x = pitch;
 subtractor_pitch_y = 27;
 
-memory_columns_per_cell = 16;
+memory_columns_per_cell = 8;
 
 // Memory cell height
 cell_height = 14;

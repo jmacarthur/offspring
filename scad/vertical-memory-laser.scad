@@ -11,13 +11,17 @@ kerf = 0.1;
 
 offset(r=kerf) {
 
-  for(col=[0:7]) {
+  for(col=[0:3]) {
     union() {
       for(row=[0:rows]) {
 	translate([col*30+10,row*cell_height]) memory_cell((row % 4==0) || row==rows);
 	translate([col*30+15,row*cell_height+14]) rotate(180) memory_cell((row % 4==0) || row==rows);
       }
     }
+  }
+
+  for(col=[0:7]) {
+    translate([col*12+115,0,0]) cell_riser();
   }
 
   translate([20,130]) base_plate();
@@ -29,7 +33,7 @@ offset(r=kerf) {
 
   translate([240,5]) side_wall();
   translate([255,5]) side_wall();
-  translate([265,270]) rotate(90) strip_tester();
 }
 
 
+translate([-10,-10,3]) color([0.5,0.5,0.5,0.4]) cube([297,420,3]);

@@ -34,6 +34,22 @@ module memory_cell(hole)
   }
 }
 
+module truncated_memory_cell(hole)
+{
+  difference() {
+    polygon(points = [[column_width,cell_drop], [column_width,0], [column_width*2 + joiner_extension,0],
+		      [column_width*2+joiner_extension, cell_height], // Bottom right corner
+		      [column_width*2, cell_height], [column_width*2, cell_height-1],
+		      [column_width, cell_height - column_width*sin(deflector_angle)-1],
+		      ]); // 0.5 adjustment following testing
+    // Alignment hole
+    if(hole) {
+      translate([column_width*1.5,5]) circle(d=3, $fn=20);
+    }
+  }
+}
+
+
 /* Deflector is made from Albion alloys brass strip, 6mm x 0.8mm as sold.
    it's actually 6.3mm wide and 0.8mm thick. */
 strip_height = 6.3 - 0.25 + 0.2; // Values adjusted by laser-cut grading plate.
@@ -115,6 +131,17 @@ module base_plate()
   }
 }
 
+/* A 'cheat' to make laser cutting faster - include a plate under each memory row
+   which raises the cell up rather than just doubling up the pattern. */
+module cell_riser()
+{
+  union() {
+    for(row=[0:rows]) {
+      translate([0,row*cell_height,0]) truncated_memory_cell((row % 4==0) || row==rows);
+    }
+  }
+}
+
 /* -------------------- 3D assembly -------------------- */
 
 module cell_assembly() {
@@ -122,7 +149,7 @@ module cell_assembly() {
     translate([column_spacing*col, 0, 0]) {
       union() {
 	for(row=[0:rows]) {
-	  translate([0,cell_height*row,-3]) linear_extrude(height=6) memory_cell((row % 4==0) || row==rows);
+	  translate([0,cell_height*row,-3]) linear_extrude(height=3) memory_cell((row % 4==0) || row==rows);
 	}
       }
     }
@@ -150,6 +177,9 @@ module comb_assembly() {
 
 module memory_cell_assembly(selector_end) {
   cell_assembly();
+  for(col=[0:columns]) {
+    translate([col*column_spacing,0,0]) linear_extrude(height=3) cell_riser();
+  }
   deflector_assembly();
   translate([memory_translate_x-7,cell_height-7,-7]) linear_extrude(height=3) row_selector(selector_end);
 
