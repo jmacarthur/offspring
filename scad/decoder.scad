@@ -358,7 +358,7 @@ module triangular_support_plate_2d()
     }
 
     // Gap for a reinforcing strip
-    translate([20,65]) square([3,20]);
+    translate([20,65]) square([20,20]);
   }
 }
 
@@ -492,4 +492,4 @@ module reinforcing_strip()
 }
 
 reinforcing_strip();
-
+decoder_assembly();
