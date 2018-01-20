@@ -170,7 +170,7 @@ module front_lifter_lever() {
 
 module back_lifter_lever_2d() {
   len = 30;
-  leg_angle = 45;
+  leg_angle = 100;
   difference() {
     union() {
       square([len,10]);
