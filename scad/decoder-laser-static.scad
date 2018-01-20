@@ -20,3 +20,4 @@ for(i=[0:2])
 
 translate([0,0,-3]) color([0.5,0.5,0.5,0.5]) cube([420,297,3]);
 
+for(i=[0:3]) translate([380,i*25+10]) axle_reinforcer_2d();

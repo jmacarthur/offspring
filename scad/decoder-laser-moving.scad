@@ -11,7 +11,7 @@ for(s=[0:n_inputs-1]) {
     enumerator_rod(s, n_inputs, follower_spacing, 0, 10);
 }
 
-for(s=[0:11]) {
+for(s=[0:9]) {
   translate([200, 110+15*s]) lever_2d();
 }
 
@@ -22,11 +22,13 @@ for(i=[0:4]) {
 
 translate([400,5]) rotate(90) lifter_bar_2d();
 translate([220,210]) front_lifter_lever_2d();
-translate([220,225]) back_lifter_lever_2d();
+translate([270,215]) rotate(90) back_lifter_lever_2d();
 
 for(i=[0:4]) {
   translate([340,110+15*i]) input_lever_2d();
  }
 
 translate([0,0,-3]) color([0.5,0.5,0.5,0.5]) cube([420,297,3]);
+
+translate([5,270]) axle_reinforcing_strip_2d();
 

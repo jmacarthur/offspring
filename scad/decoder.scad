@@ -354,6 +354,10 @@ module triangular_support_plate_2d()
 
     // Gap for a reinforcing strip
     translate([20,65]) square([20,20]);
+
+    // slot for the axle reinforcer
+    translate([follower_axis_y-1.5,-1]) square([3,4]);
+
   }
 }
 
@@ -437,7 +441,7 @@ module decoder_assembly() {
 
   translate([0,-3,10]) topPlate();
   translate([0,-3+distance_between_xbars,10]) xBar(5,20,50); // Middle
-  
+
   for(x=enumerator_support_x)
     translate([x,-8,0]) yComb();
 
@@ -486,5 +490,47 @@ module reinforcing_strip()
     }
 }
 
+axle_reinforce_x = [ follower_spacing*5, follower_spacing*13+gap, follower_spacing*8+gap/2 ];
+
+module axle_reinforcing_strip_2d()
+{
+  difference() {
+    square([xbar_length+20, 20]);
+    // cutouts for triangular supports
+    translate([10,-1]) square([3,4]);
+    translate([xbar_length+7,-1]) square([3,4]);
+    // Cutouts for the axle supports
+    for(x=axle_reinforce_x) {
+      translate([x,-1]) square([3,4]);
+    }
+  }
+}
+module axle_reinforcing_strip()
+{
+  rotate([90,0,0]) linear_extrude(height=3) axle_reinforcing_strip_2d();
+}
+
+module axle_reinforcer_2d()
+{
+  height=15;
+  difference() {
+    union() {
+      translate([-5,0]) square([10,height]);
+      circle(d=10);
+    }
+    circle(d=3);
+    translate([-1.5,height-3]) square([3,4]);
+  }
+}
+
+module axle_reinforcer()
+{
+  rotate([0,0,90]) rotate([90,0,0]) linear_extrude(height=3) axle_reinforcer_2d();
+}
+
+translate([-10,follower_axis_y+1.5,44]) axle_reinforcing_strip();
+for(x=axle_reinforce_x) {
+  translate([x-10,follower_axis_y,44-14+20-15]) axle_reinforcer();
+}
 reinforcing_strip();
 decoder_assembly();
