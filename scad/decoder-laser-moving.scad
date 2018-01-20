@@ -16,6 +16,10 @@ for(s=[0:11]) {
 }
 
 
+for(i=[0:4]) {
+  translate([220,120+i*20]) lever_support_2d();
+}
+
 
 translate([0,0,-3]) color([0.5,0.5,0.5,0.5]) cube([420,297,3]);
 
