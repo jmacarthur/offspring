@@ -125,6 +125,7 @@ module base_plate()
     for(col=[0:columns-1]) {
       translate([column_width*1.5+column_spacing*col,0]) {
 	translate([0,5])circle(d=3, $fn=20);
+	translate([0,5+4*cell_height])circle(d=3, $fn=20);
 	translate([0,5+rows*cell_height])circle(d=3, $fn=20);
       }
     }
