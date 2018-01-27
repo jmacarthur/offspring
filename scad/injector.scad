@@ -11,7 +11,6 @@ slot_distance = ball_bearing_diameter * 30;
 
 columns = 8;
 centre_x = ball_bearing_diameter*16;
-stage2_half_width = stage2_total_width/2;
 
 module injector_tray() {
   difference() {
@@ -24,7 +23,7 @@ module injector_tray() {
 
 module injector_tray_support() {
   difference() {
-    polygon(points = [ [-10,-5], [-10,5], [0,15], [10,5], [10,-5] ]);
+    polygon(points = [ [-5,-5], [-5,5], [0,15], [5,5], [5,-5] ]);
     translate([-1.5,5]) square([3,10]);
     circle(d=3);
   }
@@ -67,15 +66,29 @@ module end_plate() {
     }
   }
 }
+
+module input_plate()
+{
+  slot_width = 3.4;
+  difference() {
+    square([columns*pitch+20,30]);
+    for(x=[1:columns])
+      translate([x*pitch-slot_width/2, -1]) square([slot_width, 16]);
+  }
+}
+
 /* -------------------- 3D Assembly -------------------- */
 
 module injector_assembly() {
-  tray_rotate = 45;
+  tray_rotate = -45;
   translate([0,-30,25]) {
     rotate([-tray_rotate,0,0]) {
       rotate([0,0,0]) rotate([90,0,0]) translate([0,5,-1.5]) linear_extrude(height=3) injector_tray();
       rotate([90,0,0]) rotate([0,90,0]) translate([0,0,10]) linear_extrude(height=3) injector_tray_support();
       rotate([90,0,0]) rotate([0,90,0]) translate([0,0,columns*pitch-10]) linear_extrude(height=3) injector_tray_support();
+    }
+    rotate([-45,0,0]) {
+    color([1.0,0,0]) rotate([90,0,0]) translate([0,13,-6]) linear_extrude(height=3) input_plate();
     }
   }
   for(x=[1:columns]) {
@@ -96,6 +109,6 @@ translate([-310,-70,-180]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(heig
 
 // Output bearings in the injector assembly, for reference
 for(x=[1:columns]) {
-  translate([10 + pitch*x, -70,-130]) sphere(d=ball_bearing_diameter);
+		   //  translate([10 + pitch*x, -70,-130]) sphere(d=ball_bearing_diameter);
 }
 
