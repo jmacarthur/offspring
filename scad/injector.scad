@@ -13,10 +13,13 @@ columns = 8;
 centre_x = ball_bearing_diameter*16;
 
 module injector_tray() {
+       offset = 8;
+       hole_diameter = ball_bearing_diameter*1.1;
   difference() {
     square([columns*pitch+20,20]);
     for(x=[1:columns]) {
-      translate([x*pitch,0]) polygon(points = [[-pitch/2,20],[pitch/2,20], [0,10]]);
+      translate([x*pitch,0]) polygon(points = [[-pitch/2+offset,20],[pitch/2+offset,20], [hole_diameter/2,15], [-hole_diameter/2,15]]);
+      translate([x*pitch,15]) circle(d=hole_diameter);
     }
   }
 }
@@ -80,7 +83,7 @@ module input_plate()
 /* -------------------- 3D Assembly -------------------- */
 
 module injector_assembly() {
-  tray_rotate = -45;
+  tray_rotate = 45;
   translate([0,-30,25]) {
     rotate([-tray_rotate,0,0]) {
       rotate([0,0,0]) rotate([90,0,0]) translate([0,5,-1.5]) linear_extrude(height=3) injector_tray();
