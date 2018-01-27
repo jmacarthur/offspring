@@ -11,12 +11,16 @@ slot_distance = ball_bearing_diameter * 30;
 
 columns = 8;
 centre_x = ball_bearing_diameter*16;
-
+support_positions = [10, columns*pitch-10];
 module injector_tray() {
-       offset = 8;
-       hole_diameter = ball_bearing_diameter*1.1;
+  offset = 8;
+  hole_diameter = ball_bearing_diameter*1.1;
   difference() {
-    square([columns*pitch+20,20]);
+    translate([0,-3])
+      square([columns*pitch+20,23]);
+    for(z=support_positions) {
+      translate([z,-4]) square([3,4]);
+    }
     for(x=[1:columns]) {
       translate([x*pitch,0]) polygon(points = [[-pitch/2+offset,20],[pitch/2+offset,20], [hole_diameter/2,15], [-hole_diameter/2,15]]);
       translate([x*pitch,15]) circle(d=hole_diameter);
@@ -80,6 +84,16 @@ module input_plate()
   }
 }
 
+module separator_plate()
+{
+	difference() {
+	square([columns*pitch+20,23]);
+	for(z=support_positions) {
+	  translate([z-0.5,15]) square([4,10]);
+	}
+	}
+}
+
 /* -------------------- 3D Assembly -------------------- */
 
 module injector_assembly() {
@@ -87,13 +101,15 @@ module injector_assembly() {
   translate([0,-30,25]) {
     rotate([-tray_rotate,0,0]) {
       rotate([0,0,0]) rotate([90,0,0]) translate([0,5,-1.5]) linear_extrude(height=3) injector_tray();
-      rotate([90,0,0]) rotate([0,90,0]) translate([0,0,10]) linear_extrude(height=3) injector_tray_support();
-      rotate([90,0,0]) rotate([0,90,0]) translate([0,0,columns*pitch-10]) linear_extrude(height=3) injector_tray_support();
+      for(z=support_positions) {
+        rotate([90,0,0]) rotate([0,90,0]) translate([0,0,z]) linear_extrude(height=3) injector_tray_support();
+      }
     }
     rotate([-45,0,0]) {
     color([1.0,0,0]) rotate([90,0,0]) translate([0,13,-6]) linear_extrude(height=3) input_plate();
     }
   }
+  translate([0,-25-3,0]) rotate([90,0,0]) linear_extrude(height=3) separator_plate();
   for(x=[1:columns]) {
     translate([x*pitch-1.5,13,42]) rotate([0,90,0]) linear_extrude(height=3) injector_crank();
   }
@@ -112,6 +128,6 @@ translate([-310,-70,-180]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(heig
 
 // Output bearings in the injector assembly, for reference
 for(x=[1:columns]) {
-		   //  translate([10 + pitch*x, -70,-130]) sphere(d=ball_bearing_diameter);
+  translate([10 + pitch*x, -70,-130]) sphere(d=ball_bearing_diameter);
 }
 
