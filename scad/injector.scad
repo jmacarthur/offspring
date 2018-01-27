@@ -6,20 +6,18 @@ ball_bearing_diameter = 6.35; // Overrides globs.
 
 $fn = 20;
 
-stage2_output_pitch = 23;
-
 // Distance between raiser slots
 slot_distance = ball_bearing_diameter * 30;
 
 centre_x = ball_bearing_diameter*16;
-stage2_total_width = 33*stage2_output_pitch;
+stage2_total_width = 33*pitch;
 stage2_half_width = stage2_total_width/2;
 
 module injector_tray() {
   difference() {
     square([stage2_total_width,20]);
     for(x=[1:32]) {
-      translate([x*stage2_output_pitch,0]) polygon(points = [[-stage2_output_pitch/2,20],[stage2_output_pitch/2,20], [0,10]]);
+      translate([x*pitch,0]) polygon(points = [[-pitch/2,20],[pitch/2,20], [0,10]]);
     }
   }
 }
@@ -81,7 +79,7 @@ module injector_assembly() {
     }
   }
   for(x=[1:32]) {
-    translate([x*stage2_output_pitch-1.5,13,42]) rotate([0,90,0]) linear_extrude(height=3) injector_crank();
+    translate([x*pitch-1.5,13,42]) rotate([0,90,0]) linear_extrude(height=3) injector_crank();
   }
 }
 
