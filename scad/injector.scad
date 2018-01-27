@@ -11,19 +11,23 @@ slot_distance = ball_bearing_diameter * 30;
 
 columns = 8;
 centre_x = ball_bearing_diameter*16;
-support_positions = [10, columns*pitch-10];
+
+internal_width = columns*pitch-6;
+eject_offset = 5;
+
+support_positions = [10, (columns-1)*pitch-3];
 module injector_tray() {
   offset = 8;
   hole_diameter = ball_bearing_diameter*1.1;
   difference() {
     translate([0,-3])
-      square([columns*pitch+20,23]);
+      square([internal_width,23]);
     for(z=support_positions) {
       translate([z,-4]) square([3,4]);
     }
-    for(x=[1:columns]) {
-      translate([x*pitch,0]) polygon(points = [[-pitch/2+offset,20],[pitch/2+offset,20], [hole_diameter/2,15], [-hole_diameter/2,15]]);
-      translate([x*pitch,15]) circle(d=hole_diameter);
+    for(x=[0:columns-1]) {
+      translate([x*pitch+eject_offset,0]) polygon(points = [[-pitch/2+offset,20],[pitch/2+offset,20], [hole_diameter/2,15], [-hole_diameter/2,15]]);
+      translate([x*pitch+eject_offset,15]) circle(d=hole_diameter);
     }
   }
 }
@@ -83,11 +87,11 @@ module input_plate()
   slot_width = 3.4;
   difference() {
     union() {
-      translate([-3,10]) square([columns*pitch+20+6,10]);
-      square([columns*pitch+20,30]);
+      translate([-3,10]) square([internal_width+6,10]);
+      square([internal_width,30]);
     }
-    for(x=[1:columns])
-      translate([x*pitch-slot_width/2, -1]) square([slot_width, 16]);
+    for(x=[0:columns-1])
+      translate([x*pitch-slot_width/2+eject_offset, -1]) square([slot_width, 16]);
   }
 }
 
@@ -95,8 +99,8 @@ module separator_plate()
 {
 	difference() {
 	union() {
-          translate([-3,5]) square([columns*pitch+26,10]);
-          square([columns*pitch+20,23]);
+          translate([-3,5]) square([internal_width+6,10]);
+          square([internal_width,23]);
 	}
 	for(z=support_positions) {
 	  translate([z-0.5,15]) square([4,10]);
@@ -106,15 +110,15 @@ module separator_plate()
 
 module front_plate() {
   union() {
-    translate([-3,15]) square([columns*pitch+26,10]);
-    square([columns*pitch+20,30]);
+    translate([-3,15]) square([internal_width+6,10]);
+    square([internal_width,30]);
   }
 }
 
 module returner_plate() {
   union() {
-    translate([-3,20]) square([columns*pitch+26,10]);
-    square([columns*pitch+20,50]);
+    translate([-3,20]) square([internal_width+6,10]);
+    square([internal_width,50]);
   }
 }
 
@@ -136,13 +140,14 @@ module injector_assembly() {
   translate([0,-25-3,0]) rotate([90,0,0]) linear_extrude(height=3) separator_plate();
   translate([0,-40,-10]) rotate([90,0,0]) linear_extrude(height=3) front_plate();
   translate([0,-50,-16]) rotate([-30,0,0]) linear_extrude(height=3) returner_plate();
-  for(x=[1:columns]) {
-    translate([x*pitch-1.5,13,42]) rotate([0,90,0]) linear_extrude(height=3) injector_crank();
+  for(x=[0:columns-1]) {
+    translate([x*pitch-1.5+eject_offset,13,42]) rotate([0,90,0]) linear_extrude(height=3) injector_crank();
   }
 }
 
 
 translate([centre_x - (columns*pitch/2),-54,0]) injector_assembly();
+translate([centre_x - (columns*pitch/2) + columns*pitch,-54,0]) injector_assembly();
 
 // Axis for injector tray
 translate([-300,-84,25]) rotate([0,90,0]) cylinder(d=3,h=500);
@@ -150,12 +155,12 @@ translate([-300,-84,25]) rotate([0,90,0]) cylinder(d=3,h=500);
 // Axis for injector cranks
 translate([-300,-54+13,42]) rotate([0,90,0]) cylinder(d=3,h=500);
 
-translate([0,-90,-10]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) end_plate();
-translate([columns*pitch+31,-90,-10]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) end_plate();
+//translate([0,-90,-10]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) end_plate();
+//translate([columns*pitch+31,-90,-10]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) end_plate();
 
 // Output bearings in the injector assembly, for reference
-for(x=[1:columns]) {
-  translate([10 + pitch*x, -70,40]) sphere(d=ball_bearing_diameter);
+for(x=[0:columns-1]) {
+  translate([10+pitch*x+eject_offset, -70,40]) sphere(d=ball_bearing_diameter);
 }
 
 // Waste channel - 20mm u-channel?
