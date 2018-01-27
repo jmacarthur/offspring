@@ -49,10 +49,17 @@ module injector_crank() {
 
 module end_plate() {
   difference() {
-  translate([-10,-40]) square([70,100]);
+  union() {
+    translate([-10,-40]) square([70,100]);
+    translate([-10,0]) square([70-18,70]);
+    }
     // Axis for holder
     translate([6,35]) {
          circle(d=3);
+    }
+    // Cutout for wood for holder
+    translate([-10+70-18,-41]) {
+        square([18,11]);
     }
 
     // Axis for injector cranks
@@ -158,3 +165,7 @@ difference() {
   cube([180,20,20]);
   translate([-1,2,2]) cube([300,16,20]);
 }
+
+// Wood panels above and below injector
+translate([-100,-18-30,50]) color([1.0,0.5,0.0]) cube([600,18,100]);
+translate([-100,-18-30,-140]) color([1.0,0.5,0.0]) cube([600,18,100]);
