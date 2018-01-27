@@ -49,28 +49,20 @@ module injector_crank() {
 
 module end_plate() {
   difference() {
-    square([35,60]);
+    square([60,60]);
     // Axis for holder
-    translate([70-54-5-ball_bearing_diameter/2,10]) {
-      circle(d=3);
-      // Make a slot allowing the catcher plate to rotate
-      hull() {
-	fudge =2;
-	rotate(-10) translate([-1.5,5]) square([3,20+fudge]);
-	rotate(10) translate([-1.5,5]) square([3,20+fudge]);
-      }
+    translate([6,35]) {
+         circle(d=3);
     }
 
     // Axis for injector cranks
-    translate([70-54+13,10+42]) circle(d=3);
+    translate([70-21,10+42]) circle(d=3);
 
-    // Slots for mounting a stage2 distributor
-    translate([5,40]) {
-      rotate(5) {
-	square([3,50]);
-	translate([10,0]) square([3,50]);
-      }
-    }
+    // Holes for input plate tabs
+    rotate(45) translate([52,14.5]) square([10,3]);
+    // Holes for separator plate tabs
+    translate([6+1.5,15]) rotate(90) square([10,3]);
+
   }
 }
 
@@ -78,7 +70,10 @@ module input_plate()
 {
   slot_width = 3.4;
   difference() {
-    square([columns*pitch+20,30]);
+    union() {
+      translate([-3,10]) square([columns*pitch+20+6,10]);
+      square([columns*pitch+20,30]);
+    }
     for(x=[1:columns])
       translate([x*pitch-slot_width/2, -1]) square([slot_width, 16]);
   }
@@ -87,7 +82,10 @@ module input_plate()
 module separator_plate()
 {
 	difference() {
-	square([columns*pitch+20,23]);
+	union() {
+          translate([-3,5]) square([columns*pitch+26,10]);
+          square([columns*pitch+20,23]);
+	}
 	for(z=support_positions) {
 	  translate([z-0.5,15]) square([4,10]);
 	}
@@ -106,7 +104,7 @@ module injector_assembly() {
       }
     }
     rotate([-45,0,0]) {
-    color([1.0,0,0]) rotate([90,0,0]) translate([0,13,-6]) linear_extrude(height=3) input_plate();
+      color([1.0,0,0]) rotate([90,0,0]) translate([0,13,-6]) linear_extrude(height=3) input_plate();
     }
   }
   translate([0,-25-3,0]) rotate([90,0,0]) linear_extrude(height=3) separator_plate();
@@ -119,15 +117,23 @@ module injector_assembly() {
 translate([centre_x - (columns*pitch/2),-54,-170]) injector_assembly();
 
 // Axis for injector tray
-translate([-300,-54-5-ball_bearing_diameter/2,-170]) rotate([0,90,0]) cylinder(d=3,h=500);
+translate([-300,-84,-145]) rotate([0,90,0]) cylinder(d=3,h=500);
 
 // Axis for injector cranks
 translate([-300,-54+13,-170+42]) rotate([0,90,0]) cylinder(d=3,h=500);
 
-translate([-310,-70,-180]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) end_plate();
+//translate([0,-90,-180]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) end_plate();
+translate([columns*pitch+31,-90,-180]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) end_plate();
 
 // Output bearings in the injector assembly, for reference
 for(x=[1:columns]) {
   translate([10 + pitch*x, -70,-130]) sphere(d=ball_bearing_diameter);
 }
 
+// Waste channel - 20mm u-channel?
+translate([25,-78,-170])
+rotate([0,3,0]) 
+difference() {
+  cube([180,20,20]);
+  translate([-1,2,2]) cube([300,16,20]);
+}
