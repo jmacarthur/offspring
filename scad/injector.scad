@@ -34,7 +34,8 @@ module injector_tray() {
 
 module injector_tray_support() {
   difference() {
-    polygon(points = [ [-5,-5], [-5,5], [0,15], [5,5], [5,-5] ]);
+    polygon(points = [ [-5,-5], [-30,-5], [-30,5], [-5,5], [0,15], [5,5], [5,-5] ]);
+    translate([-25,0]) circle(d=3);
     translate([-1.5,5]) square([3,10]);
     circle(d=3);
   }
