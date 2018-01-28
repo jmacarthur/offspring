@@ -34,7 +34,13 @@ module rotating_input_channel() {
   // Pivot about a point above the device
   a = rotator_axis_distance;
   difference() {
-    cylinder(r=a+channel_radius, h=channel_length+3, $fn=100);
+    hull() {
+      intersection() {
+	translate([-rotator_axis_distance-5,-5,0]) cube([10,10,channel_length+3]);
+	cylinder(r=a+channel_radius, h=channel_length+3, $fn=100);
+      }
+      translate([0,0,0]) cylinder(d=6, h=channel_length+3);
+    }
     translate([-a,0,-thin]) cylinder(r=channel_radius, h=channel_length+thin);
     translate([-a-5,-channel_radius,-thin]) cube([5,channel_radius*2,channel_length+thin]);
     // Axle hole
