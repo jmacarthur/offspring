@@ -54,17 +54,17 @@ module injector_crank() {
 
 module end_plate() {
   difference() {
-  union() {
-    translate([-10,-40]) square([70,100]);
-    translate([-10,0]) square([70-18,70]);
+    union() {
+      translate([-10,-40]) square([70,100]);
+      translate([-10,0]) square([70-18,70]);
     }
     // Axis for holder
     translate([6,35]) {
-         circle(d=3);
+      circle(d=3);
     }
     // Cutout for wood for holder
     translate([-10+70-18,-41]) {
-        square([18,11]);
+      square([18,11]);
     }
 
     // Axis for injector cranks
@@ -98,15 +98,15 @@ module input_plate()
 
 module separator_plate()
 {
-	difference() {
-	union() {
-          translate([-3,5]) square([internal_width+6,10]);
-          square([internal_width,23]);
-	}
-	for(z=support_positions) {
-	  translate([z-0.5,15]) square([4,10]);
-	}
-	}
+  difference() {
+    union() {
+      translate([-3,5]) square([internal_width+6,10]);
+      square([internal_width,23]);
+    }
+    for(z=support_positions) {
+      translate([z-0.5,15]) square([4,10]);
+    }
+  }
 }
 
 module front_plate() {
@@ -162,11 +162,11 @@ translate([-300,-54+13,42]) rotate([0,90,0]) cylinder(d=3,h=500);
 // Output bearings in the injector assembly, for reference
 for(x=[0:columns-1]) {
   translate([10+pitch*x+eject_offset, -70,40]) sphere(d=ball_bearing_diameter);
-}
+ }
 
 // Waste channel - 20mm u-channel?
 translate([25,-78,0])
-rotate([0,3,0]) 
+rotate([0,3,0])
 difference() {
   cube([180,20,20]);
   translate([-1,2,2]) cube([300,16,20]);
