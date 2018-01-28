@@ -15,12 +15,14 @@ channel_radius = (ball_bearing_diameter+1)/2;
 ejecting = 1;
 thin = 1;
 //channel_rotation = (ejecting==1? -45: 45);
-channel_rotation = -40;
+channel_rotation = -0;
 
 plate_thickness = 5;
 mounting_position_y1 = floor(stage1_output_length/2+5);
 mounting_position_y2 = floor(channel_length/2+5);
 rotator_axis_distance = 10;  // Distance between centres - swing axle to channel axis
+
+explode = 50;
 
 module mounting_holes() {
   // Mounting holes
@@ -34,30 +36,37 @@ module rotating_input_channel() {
   // Pivot about a point above the device
   a = rotator_axis_distance;
   difference() {
-    hull() {
-      intersection() {
-	translate([-rotator_axis_distance-5,-5,0]) cube([10,10,channel_length+3]);
-	cylinder(r=a+channel_radius, h=channel_length+3, $fn=100);
+    union() {
+      hull() {
+	intersection() {
+	  translate([-rotator_axis_distance-5,-5,0]) cube([10,10,channel_length+3]);
+	  cylinder(r=a+channel_radius, h=channel_length+3, $fn=100);
+	}
+	translate([0,0,0]) cylinder(d=6, h=channel_length+3);
       }
-      translate([0,0,0]) cylinder(d=6, h=channel_length+3);
+      difference() {
+	cylinder(r=a+channel_radius, h=3, $fn=100);
+	rotate([0,0,30]) translate([0,-20,-thin]) cube([30,40,3+thin*2]);
+	rotate([0,0,-90]) translate([0,-20,-thin]) cube([30,40,3+thin*2]);
+      }
     }
     translate([-a,0,-thin]) cylinder(r=channel_radius, h=channel_length+thin);
     translate([-a-5,-channel_radius,-thin]) cube([5,channel_radius*2,channel_length+thin]);
     // Axle hole
     translate([0,0,-thin]) cylinder(d=3, h=channel_length+5);
   }
-
 }
 
 module rotator_bed() {
   difference() {
-    translate([0,-channel_length-3,-5]) cube([19,channel_length+3,10]);
+    union() {
+      translate([5,-channel_length-3,-5]) cube([14,channel_length+3,10]);
+      // Mounting peg
+      translate([13-5,-thin,-4]) cube([10,5+thin,3]);
+    }
     // Cutout for rotating channel
     translate([13,-channel_length-3-thin,rotator_axis_distance+4]) rotate([270,0,0]) cylinder(r=rotator_axis_distance+4,h=channel_length+3+thin*2, $fn=100);
 
-    // Mounting hole for rotator bed
-    translate([13-8,-20,-2.5])  rotate([270,0,0]) cylinder(d=3, h=20+thin);
-    translate([13+8,-20,-2.5])  rotate([270,0,0]) cylinder(d=3, h=20+thin);
   }
 }
 
@@ -71,9 +80,8 @@ module input_chute() {
     // Input channel
     translate([13,4,4.5]) rotate([10,0,0]) translate([0,-5,0]) rotate([270,0,0]) cylinder(r=channel_radius, h=120);
 
-    // Mounting hole for rotator bed
-    translate([13-8,-thin,-2.5])  rotate([270,0,0]) cylinder(d=3, h=20+thin);
-    translate([13+8,-thin,-2.5])  rotate([270,0,0]) cylinder(d=3, h=20+thin);
+    // Mounting peg
+    translate([13-5,-thin,-4]) cube([10,5+thin,3]);
   }
 }
 
@@ -117,7 +125,7 @@ module stage1_distributor(bonus_height) {
 module stage1_assembly() {
   translate([-7,0,rotator_axis_distance+4]) rotate([0,-90+channel_rotation,0]) rotate([90,0,0]) rotating_input_channel();
   translate([-20,0,0]) rotator_bed();
-  translate([-20,0,0]) input_chute();
+  translate([-20,explode,0]) input_chute();
   translate([-3,-ball_bearing_diameter*4,-60]) rotate([0,90,0]) stage1_distributor(2);
   translate([8,-ball_bearing_diameter*4,-60]) rotate([0,0,180]) rotate([0,90,0]) stage1_distributor(14);
 }
