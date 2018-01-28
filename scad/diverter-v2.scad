@@ -22,12 +22,15 @@ module support_2d() {
     union() {
       translate([0,-5]) square([15,10]);
       circle(d=10);
+
+      polygon(points=[[10,1.5], [40,1.5], [10,21.5]]);
+      // Control arms
       translate([5+2,-5]) square([8,40]);
       translate([5,20]) square([8,15]);
     }
     circle(d=3);
     translate([10,30]) circle(d=3);
-   translate([5,-1.5]) square([10,3]);
+    translate([5,-1.5]) square([10,3]);
   }
 }
 
