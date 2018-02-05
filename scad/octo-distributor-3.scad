@@ -296,7 +296,8 @@ translate([12*6,30,12*5-5]) rotate([90,0,0]) cylinder(d=4,h=50);
 translate([9*12,30,12*4-5]) rotate([90,0,0]) cylinder(d=4,h=50);
 translate([12*12,30,12*1-5]) rotate([90,0,0]) cylinder(d=4,h=50);
 
-translate([channel_length/2+4,-20,-40])rotate([-90,0,0]) rotate([0,0,90]) stage1_distributor(0);
+translate([channel_length/2+4,-12,-50])rotate([-90,0,0]) rotate([0,0,90]) stage1_distributor(10);
+translate([channel_length/2+4,0,-50])rotate([0,0,180]) rotate([-90,0,0]) rotate([0,0,90]) stage1_distributor(-1);
 
 // Ultimate width
 
