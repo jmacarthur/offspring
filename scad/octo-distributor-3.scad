@@ -19,13 +19,27 @@ ramp_angle = 5;
 axis_height = 80;
 
 top_wall_mounting_holes = [10, channel_length-10];
-mounting_holes_x = [10, 70, 110];
+mounting_holes_x = [10, 70, 90];
 
 peg_mounting_y_offset = -5;
 
+// Constants necessary for the stage1 distributor
+plate_thickness = 5;
+mounting_position_y1 = floor(stage1_output_length/2+5);
+mounting_position_y2 = floor(channel_length/2+5);
+rotator_axis_distance = 10;  // Distance between centres - swing axle to channel axis
+
+module mounting_holes() {
+  // Mounting holes
+  translate([-14, mounting_position_y1, -1]) cylinder(d=3,h=plate_thickness+2);
+  translate([-14, -mounting_position_y1, -1]) cylinder(d=3,h=plate_thickness+2);
+  translate([-35, mounting_position_y2, -1]) cylinder(d=3,h=plate_thickness+2);
+  translate([-35, -mounting_position_y2, -1]) cylinder(d=3,h=plate_thickness+2);
+}
+
 module input_chamber_base() {
   difference() {
-    square([120,20]);
+    square([100,20]);
     translate([-1,10]) square([channel_length+5,20]);
     translate([channel_length+4,10]) rotate(ramp_angle) square([100,20]);
     for(x=mounting_holes_x) {
@@ -41,7 +55,7 @@ module input_ramp_top() {
       rotate(ramp_angle) translate([channel_length+12,10]) square([60,15]);
     }
     // Square off the end
-    translate([120, -1]) square([20,50]);
+    translate([100, -1]) square([30,50]);
     translate([channel_length+4,10]) rotate(ramp_angle) square([100,channel_radius*2]);
     for(x=mounting_holes_x) {
       translate([x, 25]) circle(d=3);
@@ -116,7 +130,7 @@ module top_wall() {
 
 module ramp_wall() {
   difference() {
-    translate([channel_length+9, 0]) square([60,30]);
+    translate([channel_length+9, 0]) square([40,30]);
     for(x=mounting_holes_x) {
       translate([x,5]) circle(d=3);
       translate([x,25]) circle(d=3);
@@ -161,7 +175,7 @@ module top_mounting_plate() {
 }
 
 module feed_pipe() {
-  output_height = 10+(120-channel_length-4)*sin(ramp_angle);
+  output_height = 10+(100-channel_length-4)*sin(ramp_angle);
   union() {
     translate([0,output_height]) rotate(ramp_angle) square([20,channel_radius*2]);
     translate([0,output_height]) rotate(ramp_angle) translate([20,channel_radius]) circle(r=channel_radius);
@@ -174,17 +188,70 @@ module feed_pipe() {
       translate([20/cos(ramp_angle),x-50]) square([50,50]);
     }
     translate([20/cos(ramp_angle)+x-output_height-20*sin(ramp_angle)-channel_radius*2,x]) square([channel_radius*2, 30]);
+
+    // Funnel feeder - can be filled in when better feeds are available
+    hull() {
+      translate([20/cos(ramp_angle)+x-output_height-20*sin(ramp_angle)-channel_radius,x+10]) circle(r=channel_radius);
+      translate([10,x+30]) circle(r=channel_radius);
+      translate([50,x+30]) circle(r=channel_radius);
+    }
   }
 }
 
-module external_feed_pipe_lower() {
+module external_feed_holes() {
+  translate([20-12,12+peg_mounting_y_offset]) circle(d=4);
+  translate([20+12*3,12*4+peg_mounting_y_offset]) circle(d=4);
+  translate([20-12,12*4+peg_mounting_y_offset]) circle(d=4);
+  translate([20,12*4+peg_mounting_y_offset]) circle(d=4);
+  translate([20+12*2,12+peg_mounting_y_offset]) circle(d=4);
+}
+
+module external_feed_pipe() {
   difference() {
-    square([60,60]);
+    square([60,70]);
     feed_pipe();
-    for(x=[1,4]) {
-      for(y=[1,4]) {
-	translate([12*x,12*y+peg_mounting_y_offset]) circle(d=4);
-      }
+    external_feed_holes();
+  }
+}
+
+module external_feed_wall() {
+  difference() {
+    square([60,70]);
+    external_feed_holes();
+  }
+}
+
+module stage1_distributor(bonus_height) {
+  difference() {
+    union() {
+      // Upper plate
+      translate([-50-bonus_height,-channel_length/2,0]) cube([30+bonus_height, channel_length, plate_thickness]);
+
+      // Lower plate
+      translate([-38,-stage1_output_length/2,0]) cube([28,stage1_output_length, plate_thickness]);
+
+      // Extending bars at the bottom which connect mounting holes
+      translate([-18,-stage1_output_length/2-8,0]) cube([8,stage1_output_length+16, plate_thickness]);
+
+      translate([-35, -mounting_position_y2, 0]) cylinder(d=8,h=plate_thickness);
+      translate([-35, mounting_position_y2, 0]) cylinder(d=8,h=plate_thickness);
+
+    }
+    mounting_holes();
+    channel_depth = plate_thickness+1;
+
+    for(i=[0:7]) {
+      input_y = ball_bearing_diameter*i-7*ball_bearing_diameter/2;
+      output_y = stage1_output_pitch*i-7*stage1_output_pitch/2;
+      translate([-50-bonus_height-1,input_y,channel_depth]) rotate([0,90,0]) cylinder(d=ball_bearing_diameter, h=20+bonus_height+1);
+      translate([-30,input_y,channel_depth]) rotate([0,90,0]) sphere(d=ball_bearing_diameter);
+      translate([-20,output_y,channel_depth]) rotate([0,90,0]) cylinder(d=ball_bearing_diameter, h=21);
+      translate([-20,output_y,channel_depth]) rotate([0,90,0]) sphere(d=ball_bearing_diameter);
+      pipe_dx = 10;
+      pipe_dy = output_y-input_y;
+      pipe_length = sqrt(pipe_dx*pipe_dx + pipe_dy*pipe_dy);
+      pipe_rotate = atan2(pipe_dy, pipe_dx);
+      translate([-30,ball_bearing_diameter*i-7*ball_bearing_diameter/2,channel_depth]) rotate([0,0,pipe_rotate]) rotate([0,90,0]) cylinder(d=ball_bearing_diameter, h=pipe_length);
     }
   }
 }
@@ -202,17 +269,21 @@ module 3d_injector_assembly() {
   translate([3+1, 1.5+channel_radius, 11]) rotate([90,0,0]) linear_extrude(height=3) side_wall();
   translate([0,-5,0]) rotate([90,0,0]) linear_extrude(height=3) ramp_wall();
   translate([0,5,0]) rotate([90,0,0]) linear_extrude(height=3) ramp_wall();
-
   translate([-20,10,50]) rotate([90,0,0]) linear_extrude(height=3) mid_mounting_plate();
   translate([-20,10,85]) rotate([90,0,0]) linear_extrude(height=3) top_mounting_plate();
 }
 
 module external_feed_assembly() {
-  color([1,0,0.5]) rotate([90,0,0]) linear_extrude(height=3) external_feed_pipe_lower();
+  color([1,0,0.5]) rotate([90,0,0]) linear_extrude(height=3) external_feed_pipe();
+  color([1,0,0.5]) translate([0,-5,0]) rotate([90,0,0]) linear_extrude(height=3) external_feed_wall();
+  color([1,0,0.5]) translate([0,5,0]) rotate([90,0,0]) linear_extrude(height=3) external_feed_wall();
 }
 
+
+
 3d_injector_assembly();
-translate([12*10,0]) external_feed_assembly();
+translate([8*pitch,0]) 3d_injector_assembly();
+translate([100,0]) external_feed_assembly();
 translate([60,-1.5,10+ball_bearing_diameter/2]) sphere(d=ball_bearing_diameter);
 
 
@@ -221,10 +292,11 @@ translate([0,-50,0]) rotate([90,0,0]) cylinder(d=4,h=50);
 translate([-12*1,30,12*8-5]) rotate([90,0,0]) cylinder(d=4,h=50);
 translate([-12*1,30,12*5-5]) rotate([90,0,0]) cylinder(d=4,h=50);
 translate([12*6,30,12*5-5]) rotate([90,0,0]) cylinder(d=4,h=50);
-translate([11*12,30,12*4-5]) rotate([90,0,0]) cylinder(d=4,h=50);
-translate([14*12,30,12*1-5]) rotate([90,0,0]) cylinder(d=4,h=50);
 
+translate([9*12,30,12*4-5]) rotate([90,0,0]) cylinder(d=4,h=50);
+translate([12*12,30,12*1-5]) rotate([90,0,0]) cylinder(d=4,h=50);
 
+translate([channel_length/2+4,-20,-40])rotate([-90,0,0]) rotate([0,0,90]) stage1_distributor(0);
 
 // Ultimate width
 
