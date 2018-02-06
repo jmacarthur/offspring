@@ -14,6 +14,10 @@ memory_slope = 10; // Degrees
 memory_cell_pitch_x = 16;
 memory_cell_pitch_y = 28 * cos(memory_slope);
 
+// Max wire diameter is 1.59mm for 6.35mm ball bearings.
+stage1_wire_diameter = 1.45; // Equivalent to AWG 15 / SWG 17.
+stage2_wire_diameter = 2.337; // SWG 13
+
 /* Number of bits used in the data. This must be 32. */
 bits = 32;
 

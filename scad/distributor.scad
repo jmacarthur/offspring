@@ -2,9 +2,6 @@
 
 include <globs.scad>;
 
-// Max wire diameter is 1.59mm for 6.35mm ball bearings.
-stage1_wire_diameter = 1.45; // Equivalent to AWG 15 / SWG 17.
-stage2_wire_diameter = 2.337; // SWG 13
 
 $fn = 20;
 
