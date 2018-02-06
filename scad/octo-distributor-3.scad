@@ -25,17 +25,31 @@ peg_mounting_y_offset = -5;
 
 // Constants necessary for the stage1 distributor
 plate_thickness = 5;
+// Mouting positions(y) for the stage1 distributor
 mounting_position_y1 = floor(stage1_output_length/2+5);
 mounting_position_y2 = floor(channel_length/2+5);
+
 rotator_axis_distance = 10;  // Distance between centres - swing axle to channel axis
 
-module mounting_holes() {
+mounting_hole_positions = [ [-14, mounting_position_y1],
+			    [-14, -mounting_position_y1],
+			    [-35, mounting_position_y2],
+			    [-35, -mounting_position_y2] ];
+
+// For the 3D printed stage1 distributor
+module mounting_holes_2d() {
   // Mounting holes
-  translate([-14, mounting_position_y1, -1]) cylinder(d=3,h=plate_thickness+2);
-  translate([-14, -mounting_position_y1, -1]) cylinder(d=3,h=plate_thickness+2);
-  translate([-35, mounting_position_y2, -1]) cylinder(d=3,h=plate_thickness+2);
-  translate([-35, -mounting_position_y2, -1]) cylinder(d=3,h=plate_thickness+2);
+  for(p=mounting_hole_positions) {
+    translate(p) circle(d=3);
+  }
 }
+
+module mounting_holes_3d() {
+  for(p=mounting_hole_positions) {
+    translate([0,0,-1]) translate(p) cylinder(d=3, h=plate_thickness+2);
+  }
+}
+
 
 module input_chamber_base() {
   difference() {
@@ -221,6 +235,22 @@ module external_feed_wall() {
   }
 }
 
+/* Rather than make large mountings on 3D printed components, this
+   backing plate mounts the stage1 distributor parts to the 12mm
+   spaced backplate. */
+
+stage1_centre_x = channel_length/2+4;
+
+module stage1_mounting_plate() {
+  difference() {
+    translate([-50,10]) square([100,30]);
+    translate([0,0]) rotate(-90) mounting_holes_2d();
+    for(x=[-12,12*6]) {
+      translate([x-stage1_centre_x,45-12*2]) circle(d=4);
+    }
+  }
+}
+
 module stage1_distributor(bonus_height) {
   difference() {
     union() {
@@ -237,7 +267,7 @@ module stage1_distributor(bonus_height) {
       translate([-35, mounting_position_y2, 0]) cylinder(d=8,h=plate_thickness);
 
     }
-    mounting_holes();
+    mounting_holes_3d();
     channel_depth = plate_thickness+1;
 
     for(i=[0:7]) {
@@ -296,8 +326,12 @@ translate([12*6,30,12*5-5]) rotate([90,0,0]) cylinder(d=4,h=50);
 translate([9*12,30,12*4-5]) rotate([90,0,0]) cylinder(d=4,h=50);
 translate([12*12,30,12*1-5]) rotate([90,0,0]) cylinder(d=4,h=50);
 
-translate([channel_length/2+4,-12,-50])rotate([-90,0,0]) rotate([0,0,90]) stage1_distributor(10);
-translate([channel_length/2+4,0,-50])rotate([0,0,180]) rotate([-90,0,0]) rotate([0,0,90]) stage1_distributor(-1);
+translate([12*6,30,-24-5]) rotate([90,0,0]) cylinder(d=4,h=50);
+translate([-12,30,-24-5]) rotate([90,0,0]) cylinder(d=4,h=50);
+
+translate([stage1_centre_x,-12,-50])rotate([-90,0,0]) rotate([0,0,90]) stage1_distributor(10);
+translate([stage1_centre_x,0,-50])rotate([0,0,180]) rotate([-90,0,0]) rotate([0,0,90]) stage1_distributor(-1);
+translate([stage1_centre_x,3,-50]) rotate([90,0,0]) linear_extrude(height=3) stage1_mounting_plate();
 
 // Ultimate width
 
