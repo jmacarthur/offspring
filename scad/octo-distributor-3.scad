@@ -19,7 +19,7 @@ ramp_angle = 5;
 axis_height = 80;
 
 top_wall_mounting_holes = [10, channel_length-10];
-mounting_holes_x = [10, 70, 90];
+injector_mounting_holes_x = [10, 70, 90];
 
 peg_mounting_y_offset = -5;
 
@@ -56,7 +56,7 @@ module input_chamber_base() {
     square([100,20]);
     translate([-1,10]) square([channel_length+5,20]);
     translate([channel_length+4,10]) rotate(ramp_angle) square([100,20]);
-    for(x=mounting_holes_x) {
+    for(x=injector_mounting_holes_x) {
       translate([x, 5]) circle(d=3);
     }
   }
@@ -71,7 +71,7 @@ module input_ramp_top() {
     // Square off the end
     translate([100, -1]) square([30,50]);
     translate([channel_length+4,10]) rotate(ramp_angle) square([100,channel_radius*2]);
-    for(x=mounting_holes_x) {
+    for(x=injector_mounting_holes_x) {
       translate([x, 25]) circle(d=3);
     }
   }
@@ -145,7 +145,7 @@ module top_wall() {
 module ramp_wall() {
   difference() {
     translate([channel_length+9, 0]) square([40,30]);
-    for(x=mounting_holes_x) {
+    for(x=injector_mounting_holes_x) {
       translate([x,5]) circle(d=3);
       translate([x,25]) circle(d=3);
     }
