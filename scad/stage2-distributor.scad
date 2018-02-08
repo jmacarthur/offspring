@@ -5,10 +5,10 @@ include <globs.scad>;
 stage1_output_pitch = 8;
 stage2a_output_pitch = 16;
 stage2b_output_pitch = pitch;
-
+$fn=20;
 module stage_plate(input_pitch, output_pitch, depth, width)
 {
-  centre_width = output_pitch*8.5;
+  centre_width = output_pitch*7.5;
   difference() {
     union() {
       translate([-centre_width/2, 0]) square([centre_width, depth]);
@@ -17,7 +17,15 @@ module stage_plate(input_pitch, output_pitch, depth, width)
     }
     for(x=[-4:4]) {
       translate([input_pitch*x, 0]) circle(d=stage1_wire_diameter);
-      translate([output_pitch*x, depth]) circle(d=stage1_wire_diameter);
+      if(abs(x)==4) {
+	// Outer wires don't need to go out so far, so we add a kink half way
+	outer_xpos = (3*output_pitch+ball_bearing_diameter)*sign(x);
+	translate([outer_xpos, depth]) circle(d=stage1_wire_diameter);
+	translate([outer_xpos, depth-20]) circle(d=stage1_wire_diameter);
+	translate([outer_xpos, depth-20-stage1_wire_diameter*2]) circle(d=stage1_wire_diameter);
+      } else {
+	translate([output_pitch*x, depth]) circle(d=stage1_wire_diameter);
+      }
     }
   }
 }
@@ -35,7 +43,7 @@ module stage2b_plate()
 
 module stage_with_wires(input_pitch, output_pitch, depth,width) {
   linear_extrude(height=3) stage_plate(input_pitch, output_pitch, depth, width);
-  for(x=[-4:4]) {
+  for(x=[-3:3]) {
     color([1.0,0.5,0]) hull() {
       translate([input_pitch*x, 0,3]) sphere(d=stage1_wire_diameter);
       translate([output_pitch*x, depth,3]) sphere(d=stage1_wire_diameter);
@@ -66,25 +74,43 @@ module side_plate() {
       translate([20,0])
 	square([10,3]);
     }
+    // Tab for mounting
+    translate([5,5]) square([10,3]);
+  }
+}
 
+module mounting_plate() {
+  difference() {
+    square([22,10]);
+    translate([5,5]) circle(d=4);
+    translate([5+12,5]) circle(d=4);
   }
 }
 
 
 module front_plate() {
+  front_plate_width = 180;
   union() {
-    translate([-105,0]) square([210,10]);
-    translate([-100,0]) square([200,30]);
-    translate([-105,20]) square([210,10]);
+    translate([-front_plate_width/2,0,0]) {
+      translate([0,0]) square([front_plate_width,10]);
+      translate([5,0]) square([front_plate_width-10,30]);
+      translate([0,20]) square([front_plate_width,10]);
+    }
   }
 }
 
+overall_width = 180;
+
 module 3d_stage2_assembly() {
-  rotate([-10,0,0]) stage_with_wires(stage1_output_pitch, stage2a_output_pitch, 70,210);
-  rotate([10,0,0]) translate([0,stage2b_yoffset,stage2b_zoffset]) rotate([0,0,180]) stage_with_wires(stage2a_output_pitch, stage2b_output_pitch, 80,210);
+  rotate([-10,0,0]) stage_with_wires(stage1_output_pitch, stage2a_output_pitch, 70,overall_width);
+  rotate([10,0,0]) translate([0,stage2b_yoffset,stage2b_zoffset]) rotate([0,0,180]) stage_with_wires(stage2a_output_pitch, stage2b_output_pitch, 80,overall_width);
 
   translate([105,0,0]) rotate([0,90,0]) linear_extrude(height=3) side_plate();
   translate([0,stage2b_yoffset+9,-30]) rotate([90,0,0]) rotate([0,0,0]) linear_extrude(height=3) front_plate();
+  translate([-89,3+5,-15]) rotate([90,0,0]) rotate([0,0,0]) linear_extrude(height=3) mounting_plate();
 }
 
+
+
 3d_stage2_assembly();
+translate([8*pitch,0,0]) 3d_stage2_assembly();
