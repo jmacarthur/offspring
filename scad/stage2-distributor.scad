@@ -80,10 +80,11 @@ module side_plate() {
 }
 
 module mounting_plate() {
+  mounting_hole_width = 3;
   difference() {
-    square([22,10]);
+    square([10+mounting_hole_width*12,10]);
     translate([5,5]) circle(d=4);
-    translate([5+12,5]) circle(d=4);
+    translate([5+12*mounting_hole_width,5]) circle(d=4);
   }
 }
 
