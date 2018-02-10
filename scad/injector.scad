@@ -57,6 +57,8 @@ module end_plate() {
     union() {
       translate([-10,-40]) square([70,100]);
       translate([-10,0]) square([70-18,70]);
+      translate([50-18-3,0]) square([10,80]);
+      translate([50-18,75]) square([10,5]);
     }
     // Axis for holder
     translate([6,35]) {
@@ -123,6 +125,15 @@ module returner_plate() {
   }
 }
 
+// Mounting plates
+module mounting_plate() {
+  difference() {
+    translate([0,0]) square([14,20]);
+    translate([2,5]) square([10,5]);
+    translate([7,15]) circle(d=4);
+  }
+}
+
 /* -------------------- 3D Assembly -------------------- */
 
 module injector_assembly() {
@@ -144,6 +155,8 @@ module injector_assembly() {
   for(x=[0:columns-1]) {
     translate([x*pitch-1.5+eject_offset,13,42]) rotate([0,90,0]) linear_extrude(height=3) injector_crank();
   }
+  translate([-3,-36,-10]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) end_plate();
+  translate([-10,6,60]) rotate([90,0,0])  linear_extrude(height=3) mounting_plate();
 }
 
 
@@ -156,7 +169,6 @@ translate([-300,-84,25]) rotate([0,90,0]) cylinder(d=3,h=500);
 // Axis for injector cranks
 translate([-300,-54+13,42]) rotate([0,90,0]) cylinder(d=3,h=500);
 
-//translate([0,-90,-10]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) end_plate();
 //translate([columns*pitch+31,-90,-10]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) end_plate();
 
 // Output bearings in the injector assembly, for reference
