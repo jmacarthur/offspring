@@ -91,7 +91,7 @@ module input_plate()
   difference() {
     union() {
       translate([-3,10]) square([internal_width+6,10]);
-      square([internal_width,30]);
+      square([internal_width,32]);
     }
     for(x=[0:columns-1])
       translate([x*pitch-slot_width/2+eject_offset, -1]) square([slot_width, 16]);
@@ -156,6 +156,7 @@ module injector_assembly() {
     translate([x*pitch-1.5+eject_offset,13,42]) rotate([0,90,0]) linear_extrude(height=3) injector_crank();
   }
   translate([-3,-36,-10]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) end_plate();
+  translate([-6,-36,-10]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) end_plate();
   translate([-10,6,60]) rotate([90,0,0])  linear_extrude(height=3) mounting_plate();
 }
 
@@ -169,12 +170,11 @@ translate([-300,-84,25]) rotate([0,90,0]) cylinder(d=3,h=500);
 // Axis for injector cranks
 translate([-300,-54+13,42]) rotate([0,90,0]) cylinder(d=3,h=500);
 
-//translate([columns*pitch+31,-90,-10]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) end_plate();
-
 // Output bearings in the injector assembly, for reference
 for(x=[0:columns-1]) {
   translate([10+pitch*x+eject_offset, -70,40]) sphere(d=ball_bearing_diameter);
  }
+
 
 // Waste channel - 20mm u-channel?
 translate([25,-78,0])
