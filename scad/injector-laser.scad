@@ -38,6 +38,8 @@ offset(r=kerf)
   translate([100,310]) end_plate();
   translate([170,10]) mounting_plate();
   translate([160,55]) mounting_plate();
-  translate([10,395]) waste_plate();
-
+  translate([260,10]) rotate(90) waste_plate();
 }
+
+
+translate([0,0,-5]) color([0.5,0.5,0.5,0.5]) cube([297,420,3]);

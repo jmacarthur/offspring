@@ -52,6 +52,8 @@ module injector_crank() {
     }
     translate([-6,15]) square([3,5]);
     circle(d=3);
+    // Extra hole for attaching weights
+    rotate(-135) translate([0,20]) circle(d=3);
   }
 }
 
