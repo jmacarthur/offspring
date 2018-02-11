@@ -79,7 +79,10 @@ module end_plate() {
     // Holes for front plate tabs
     translate([6+1.5-12,15]) rotate(90) square([10,3]);
     // Holes for returner plate tabs
-    translate([-1,-25]) rotate(-30) translate([0,10])  square([10,3]);
+    translate([-14,-6]) rotate(-30) translate([20,0]) square([10,3]);
+    // Holes for waste plate tabs
+    translate([6,7]) rotate(-30) translate([10,0]) square([10,3]);
+    translate([6,7]) rotate(-30) translate([40,0]) square([10,3]);
 
 
   }
@@ -125,6 +128,14 @@ module returner_plate() {
   }
 }
 
+module waste_plate() {
+  union() {
+    square([internal_width, 60]);
+    translate([-3,10]) square([internal_width+6, 10]);
+    translate([-3,40]) square([internal_width+6, 10]);
+  }
+}
+
 // Mounting plates
 module mounting_plate() {
   difference() {
@@ -152,11 +163,14 @@ module injector_assembly() {
   translate([0,-25-3,0]) rotate([90,0,0]) linear_extrude(height=3) separator_plate();
   translate([0,-40,-10]) rotate([90,0,0]) linear_extrude(height=3) front_plate();
   translate([0,-50,-16]) rotate([-30,0,0]) linear_extrude(height=3) returner_plate();
+  color([1.0,0.0]) translate([0,-50,-16]) rotate([0,90,0]) cylinder(d=1,h=100);
+  color([0.5,0.6,0]) translate([0,-30,-3]) rotate([-30,0,0]) linear_extrude(height=3) waste_plate();
   for(x=[0:columns-1]) {
     translate([x*pitch-1.5+eject_offset,13,42]) rotate([0,90,0]) linear_extrude(height=3) injector_crank();
   }
+  color([1.0,0.0]) translate([-6,-36,-10]) rotate([0,90,0]) cylinder(d=1,h=100);
   translate([-3,-36,-10]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) end_plate();
-  translate([-6,-36,-10]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) end_plate();
+  //translate([-6,-36,-10]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) end_plate();
   translate([-10,6,60]) rotate([90,0,0])  linear_extrude(height=3) mounting_plate();
 }
 
@@ -175,14 +189,10 @@ for(x=[0:columns-1]) {
   translate([10+pitch*x+eject_offset, -70,40]) sphere(d=ball_bearing_diameter);
  }
 
+// Ball bearing to check clearance on waste plate
 
-// Waste channel - 20mm u-channel?
-translate([25,-78,0])
-rotate([0,3,0])
-difference() {
-  cube([180,20,20]);
-  translate([-1,2,2]) cube([300,16,20]);
-}
+translate([10+pitch*15+eject_offset, -85,-16]) sphere(d=ball_bearing_diameter);
+
 
 // Wood panels above and below injector
 translate([-100,-18-30,50]) color([1.0,0.5,0.0]) cube([600,18,100]);
