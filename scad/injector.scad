@@ -45,9 +45,12 @@ module injector_crank() {
   difference() {
     union() {
       rotate(-45) translate([0,-5]) square([25,10]);
-      translate([-5,-5]) square([10,30]);
+      // notched input lever
+      rotate(90) polygon(points=[[0,-3], [0,5], [25,5], [25,0]]);
+      circle(d=10);
       rotate(-45) translate([20,-15]) square([5,20]);
     }
+    translate([-6,15]) square([3,5]);
     circle(d=3);
   }
 }

@@ -38,5 +38,6 @@ offset(r=kerf)
   translate([100,310]) end_plate();
   translate([170,10]) mounting_plate();
   translate([160,55]) mounting_plate();
+  translate([10,395]) waste_plate();
 
 }
