@@ -30,17 +30,6 @@ module stage_plate(input_pitch, output_pitch, depth, width)
   }
 }
 
-module stage2a_plate()
-{
-  stage_plate(stage1_output_pitch, stage2a_output_pitch, 70);
-}
-
-
-module stage2b_plate()
-{
-  stage_plate(stage2a_output_pitch, stage2b_output_pitch, 80);
-}
-
 module stage_with_wires(input_pitch, output_pitch, depth,width) {
   linear_extrude(height=3) stage_plate(input_pitch, output_pitch, depth, width);
   for(x=[-3:3]) {
