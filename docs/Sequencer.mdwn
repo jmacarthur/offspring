@@ -17,7 +17,6 @@ Starting position: Instruction register should be clear, nothing asserted on the
 * Deactivate memory
 * Instruction regsiter diversion off
 * (Instruction logic) set up program counter / accumulator
-* If store is active, raise memory ejector
 * Assert instruction register onto address bus
 * Activate memory cell
 
@@ -27,8 +26,7 @@ Starting position: Instruction register should be clear, nothing asserted on the
 * If STO, Fire the accumulator reader.
 * If JMP, dump the program counter.
 
-* Regen memory. Note that if store was on, no data is in the regenerator,
-  so nothing happens.
+* Regen memory if we aren't in STO mode.
 
 Following this, data fells either into the accumulator or instruction reg.
 
