@@ -83,3 +83,17 @@ We don't implement STOP as JMP can put the processor in a halt loop.
 Optimisation: For CMP and STOP, we don't need to read memory, so don't bother - it means we have to recirculate more ball bearings.
 
 
+# Optional action table
+
+
+Instruction: >
+Action v                     JMP        JRP        LDN        STO        SUB        CMP
+---------------------------------------------------------------------------------------
+Regen after data read         Y          Y          Y                     Y          Y
+Data divert to PC             Y          Y
+Clear PC                      Y
+Regenerate from subtractor                                     Y
+Add 1 to PC if ACC Negative                                                          Y
+Clear accumulator                                   Y
+
+Most of these are single-instruction things - only 'data divert to PC' is unusual as it happens for two instructions. We can just have two separate lines which push it, if necessary. 'Regen after data read' is best negated - we can drop a vital link for the STO case rather than raising one
