@@ -30,7 +30,6 @@ Starting position: Instruction register should be clear, nothing asserted on the
 
 Following this, data fells either into the accumulator or instruction reg.
 
-
  -- Delay while the subtractor works
 
 * For STO, activate the accumulator sender.
@@ -96,4 +95,21 @@ Regenerate from subtractor                                     Y
 Add 1 to PC if ACC Negative                                                          Y
 Clear accumulator                                   Y
 
-Most of these are single-instruction things - only 'data divert to PC' is unusual as it happens for two instructions. We can just have two separate lines which push it, if necessary. 'Regen after data read' is best negated - we can drop a vital link for the STO case rather than raising one
+Most of these are single-instruction things - only 'data divert to PC' is unusual as it happens for two instructions. We can just have two separate lines which push it, if necessary. 'Regen after data read' is best negated - we can drop a vital link for the STO case rather than raising one.
+
+For the CMP case - we need only feed one ball beaing into the read column for the 31st bit of the accumulator. If it was set to one, we capture the ball bearing coming out of the 1 column and divert this to the instruction counter. Note that we don't want to do this while reading the accumulator normally!
+
+# List of all connections between the logic unit and arithmetic memory unit
+
+Regenerator fire 1 (for instruction read use)
+Regenerator fire 2 (for data read use)
+Bottom regenerator fire 1
+Data diverter to PC
+Data diverter to instruction register
+Injector diverter to accumulator read
+Memory address lines 1-5
+Memory access control
+Injector control
+Subtractor clear line
+Subtractor read col 31
+Feedback line from col 31 reader
