@@ -95,15 +95,16 @@ module 3d_stage2_assembly() {
   rotate([-10,0,0]) stage_with_wires(stage1_output_pitch, stage2a_output_pitch, 70,overall_width);
   rotate([10,0,0]) translate([0,stage2b_yoffset,stage2b_zoffset]) rotate([0,0,180]) stage_with_wires(stage2a_output_pitch, stage2b_output_pitch, 80,overall_width);
 
-  translate([105,0,0]) rotate([0,90,0]) linear_extrude(height=3) side_plate();
+  translate([87,0,0]) rotate([0,90,0]) linear_extrude(height=3) side_plate();
+  translate([-90,0,0]) rotate([0,90,0]) linear_extrude(height=3) side_plate();
   translate([0,stage2b_yoffset+9,-30]) rotate([90,0,0]) rotate([0,0,0]) linear_extrude(height=3) front_plate();
   translate([-89,3+5,-15]) rotate([90,0,0]) rotate([0,0,0]) linear_extrude(height=3) mounting_plate();
 
   // Output bars
 
   color(bb_trace_colour) for(x=[0:3]) {
-    translate([ ball_bearing_radius+pitch*x,ball_bearing_radius-1,-40]) cylinder(d=ball_bearing_diameter, h=10);
-    translate([-ball_bearing_radius-pitch*x,ball_bearing_radius-1,-40]) cylinder(d=ball_bearing_diameter, h=10);
+    translate([ ball_bearing_radius+pitch*x,ball_bearing_radius-1,-80]) cylinder(d=ball_bearing_diameter, h=50);
+    translate([-ball_bearing_radius-pitch*x,ball_bearing_radius-1,-80]) cylinder(d=ball_bearing_diameter, h=50);
   }
 
 }

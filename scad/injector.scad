@@ -175,8 +175,8 @@ module injector_assembly() {
   }
   color([1.0,0.0]) translate([-6,-36,-10]) rotate([0,90,0]) cylinder(d=1,h=100);
   translate([-3,-36,-10]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) end_plate();
-  //translate([-6,-36,-10]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) end_plate();
-  translate([-10,6,60]) rotate([90,0,0])  linear_extrude(height=3) mounting_plate();
+  translate([178,-36,-10]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) end_plate();
+  //translate([-10,6,60]) rotate([90,0,0])  linear_extrude(height=3) mounting_plate();
 }
 
 
