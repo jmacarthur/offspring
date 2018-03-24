@@ -301,6 +301,10 @@ module 3d_injector_assembly() {
   translate([0,5,0]) rotate([90,0,0]) linear_extrude(height=3) ramp_wall();
   translate([-20,10,50]) rotate([90,0,0]) linear_extrude(height=3) mid_mounting_plate();
   translate([-20,10,85]) rotate([90,0,0]) linear_extrude(height=3) top_mounting_plate();
+  // Output bars
+
+  color(bb_trace_colour) for(x=[0:7]) translate([3+1+ball_bearing_diameter*0.5+ball_bearing_diameter*x,-3-ball_bearing_radius,-20]) cylinder(d=ball_bearing_diameter, h=30);
+
 }
 
 module external_feed_assembly() {

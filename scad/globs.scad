@@ -4,7 +4,7 @@
 // versions, one at 6.35mm (1/4") and one at 6.15mm.
 
 ball_bearing_diameter = 6.35;
-
+ball_bearing_radius = ball_bearing_diameter / 2;
 pipe_outer_diameter = 11;
 
 /* All dimensions are in millimetres */
@@ -59,3 +59,8 @@ memory_unit_gap = cell_height+20;
 // 16-bit memory cells, and 2 16-bit adders, there will
 // be a gap needed to join them.
 centre_gap = 50;
+
+
+/* Colour for illustrating ball bearing paths */
+
+bb_trace_colour = [0.5,0.0,0.0,0.5];
