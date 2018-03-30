@@ -29,7 +29,6 @@ module diverter_cutout() {
     translate([ejector_xpos(0)-channel_width/2-clearance, diverter_y-clearance]) square([diverter_width+clearance*2,31+clearance*2]);
 }
 
-
 module core_plate_2d() {
   difference() {
     union() {
@@ -77,7 +76,9 @@ module ejector_support_2d() {
       translate([0,3]) square([20,25]);
       translate([10,0]) square([7,36]);
       translate([10,-30]) square([7,30]);
-      translate([10,-35]) square([13,23]);
+      translate([10,-62]) square([13,50]);
+      slope_start = 0;
+      polygon([[0,-62], [0,-62+slope_start], [20,-62+20+slope_start], [20,-62]]);
     }
     // Hole for ejector axle
     translate([5,23]) circle(d=3);
@@ -134,8 +135,9 @@ module diverter_rotate_arm_2d() {
   translate([-10,-15]) {
     difference() {
       union() {
+	translate([10,10]) square([30,10]);
 	square([15,20]);
-	translate([0,-3]) polygon([[0,3], [3,0], [3,26], [0,23]]);
+	translate([0,-3]) polygon([[0,3], [3,1], [3,26], [0,23]]);
       }
       translate([10,15]) circle(d=3);
     }
@@ -153,7 +155,7 @@ module diverter_support_2d() {
 }
 
 module output_plate_2d() {
-  extend_back = 30; // Projection behind zero
+  extend_back = 40; // Projection behind zero
   difference() {
     translate([0,-extend_back]) square([200,extend_back+13]);
     for(c=[0:7]) {
@@ -172,6 +174,37 @@ module output_plate_2d() {
     }
   }
 }
+
+
+module diverted_output_plate_2d() {
+  difference() {
+    square([200,23]);
+    for(x=support_tab_x) {
+      translate([x,7]) square([3,20]);
+    }
+    for(c=[0:columns-1]) {
+      if(c<columns-1) { translate([ejector_xpos(c) + channel_width/2,5]) square([3,10]);}
+      translate([ejector_xpos(c+1) - channel_width/2-3,5]) square([3,10]);
+    }
+  }
+}
+
+
+module diverter_rib_2d() {
+  union() {
+    square([10,6]);
+    polygon([[-12,3], [-6,6], [10,6], [13,3]]);
+  }
+}
+
+module diverted_output_assembly() {
+  linear_extrude(height=3) diverted_output_plate_2d();
+  for(c=[1:columns-1]) {
+    color([0,1,0]) translate([ejector_xpos(c)-channel_width/2-3,0,0]) rotate([0,90,0]) rotate([0,0,-90])  translate([-15,-3,0]) linear_extrude(height=3) diverter_rib_2d();
+    color([0,1,0]) translate([ejector_xpos(c-1)+channel_width/2,0,0]) rotate([0,90,0]) rotate([0,0,-90])  translate([-15,-3,0]) linear_extrude(height=3) diverter_rib_2d();
+  }
+}
+
 
 module centred_diverter_assembly() {
   translate([0, -20, 4]) color([0.7,0.7,0.7]) linear_extrude(height=3) diverter_2d();
@@ -205,6 +238,9 @@ module 3d_assembly() {
   }
 
   rotate([90,0,0]) linear_extrude(height=3) output_plate_2d();
+
+  plate_adjust = 16;
+  translate([0,plate_adjust-9,-35+plate_adjust]) rotate([45,0,0]) diverted_output_assembly();
 }
 
 3d_assembly();
