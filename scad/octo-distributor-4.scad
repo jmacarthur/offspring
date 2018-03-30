@@ -3,19 +3,17 @@
    This version is meant for a laser cutter. */
 
 include <globs.scad>;
-
+columns = 8;
+use <diverter-parts.scad>;
 
 $fn=20;
 explode = 0;
 
 input_channel_slope = 10;
-columns = 8;
-channel_width = 7;
 channel_height = 30;
 support_tab_x = [10,8*pitch+10];
 bearing_stop_y = 60;
 diverter_y = 15;
-function ejector_xpos(col) =20+col*pitch+channel_width/2;
 diverter_width = (columns-1)*pitch+channel_width;
 output_tab_x = [-1,ejector_xpos(4)-pitch/2-2.5, 195];
 spring_bar_width = support_tab_x[1] - support_tab_x[0] - 3;
@@ -30,11 +28,6 @@ module generic_plate_shape() {
     translate([width-10, right_height-7]) circle(d=3);
     translate([5, left_height-7]) circle(d=3);
   }
-}
-
-module diverter_cutout() {
-    clearance = 1;
-    translate([ejector_xpos(0)-channel_width/2-clearance, diverter_y-clearance]) square([diverter_width+clearance*2,31+clearance*2]);
 }
 
 module core_plate_2d() {
@@ -164,31 +157,6 @@ module top_plate_2d() {
       translate([x,15]) square([3,30]);
     }
     translate([10,interplate_support_y]) square([180,3]);
-  }
-}
-
-module diverter_2d() {
-  difference() {
-    translate([20,0]) square([diverter_width,30]);
-    for(c=[0:columns-1]) {
-      translate([ejector_xpos(c) + channel_width/2,5]) square([3,20]);
-      translate([ejector_xpos(c+1) - channel_width/2-3,5]) square([3,20]);
-    }
-  }
-}
-
-module diverter_rotate_arm_2d() {
-  translate([-10,-15]) {
-    difference() {
-      union() {
-	translate([10,10]) square([30,10]);
-	square([15,20]);
-	translate([0,-3]) polygon([[0,3], [3,1], [3,26], [0,23]]);
-      }
-      translate([10,15]) circle(d=3); // Axle hole
-      translate([20,10]) circle(d=3); // Notch for spring return
-      translate([35,15]) circle(d=3); // Notch for drive
-    }
   }
 }
 
@@ -365,3 +333,23 @@ module 3d_assembly() {
 
 // Example ball bearings
 translate([ejector_xpos(0),bearing_stop_y,ball_bearing_radius-2]) sphere(d=ball_bearing_diameter);
+
+// A stand to make testing easierm
+module stand_2d() {
+  gap = 53;
+  difference() {
+    polygon([[0,0], [20,24], [20,10], [20+gap,10], [20+gap,20], [20+gap+15,0]]);
+    translate([0,-1]) square([20,4]);
+    translate([70,-1]) square([20,4]);
+  }
+}
+
+module stand_joiner_2d() {
+  square([183,20]);
+}
+
+translate([10,-13,33]) rotate([0,90,0]) linear_extrude(height=3) stand_2d();
+translate([190,-13,33]) rotate([0,90,0]) linear_extrude(height=3) stand_2d();
+translate([10,-10,13]) rotate([90,0,0]) linear_extrude(height=3) stand_joiner_2d();
+translate([10,-10,13-70]) rotate([90,0,0]) linear_extrude(height=3) stand_joiner_2d();
+

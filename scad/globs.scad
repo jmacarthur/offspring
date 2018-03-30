@@ -60,7 +60,14 @@ memory_unit_gap = cell_height+20;
 // be a gap needed to join them.
 centre_gap = 50;
 
-
 /* Colour for illustrating ball bearing paths */
 
 bb_trace_colour = [0.5,0.0,0.0,0.5];
+
+
+channel_width = 7; // Width of channels ball bearings roll in
+
+columns_per_block = 8; // Number of columns in each injector/diverter block
+
+// Used mainly by injector
+function ejector_xpos(col) = 20+col*pitch+channel_width/2;

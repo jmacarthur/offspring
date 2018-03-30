@@ -1,6 +1,6 @@
 include <globs.scad>;
 use <octo-distributor-4.scad>;
-
+use <diverter-parts.scad>;
 columns = 8;
 
 kerf = 0.1;
