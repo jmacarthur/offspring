@@ -252,6 +252,13 @@ module diverted_output_plate_2d() {
 
 module diverter_rib_2d() {
   union() {
+    square([20,4]);
+    polygon([[-2,3], [5,10], [15,10], [23,3]]);
+  }
+}
+
+module diverter_output_rib_2d() {
+  union() {
     square([10,6]);
     polygon([[-12,3], [-6,6], [10,6], [13,3]]);
   }
@@ -260,8 +267,8 @@ module diverter_rib_2d() {
 module diverted_output_assembly() {
   linear_extrude(height=3) diverted_output_plate_2d();
   for(c=[1:columns-1]) {
-    color([0,1,0]) translate([ejector_xpos(c)-channel_width/2-3,0,0]) rotate([0,90,0]) rotate([0,0,-90])  translate([-15,-3,0]) linear_extrude(height=3) diverter_rib_2d();
-    color([0,1,0]) translate([ejector_xpos(c-1)+channel_width/2,0,0]) rotate([0,90,0]) rotate([0,0,-90])  translate([-15,-3,0]) linear_extrude(height=3) diverter_rib_2d();
+    color([0,1,0]) translate([ejector_xpos(c)-channel_width/2-3,0,0]) rotate([0,90,0]) rotate([0,0,-90])  translate([-15,-3,0]) linear_extrude(height=3) diverter_output_rib_2d();
+    color([0,1,0]) translate([ejector_xpos(c-1)+channel_width/2,0,0]) rotate([0,90,0]) rotate([0,0,-90])  translate([-15,-3,0]) linear_extrude(height=3) diverter_output_rib_2d();
   }
 }
 
@@ -306,6 +313,10 @@ module centred_diverter_assembly() {
   translate([0, -20, 4]) color([0.7,0.7,0.7]) linear_extrude(height=3) diverter_2d();
   translate([ejector_xpos(0)+channel_width/2,0,0]) rotate([0,90,0]) linear_extrude(height=3) diverter_rotate_arm_2d();
   translate([ejector_xpos(7)-channel_width/2-3,0,0]) rotate([0,90,0]) linear_extrude(height=3) diverter_rotate_arm_2d();
+  for(c=[1:columns-1]) {
+    if(c<columns-1) color([0,1,0]) translate([ejector_xpos(c)-channel_width/2-3,-0,7]) rotate([0,90,0]) rotate([0,0,90])  translate([-15,-3,0]) linear_extrude(height=3) diverter_rib_2d();
+    if(c>1) color([0,1,0]) translate([ejector_xpos(c-1)+channel_width/2,-0,7]) rotate([0,90,0]) rotate([0,0,90])  translate([-15,-3,0]) linear_extrude(height=3) diverter_rib_2d();
+  }
 }
 
 module 3d_assembly() {
@@ -323,7 +334,7 @@ module 3d_assembly() {
   // Diverter and support arms
   translate([208,diverter_y+20,17])
   {
-    rotate([$t*45,0,0]) rotate([0,180,0]) centred_diverter_assembly();
+    rotate([$t*40,0,0]) rotate([0,180,0]) centred_diverter_assembly();
   }
   for(x=support_tab_x) {
     translate([x+3,15,10]) rotate([0,-90,0]) linear_extrude(height=3) diverter_support_2d();
@@ -331,7 +342,7 @@ module 3d_assembly() {
   // Axle
   color([1.0,0,0]) translate([0,diverter_y+20,17]) rotate([0,90,0]) cylinder(d=3, h=300);
   for(x=support_tab_x) {
-    translate([x+3,bearing_stop_y+2,-25+3-explode]) rotate([0,-90,0]) color([0.5,0.7,0.5]) linear_extrude(height=3) ejector_support_2d();
+    //translate([x+3,bearing_stop_y+2,-25+3-explode]) rotate([0,-90,0]) color([0.5,0.7,0.5]) linear_extrude(height=3) ejector_support_2d();
   }
   for(c=[0:columns-1]) {
     translate([ejector_xpos(c)-1.5,bearing_stop_y+25,-17]) {
