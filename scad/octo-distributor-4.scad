@@ -55,7 +55,7 @@ module core_plate_2d() {
       circle(d=channel_width);
     }
 
-    diverter_cutout();
+    translate([0,diverter_y]) diverter_cutout();
   }
 }
 
@@ -132,7 +132,7 @@ module upper_plate_2d() {
       translate([ejector_xpos(c) - channel_width/2, 30]) square([channel_width,bearing_stop_y-25]);
     }
     translate([ejector_xpos(0) - channel_width/2, -1]) square([pitch*7+channel_width,30]);
-    diverter_cutout();
+    translate([0,diverter_y]) diverter_cutout();
     translate([20,interplate_support_y]) square([160,3]);
   }
 }
@@ -152,7 +152,7 @@ module top_plate_2d() {
 	translate([x,-3]) square([6,4]);
       }
     }
-    diverter_cutout();
+    translate([0,diverter_y]) diverter_cutout();
     for(x=support_tab_x) {
       translate([x,15]) square([3,30]);
     }
@@ -218,13 +218,6 @@ module diverted_output_plate_2d() {
 }
 
 
-module diverter_rib_2d() {
-  union() {
-    square([20,4]);
-    polygon([[-2,3], [5,10], [15,10], [23,3]]);
-  }
-}
-
 module diverter_output_rib_2d() {
   union() {
     square([10,6]);
@@ -274,16 +267,6 @@ module interplate_support_2d() {
     for(x=[ejector_xpos(0)+channel_width/2+1.5, ejector_xpos(7)-channel_width/2-1.5]) {
       translate([x,5]) circle(d=3);
     }
-  }
-}
-
-module centred_diverter_assembly() {
-  translate([0, -20, 4]) color([0.7,0.7,0.7]) linear_extrude(height=3) diverter_2d();
-  translate([ejector_xpos(0)+channel_width/2,0,0]) rotate([0,90,0]) linear_extrude(height=3) diverter_rotate_arm_2d();
-  translate([ejector_xpos(7)-channel_width/2-3,0,0]) rotate([0,90,0]) linear_extrude(height=3) diverter_rotate_arm_2d();
-  for(c=[1:columns-1]) {
-    if(c<columns-1) color([0,1,0]) translate([ejector_xpos(c)-channel_width/2-3,-0,7]) rotate([0,90,0]) rotate([0,0,90])  translate([-15,-3,0]) linear_extrude(height=3) diverter_rib_2d();
-    if(c>1) color([0,1,0]) translate([ejector_xpos(c-1)+channel_width/2,-0,7]) rotate([0,90,0]) rotate([0,0,90])  translate([-15,-3,0]) linear_extrude(height=3) diverter_rib_2d();
   }
 }
 
