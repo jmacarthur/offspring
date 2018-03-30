@@ -44,6 +44,12 @@ module core_plate_2d() {
       for(x=output_tab_x) {
 	translate([x,-3]) square([6,4]);
       }
+
+      // Loader extension
+      translate([ejector_xpos(0),channel_height+bearing_stop_y]) {
+	rotate(input_channel_slope) translate([175,-channel_width/2-10]) square([25,10]);
+	rotate(input_channel_slope) translate([175,-channel_width/2+channel_width]) square([25,10]);
+      }
     }
 
     for(c=[0:columns-1]) {
@@ -52,6 +58,7 @@ module core_plate_2d() {
     }
     translate([ejector_xpos(0),channel_height+bearing_stop_y]) {
       rotate(input_channel_slope) translate([0,-channel_width/2]) square([200,channel_width]);
+      rotate(input_channel_slope) translate([0,-channel_width/2]) translate([190,channel_width/2-5.5]) square([200,11]);
       circle(d=channel_width);
     }
 
@@ -61,7 +68,13 @@ module core_plate_2d() {
 
 module base_plate_2d() {
   difference() {
-    generic_plate_shape();
+    union() {
+      generic_plate_shape();
+      // Loader extension
+      translate([ejector_xpos(0),channel_height+bearing_stop_y]) {
+	rotate(input_channel_slope) translate([0,-channel_width/2]) square([190,channel_width]);
+      }
+    }
 
     // Cut off bottom of plate
     translate([-1,-1]) square([202, 51]);
@@ -116,6 +129,11 @@ module upper_plate_2d() {
       for(x=[output_tab_x[0], output_tab_x[2]]) {
 	translate([x,-3]) square([6,4]);
       }
+      // Loader extension
+      translate([ejector_xpos(0),channel_height+bearing_stop_y]) {
+	rotate(input_channel_slope) translate([0,-channel_width/2]) square([190,channel_width]);
+      }
+
     }
     for(c=[0:columns-1]) {
       translate([ejector_xpos(c) - channel_width/2, 30]) square([channel_width,bearing_stop_y-25]);
@@ -168,7 +186,7 @@ module diverter_rotate_arm_2d() {
 	translate([0,-3]) polygon([[0,3], [3,1], [3,26], [0,23]]);
       }
       translate([10,15]) circle(d=3); // Axle hole
-      translate([20,10]) circle(d=3); // Notch for spring return 
+      translate([20,10]) circle(d=3); // Notch for spring return
       translate([35,15]) circle(d=3); // Notch for drive
     }
   }
@@ -259,6 +277,15 @@ module spring_bar_2d()
   }
 }
 
+module input_tube_holder_2d() {
+  difference() {
+    translate([-10,-20]) square([20,40]);
+    slot_width = 20+channel_width;
+    translate([-1.5,-slot_width/2]) square([3,slot_width]);
+    circle(d=11);
+  }
+}
+
 module interplate_support_2d() {
   difference() {
     union() {
@@ -282,14 +309,14 @@ module centred_diverter_assembly() {
 }
 
 module 3d_assembly() {
-  linear_extrude(height=3) core_plate_2d();
-  translate([0,0,-5]) color([0.5,0.7,0.7]) linear_extrude(height=3) base_plate_2d();
+  color([0.6,0.6,0.9]) linear_extrude(height=3) core_plate_2d();
+  //translate([0,0,-5]) color([0.5,0.7,0.7]) linear_extrude(height=3) base_plate_2d();
   translate([support_tab_x[0]+3,bearing_stop_y+35+3,-22]) rotate([90,0,0]) color([0.6,0.7,0.7]) linear_extrude(height=3) spring_bar_2d();
 
-  translate([0,0,5]) color([0.5,0.7,0.7,0.5]) linear_extrude(height=3) upper_plate_2d();
+  //translate([0,0,5]) color([0.5,0.7,0.7,0.5]) linear_extrude(height=3) upper_plate_2d();
   for(c=[0:6]) translate([ejector_xpos(c)+channel_width/2,-3,5]) color([0.5,0.7,0.7,0.5]) linear_extrude(height=3) upper_output_separator_2d();
 
-  translate([0,0,10]) color([0.5,0.7,0.7,0.5]) linear_extrude(height=3) top_plate_2d();
+  //translate([0,0,10]) color([0.5,0.7,0.7,0.5]) linear_extrude(height=3) top_plate_2d();
 
   translate([0,interplate_support_y,23]) color([0.5,0.7,0.2]) rotate([-90,0,0]) linear_extrude(height=3) interplate_support_2d();
 
@@ -316,6 +343,10 @@ module 3d_assembly() {
 
   plate_adjust = 16;
   translate([0,plate_adjust-9,-35+plate_adjust]) rotate([45,0,0]) diverted_output_assembly();
+
+  for(dist=[191,198]) {
+    translate([20+dist,bearing_stop_y+channel_height+dist*sin(input_channel_slope),1.5]) rotate([0,0,input_channel_slope]) rotate([0,90,0])  color([0.5,0.9,0.9]) linear_extrude(height=3) input_tube_holder_2d();
+  }
 }
 
 3d_assembly();
