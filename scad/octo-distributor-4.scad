@@ -342,7 +342,7 @@ module 3d_assembly() {
   // Axle
   color([1.0,0,0]) translate([0,diverter_y+20,17]) rotate([0,90,0]) cylinder(d=3, h=300);
   for(x=support_tab_x) {
-    //translate([x+3,bearing_stop_y+2,-25+3-explode]) rotate([0,-90,0]) color([0.5,0.7,0.5]) linear_extrude(height=3) ejector_support_2d();
+    translate([x+3,bearing_stop_y+2,-25+3-explode]) rotate([0,-90,0]) color([0.5,0.7,0.5]) linear_extrude(height=3) ejector_support_2d();
   }
   for(c=[0:columns-1]) {
     translate([ejector_xpos(c)-1.5,bearing_stop_y+25,-17]) {
