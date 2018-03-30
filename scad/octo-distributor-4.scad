@@ -81,8 +81,6 @@ module ejector_support_2d() {
     }
     // Hole for ejector axle
     translate([5,23]) circle(d=3);
-    // Hole for diverter axle
-    translate([18,-27]) circle(d=3);
   }
 }
 
@@ -116,6 +114,9 @@ module top_plate_2d() {
       }
     }
     diverter_cutout();
+    for(x=support_tab_x) {
+      translate([x,15]) square([3,30]);
+    }
   }
 }
 
@@ -133,7 +134,7 @@ module diverter_rotate_arm_2d() {
   translate([-10,-15]) {
     difference() {
       union() {
-	square([20,20]);
+	square([15,20]);
 	translate([0,-3]) polygon([[0,3], [3,0], [3,26], [0,23]]);
       }
       translate([10,15]) circle(d=3);
@@ -141,16 +142,33 @@ module diverter_rotate_arm_2d() {
   }
 }
 
-module output_plate_2d() {
+module diverter_support_2d() {
   difference() {
-    square([200,13]);
+    union() {
+      square([15,30]);
+      translate([3,-3]) square([5,36]);
+    }
+    translate([7,20]) circle(d=3);
+  }
+}
+
+module output_plate_2d() {
+  extend_back = 30; // Projection behind zero
+  difference() {
+    translate([0,-extend_back]) square([200,extend_back+13]);
     for(c=[0:7]) {
       translate([ejector_xpos(c), 5+1.5]) circle(d=channel_width);
     }
     // Connecting tabs
     for(x=output_tab_x) {
-      translate([x,-1]) square([6,4]);
+      translate([x,0]) square([6,3]);
       translate([x,10]) square([6,3]);
+    }
+
+    // Holes for conduit
+    clearance = 0.5;
+    for(c=[0:7]) {
+      translate([ejector_xpos(c)-clearance-8, -30-clearance]) square([16+clearance*2,10+clearance*2]);
     }
   }
 }
@@ -168,13 +186,15 @@ module 3d_assembly() {
   translate([0,0,10]) color([0.5,0.7,0.7,0.5]) linear_extrude(height=3) top_plate_2d();
 
   // Diverter and support arms
-  translate([0,diverter_y+20,-4])
+  translate([208,diverter_y+20,17])
   {
-    rotate([$t,0,0]) centred_diverter_assembly();
+    rotate([$t*45,0,0]) rotate([0,180,0]) centred_diverter_assembly();
   }
-
+  for(x=support_tab_x) {
+    translate([x+3,15,10]) rotate([0,-90,0]) linear_extrude(height=3) diverter_support_2d();
+  }
   // Axle
-  color([1.0,0,0]) translate([0,diverter_y+20,-4]) rotate([0,90,0]) cylinder(d=3, h=300);
+  color([1.0,0,0]) translate([0,diverter_y+20,17]) rotate([0,90,0]) cylinder(d=3, h=300);
   for(x=support_tab_x) {
     translate([x+3,bearing_stop_y+2,-25+3-explode]) rotate([0,-90,0]) color([0.5,0.7,0.7]) linear_extrude(height=3) ejector_support_2d();
   }
