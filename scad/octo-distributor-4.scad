@@ -104,11 +104,24 @@ module ejector_arm_2d() {
 
 module upper_plate_2d() {
   difference() {
-    generic_plate_shape();
-    for(c=[0:columns-1]) {
-      translate([ejector_xpos(c) - channel_width/2, -1]) square([channel_width,bearing_stop_y+5]);
+    union() {
+      generic_plate_shape();
+      for(x=[output_tab_x[0], output_tab_x[2]]) {
+	translate([x,-3]) square([6,4]);
+      }
     }
+    for(c=[0:columns-1]) {
+      translate([ejector_xpos(c) - channel_width/2, 30]) square([channel_width,bearing_stop_y-25]);
+    }
+    translate([ejector_xpos(0) - channel_width/2, -1]) square([pitch*7+channel_width,30]);
     diverter_cutout();
+  }
+}
+
+module upper_output_separator_2d() {
+  difference() {
+    square([pitch-channel_width, 17]);
+    translate([(pitch-channel_width)/2-2.5,-1]) square([5,4]);
   }
 }
 
@@ -153,7 +166,7 @@ module diverter_rotate_arm_2d() {
 module diverter_support_2d() {
   difference() {
     union() {
-      square([15,30]);
+      translate([-2,0]) square([15,30]);
       translate([3,-3]) square([5,36]);
     }
     translate([7,20]) circle(d=3);
@@ -172,11 +185,23 @@ module output_plate_2d() {
       translate([x,0]) square([6,3]);
       translate([x,10]) square([6,3]);
     }
+    for(x=[output_tab_x[0], output_tab_x[2]]) {
+      translate([x,5]) square([6,3]);
+    }
 
     // Holes for conduit
     clearance = 0.5;
     for(c=[0:7]) {
       translate([ejector_xpos(c)-clearance-8, -30-clearance]) square([16+clearance*2,10+clearance*2]);
+    }
+
+    // Gaps for otuput separator plates
+
+    difference() {
+      translate([ejector_xpos(0),5]) square([pitch*7,3]);
+      for(c=[0:6]) {
+	translate([ejector_xpos(c)+pitch/2-2.5,5]) square([5,3]);
+      }
     }
   }
 }
@@ -233,7 +258,9 @@ module 3d_assembly() {
   translate([support_tab_x[0]+3,bearing_stop_y+35+3,-22]) rotate([90,0,0]) color([0.6,0.7,0.7]) linear_extrude(height=3) spring_bar_2d();
 
   translate([0,0,5]) color([0.5,0.7,0.7,0.5]) linear_extrude(height=3) upper_plate_2d();
-  translate([0,0,10]) color([0.5,0.7,0.7,0.5]) linear_extrude(height=3) top_plate_2d();
+  for(c=[0:6]) translate([ejector_xpos(c)+channel_width/2,-3,5]) color([0.5,0.7,0.7,0.5]) linear_extrude(height=3) upper_output_separator_2d();
+
+  //translate([0,0,10]) color([0.5,0.7,0.7,0.5]) linear_extrude(height=3) top_plate_2d();
 
   // Diverter and support arms
   translate([208,diverter_y+20,17])
