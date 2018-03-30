@@ -18,6 +18,7 @@ diverter_y = 15;
 function ejector_xpos(col) =20+col*pitch+channel_width/2;
 diverter_width = (columns-1)*pitch+channel_width;
 output_tab_x = [-1,ejector_xpos(4)-pitch/2-2.5, 195];
+spring_bar_width = support_tab_x[1] - support_tab_x[0] - 3;
 
 module generic_plate_shape() {
   left_height = 40+bearing_stop_y;
@@ -58,6 +59,8 @@ module base_plate_2d() {
     // Cut off bottom of plate
     translate([-1,-1]) square([202, 51]);
 
+    translate([support_tab_x[0]+3,bearing_stop_y+35]) square([spring_bar_width,3]);
+
     // Holes for ejector arms
     for(c=[0:columns-1]) {
       xpos = 20+c*pitch;
@@ -91,8 +94,11 @@ module ejector_arm_2d() {
       translate([-5,-5]) square([10,50]);
       translate([-5,-5]) square([30,10]);
       translate([20,-15]) polygon([[4,0], [0,20], [5,20], [6,0]]);
+      translate([-18,15]) square([16,11]); // Return spring support
     }
     circle(d=3);
+    translate([-13,23]) square([3,4]); // Cutout for return spring
+    translate([-6,33]) square([3,4]); // Cutout for drive spring
   }
 }
 
@@ -205,6 +211,15 @@ module diverted_output_assembly() {
   }
 }
 
+module spring_bar_2d()
+{
+  difference() {
+    square([spring_bar_width,20]);
+    for(c=[0:columns-1]) {
+      translate([ejector_xpos(c)-support_tab_x[0]-3,6]) circle(d=3);
+    }
+  }
+}
 
 module centred_diverter_assembly() {
   translate([0, -20, 4]) color([0.7,0.7,0.7]) linear_extrude(height=3) diverter_2d();
@@ -215,6 +230,8 @@ module centred_diverter_assembly() {
 module 3d_assembly() {
   linear_extrude(height=3) core_plate_2d();
   translate([0,0,-5]) color([0.5,0.7,0.7]) linear_extrude(height=3) base_plate_2d();
+  translate([support_tab_x[0]+3,bearing_stop_y+35+3,-22]) rotate([90,0,0]) color([0.6,0.7,0.7]) linear_extrude(height=3) spring_bar_2d();
+
   translate([0,0,5]) color([0.5,0.7,0.7,0.5]) linear_extrude(height=3) upper_plate_2d();
   translate([0,0,10]) color([0.5,0.7,0.7,0.5]) linear_extrude(height=3) top_plate_2d();
 
