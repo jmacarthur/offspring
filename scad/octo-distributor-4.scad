@@ -167,7 +167,9 @@ module diverter_rotate_arm_2d() {
 	square([15,20]);
 	translate([0,-3]) polygon([[0,3], [3,1], [3,26], [0,23]]);
       }
-      translate([10,15]) circle(d=3);
+      translate([10,15]) circle(d=3); // Axle hole
+      translate([20,10]) circle(d=3); // Notch for spring return 
+      translate([35,15]) circle(d=3); // Notch for drive
     }
   }
 }
@@ -266,6 +268,9 @@ module interplate_support_2d() {
     }
     for(c=[0:columns-1]) {
       translate([ejector_xpos(c),20]) circle(d=channel_width);
+    }
+    for(x=[ejector_xpos(0)+channel_width/2+1.5, ejector_xpos(7)-channel_width/2-1.5]) {
+      translate([x,5]) circle(d=3);
     }
   }
 }
