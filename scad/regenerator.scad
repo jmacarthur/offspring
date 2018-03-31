@@ -1,0 +1,38 @@
+/* Generic regenerator unit for use above and below subtractor */
+
+include <globs.scad>;
+
+/* Actuator arm - the bit pushed by the ball bearing, if any, which then pulls down the cable
+   to inject more ball bearings. */
+
+module actuator_arm_2d() {
+  difference() {
+    union() {
+      translate([-5,-5]) square([50,10]);
+      translate([-5,-5]) square([10,35]);
+      translate([-25,25]) polygon([[1,5], [10,5], [30,-10], [30,10], [10,20], [0,10]]);
+    }
+    circle(d=3);
+  }
+}
+
+module regen_pusher_2d(extra_clearance) {
+  difference() {
+    square([180,20]);
+    for(c=[0:7]) {
+      translate([ejector_xpos(c)-20,0]) circle(d=channel_width+extra_clearance);
+    }
+    for(x=pusher_support_x) {
+      translate([x, 10]) square([3,20]);
+    }
+  }
+}
+
+module regen_swing_arm_2d() {
+  difference() {
+    translate([-10,-7.5]) square([100,15]);
+    translate([70,-8.5]) square([6,4]);
+    circle(d=3);
+  }
+}
+
