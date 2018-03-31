@@ -36,3 +36,12 @@ module regen_swing_arm_2d() {
   }
 }
 
+module regen_rib_2d()
+{
+  union() {
+    polygon([[0,0], [0,7], [15,7], [35,13], [35,4], [45,4], [50,7], [60,7], [60,0]]);
+    // Connecting tabs
+    translate([0,-3]) square([10,13]);
+    translate([50,-3]) square([10,13]);
+  }
+}
