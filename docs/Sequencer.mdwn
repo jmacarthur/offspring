@@ -1,5 +1,54 @@
 # Sequencer details
 
+# List of all signals between datapath block and control block
+
+1) Injector fire all                          INJ-ALL
+2) Injector divert to subtractor              DIV1
+3) Post-memory divert                         DIV2
+4) 1st regenerator fire                       REGEN1
+5) Post-regen divert to instruction reg       DIV3
+6) Post-regen divert to PC                    DIV4
+7) Subtractor reset                           ACCZRO
+8) Post-subtractor regen fire                 REGEN2
+9) Memory enable                              MEMEN
+10) Address bar holdup                        ADRHLD
+11) Address buffer discard                    ADRBIN
+12) Accumlator overflow output to sender      CMP
+
+1 line from the datapath back to control block:
+
+13) Feedback CMP to PC
+
+Of these:
+
+2, 4, 5, 9, 10, 11 are all timed only - they happen each cycle regardless of the instruction.
+This leaves 1,3,6,7,8 to be controlled by logic.
+
+1) only if a subtractor read is required (i.e. only on STO)
+3) Only if we're dumping memory (also only on STO, but signficantly earlier than 1)
+6) Only on JMP and JRP (jump relative)
+7) Only on MVN
+8) Also only on STO.
+
+So the 'default' instruction is SUB; we do nothing for that; the other instructions STO, MVN, JMP, JRP we do specific actions.
+JMP/JRP are only distinguished by things internal to the control unit (clearing the PC first).
+
+For these I'd like to have instructions enumerated, so the 3 bits we get from memory get decoded into 1-of-8 raised sections, and the raised bits are actually used to drive bowden cables. JMP and JRP can
+ both drive the same one.
+
+
+Signals internal to logic unit:
+
+1) PC Reader injector                  PCREAD
+2) Eject data from instruction reg     IRCLR
+3) 
+
+
+
+
+
+
+
 Starting position: Instruction register should be clear, nothing asserted on the address bus. Memory bank should be deactivated.
 
 ## Instruction fetch
