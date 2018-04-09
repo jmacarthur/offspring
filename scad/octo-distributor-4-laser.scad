@@ -79,8 +79,8 @@ module a3_sheet_2() {
   translate([260,200]) rotate(90) stand_joiner_2d();
 }
 
-offset(kerf) { translate([20,0]) a3_sheet_1();}
-offset(kerf) { translate([320,5]) a3_sheet_2(); }
+//offset(kerf) { translate([20,0]) a3_sheet_1();}
+offset(kerf) { translate([20,5]) a3_sheet_2(); }
 
 
 // Simulated A3 acrylic sheets
@@ -90,5 +90,5 @@ module a3_sheet()
   translate([-5,-5,-3]) color([0.4,0.4,0.5,0.5]) cube([297,410,3]);
 }
 
-a3_sheet();
-translate([300,0]) a3_sheet();
+//a3_sheet();
+//translate([300,0]) a3_sheet();

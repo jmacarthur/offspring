@@ -26,6 +26,11 @@ module generic_plate_2d()
 	translate([ejector_xpos(c)+channel_width/2,regen_start_y+y]) square([3,slot_size]);
       }
     }
+
+    // Support bolts
+    for(x=support_tab_x) {
+    			 translate([x,10]) circle(d=3);
+    }
   }
 }
 
@@ -38,7 +43,10 @@ module baseplate_2d()
       clearance = 0.5;
       translate([ejector_xpos(c)-1.5-clearance,regen_start_y+3]) square([3+clearance*2,20]);
     }
-  }
+    // Cutout for output supports
+    for(x=support_tab_x) translate([x,regen_start_y-42]) square([3,30]);
+
+    }
 }
 
 module top_plate_2d()
@@ -65,14 +73,27 @@ module pusher_support_2d() {
   }
 }
 
+
+module output_support_2d() {
+  difference() {
+    union() {
+      translate([-2,0]) square([25,30]);
+      translate([3,-3]) square([5,36]);
+    }
+    translate([18,17]) circle(d=3);
+  }
+}
+
 module 3d_assembly() {
   translate([0,0,0]) linear_extrude(height=3) baseplate_2d();
   translate([0,0,10]) color([0.5,0.5,0]) linear_extrude(height=3) top_plate_2d();
 
   for(x=support_tab_x) {
     color([1.0,0.4,0.5]) translate([x+3,regen_start_y-80,10]) rotate([0,-90,0]) linear_extrude(height=3) pusher_support_2d();
+    color([1.0,0.4,0.5]) translate([x,regen_start_y-42,3]) rotate([0,90,0]) linear_extrude(height=3) output_support_2d();
   }
   for(c=[0:7]) translate([ejector_xpos(c)-1.5, regen_start_y-25,-15]) rotate([0,90,0]) color([0,1.0,1.0]) linear_extrude(height=3) rotate(-$t*10) actuator_arm_2d();
+
   translate([20,regen_start_y+10,10+channel_width/2]) rotate([90,0,0]) linear_extrude(height=3) regen_pusher_2d(0);
   translate([20,regen_start_y+13,10+channel_width/2]) rotate([90,0,0]) linear_extrude(height=3) regen_pusher_2d(2);
 
