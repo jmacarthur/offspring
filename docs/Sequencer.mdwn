@@ -41,15 +41,52 @@ Signals internal to logic unit:
 
 1) PC Reader injector                  PCREAD
 2) Eject data from instruction reg     IRCLR
-3) 
+3) Set up instruction reg              READIR
+4) PC Increment                        PCINC
+5) PC Zero                             PCZERO
 
-
-
-
-
-
+That's 16 signals to get out of the cam.
 
 Starting position: Instruction register should be clear, nothing asserted on the address bus. Memory bank should be deactivated.
+
+
+MR = Mem reset
+
+Also needed: IR holdoff
+
+ADDRBIN probably can't be used until after we've regenerated, by which point the next address is waiting to enter the address buffer - we'd need something to gate it until we're ready for the next address
+
+|||||| |||||| |||||| |||||| |||||| |||||| |||||| |||||| |||||| |||||| |||||| |||||| |||||| |||||| |||||| |||||| |
+PCREAD IRCLR  READIR PCINC  INJALL DIV1   DIV2   REGEN1 DIV3   DIV4   ACCZRO REGEN2 MEMEN  ADRHLD ADRBIN CMP   MR
+  ##                                                                                         ##
+        PC Now read into address buffer and address hold-off released <delay>
+                                                          ##                          ##
+                                                          ##
+                                                <delay to read memory>
+                                                   ##     ##                          ##
+                                          <memory regenerated and instruction read in> NB - addr now available
+                                                                                      ##                       ##
+                                                          <memory now reset>
+                ##                                                                           ##     ##
+                                         < instructions now set up >
+                                                                                             ##
+                                        <memory address now set up >
+(PCZERO 6)                    ##5   ##     ##1                  ##2     ##3           ##                 ##4
+                              ##5   ##     ##1                  ##2
+                              ##5   ##     ##1                  ##2                   ##
+                               .        <data read now held at regen if not STO>
+                                                  ##                           ##
+		 < instruction complete >
+         ##            ##
+
+1. Only on STO.
+2. JMP or JRL
+3. Only on MVN.
+4. Only on CMP. This can occur at any time after instruction's set up.
+5. Only on STO.
+6. Only on JMP.
+
+This suggests several combinations - most instructions only need one firing thing - so INJALL, DIV1, DIV2, DIV4, CMP and ACCZRO can all be combined / run off one cam - they'll still need separate bowden cables.
 
 ## Instruction fetch
 
