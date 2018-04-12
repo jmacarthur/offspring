@@ -7,7 +7,7 @@ $fn=20;
 explode = 0;
 
 support_tab_x = [ 10, 200];
-pusher_support_x = [ 30,170];
+pusher_support_x = [ 30,130];
 
 regen_start_y = 100;
 
@@ -29,7 +29,7 @@ module generic_plate_2d()
 
     // Support bolts
     for(x=support_tab_x) {
-    			 translate([x,10]) circle(d=3);
+      translate([x,10]) circle(d=3);
     }
   }
 }
@@ -49,6 +49,9 @@ module baseplate_2d()
     }
 }
 
+clearance = 0.5; // For pusher stops
+
+
 module top_plate_2d()
 {
   difference() {
@@ -58,15 +61,21 @@ module top_plate_2d()
     translate([15,regen_start_y+5]) square([190,30]);
 
     // Cutout for pusher supports
-    for(x=support_tab_x) translate([x,regen_start_y-80]) square([3,30]);
+    for(x=support_tab_x) translate([x,regen_start_y-75]) square([3,20]);
 
+    // Cutout for pusher limiters
+    for(x=pusher_support_x) {
+      translate([x+10,regen_start_y-50]) square([10-clearance,3]);
+      translate([x+23+clearance,regen_start_y-50]) square([10-clearance,3]);
+      translate([x+10+3,regen_start_y-20]) square([3,5]);
+    }
   }
 }
 
 module pusher_support_2d() {
   difference() {
     union() {
-      translate([-2,0]) square([25,30]);
+      translate([-7,5]) square([30,20]);
       translate([3,-3]) square([5,36]);
     }
     translate([18,17]) circle(d=3);
@@ -84,8 +93,31 @@ module output_support_2d() {
   }
 }
 
+module stop_plate_2d() {
+  difference() {
+    union() {
+      translate([0,-3]) square([10-clearance,30]);
+      translate([-3,0]) square([16,3]);
+      translate([10+3+clearance,-3]) square([10-clearance,30]);
+      translate([10+clearance,0]) square([16,3]);
+      translate([0,22.5]) square([20,4.5]);
+      translate([5,25]) square([10+3,5]);
+    }
+    translate([3,15]) square([3,5]);
+  }
+}
+
+
+module triagonal_support_2d() {
+  union() {
+    polygon([[0,0], [32,0], [32,20]]);
+    translate([0,-3]) square([5,5]);
+    translate([25,15]) square([10,5]);
+  }
+}
+
 module 3d_assembly() {
-  translate([0,0,0]) linear_extrude(height=3) baseplate_2d();
+  translate([0,0,0]) color([0.5,0.5,0.5])linear_extrude(height=3) baseplate_2d();
   translate([0,0,10]) color([0.5,0.5,0]) linear_extrude(height=3) top_plate_2d();
 
   for(x=support_tab_x) {
@@ -102,6 +134,11 @@ module 3d_assembly() {
   for(c=[0:7]) {
     translate([ejector_xpos(c)-channel_width/2,regen_start_y+50,3]) rotate([90,0,0]) rotate([0,-90,0]) linear_extrude(height=3) regen_rib_2d();
     translate([ejector_xpos(c)+channel_width/2+3,regen_start_y+50,3]) rotate([90,0,0]) rotate([0,-90,0]) linear_extrude(height=3) regen_rib_2d();
+  }
+
+  for(x=pusher_support_x) {
+    translate([x+10,regen_start_y-50+3,13]) rotate([90,0,0]) linear_extrude(height=3) stop_plate_2d();
+    translate([x+16,regen_start_y-50+35,13]) rotate([90,0,0]) rotate([0,-90,0]) linear_extrude(height=3) triagonal_support_2d();
   }
 
   // Axles
