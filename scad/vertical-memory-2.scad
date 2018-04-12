@@ -132,7 +132,7 @@ module row_comb_2d() {
 
 module input_gate_2d() {
   difference() {
-    square([230,20]);
+    square([210,20]);
     for(c=[0:7]) {
       translate([c*pitch+29,-1]) square([10,4]);
       translate([c*pitch+18,column_width/2]) circle(d=column_width);
