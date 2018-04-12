@@ -15,7 +15,7 @@ y_tab_positions = [20,100];
 
 x_comb_positions = [8,198];
 
-
+returner_support_y = [ 20,100 ];
 module base_plate_2d()
 {
   difference() {
@@ -38,8 +38,32 @@ module base_plate_2d()
       translate([10.5+col*pitch,4+8*cell_height]) circle(d=3);
       translate([10.5+col*pitch,4+4*cell_height]) circle(d=3);
     }
+
+    // Mounting holes for the returner thing
+    for(y=returner_support_y) {
+      translate([12,y]) square([10,3]);
+    }
   }
 }
+
+module top_plate_2d()
+{
+  difference() {
+    square([210,130]);
+
+    // Mounting holes to match the v1 vertical memory
+    for(x=[5, column_spacing*columns+21]) {
+      translate([x,3]) circle(d=3,$fn=20);
+      translate([x,cell_height*rows+10]) circle(d=3,$fn=20);
+    }
+    for(y=y_tab_positions) {
+      for(x=x_comb_positions) {
+	translate([x,y]) square([3,10]);
+      }
+    }
+  }
+}
+
 
 module deflector_cell_2d() {
   polygon(points=[[7,-1], [7,7], [0,10], [-joiner_extension,14], [14,14], [14,-1]]);
@@ -117,7 +141,7 @@ module row_comb_2d() {
   difference() {
     union() {
       square([130,20]);
-      for(y=y_tab_positions) translate([y,-3]) square([10,4]);
+      for(y=y_tab_positions) translate([y,-3]) square([10,20+6]);
     }
     for(r=[0:7]) {
       translate([r*cell_height+4,rod_height]) square([3+clearance,10+clearance]);
@@ -132,7 +156,10 @@ module row_comb_2d() {
 
 module input_gate_2d() {
   difference() {
-    square([210,20]);
+    union() {
+      square([210,17]);
+      translate([10,0]) square([190,20]);
+    }
     for(c=[0:7]) {
       translate([c*pitch+29,-1]) square([10,4]);
       translate([c*pitch+18,column_width/2]) circle(d=column_width);
@@ -144,13 +171,24 @@ module input_gate_2d() {
   }
 }
 
+module returner_support_2d() {
+  difference() {
+    union() {
+      translate([0,-3]) square([10,4]);
+      translate([0,0]) square([30,10]);
+    }
+    translate([25,5]) circle(d=3);
+  }
+}
+
 interruptor_pos = 9;
-mover_pos = 0;
+mover_pos = 9;
 
 
 
 module 3d_assembly() {
   linear_extrude(height=3) base_plate_2d();
+  translate([0,0,23]) linear_extrude(height=3) top_plate_2d();
 
   for(x=[1:columns]) {
     translate([pitch*x,14*(rows+1),3]) color([1.0,0,0]) linear_extrude(height=3) scale([1,-1]) deflector_line_2d();
@@ -158,13 +196,17 @@ module 3d_assembly() {
 
   for(y=[0:rows-1]) {
     color([0.5,0.5,0.5]) translate([mover_pos-2,7+3+2+y*cell_height,6]) rotate([90,0,0]) linear_extrude(height=3) row_mover_2d();
-    //color([0.5,0.5,1.0]) translate([interruptor_pos-2,7+y*cell_height,6]) rotate([90,0,0]) linear_extrude(height=3) row_interruptor_2d();
+    color([0.5,0.5,1.0]) translate([interruptor_pos-2,7+y*cell_height,6]) rotate([90,0,0]) linear_extrude(height=3) row_interruptor_2d();
     color([1.0,0,1.0]) translate([100-3+interruptor_pos-9,y*cell_height,9+column_width/2]) linear_extrude(height=3) row_pusher_2d();
   }
 
   for(x=x_comb_positions) translate([x,0,3]) rotate([90,0,90]) linear_extrude(height=3) row_comb_2d();
 
   color([1.0,0.5,0.5]) translate([0,8*cell_height+13,3]) rotate([90,0,0]) linear_extrude(height=3) input_gate_2d();
+
+  for(y=returner_support_y) {
+    color([1.0,1.0,0.5]) translate([22,y+3,0]) rotate([90,0,0]) linear_extrude(height=3) rotate(180) returner_support_2d();
+  }
 
 }
 
