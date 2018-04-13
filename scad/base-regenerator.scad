@@ -46,7 +46,13 @@ module baseplate_2d()
     // Cutout for output supports
     for(x=support_tab_x) translate([x,regen_start_y-42]) square([3,30]);
 
-    }
+    // Support for a very basic bias mechanism (rubber bands)
+    translate([-1,regen_start_y-5]) square([4,5]);
+    translate([-1,regen_start_y+5]) square([4,5]);
+    translate([217,regen_start_y-5]) square([4,5]);
+    translate([217,regen_start_y+5]) square([4,5]);
+
+  }
 }
 
 clearance = 0.5; // For pusher stops

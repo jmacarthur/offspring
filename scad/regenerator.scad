@@ -10,7 +10,7 @@ module actuator_arm_2d() {
     union() {
       translate([-5,-5]) square([50,10]);
       translate([-5,-5]) square([10,35]);
-      translate([-25,25]) polygon([[1,5], [10,5], [30,-10], [30,10], [10,20], [0,10]]);
+      translate([-25,25]) polygon([[1,5], [10,5], [10,5], [10,0], [30,-10], [30,10], [10,20], [0,10]]);
     }
     circle(d=3);
     translate([25,0]) circle(d=3);
