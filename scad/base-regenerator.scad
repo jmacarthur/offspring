@@ -54,6 +54,8 @@ module baseplate_2d()
     translate([217,regen_start_y-5]) square([4,5]);
     translate([217,regen_start_y+5]) square([4,5]);
 
+    // Slots to attach the actuator
+    translate([ejector_xpos(3)+pitch/2-1.5,regen_start_y]) square([3,20]);
   }
 }
 
@@ -125,6 +127,17 @@ module triagonal_support_2d() {
   }
 }
 
+
+module regen_actuator_2d() {
+  difference() {
+    union() {
+      square([30,30]);
+      translate([0,5]) square([33,20]);
+    }
+    translate([5,10]) square([33,10]);
+  }
+}
+
 module pusher_assembly() {
   translate([0,73,10+channel_width/2-28]) rotate([90,0,0]) linear_extrude(height=3) regen_pusher_2d(0);
   translate([0,76,10+channel_width/2-28]) rotate([90,0,0]) linear_extrude(height=3) regen_pusher_2d(2);
@@ -159,6 +172,8 @@ module 3d_assembly() {
 
 
   translate([0,regen_start_y-20,-30]) rotate([90,0,0]) linear_extrude(height=3) regen_output_comb_2d();
+
+  translate([ejector_xpos(3)+pitch/2+1.5,regen_start_y-5,-30]) rotate([0,-90,0]) linear_extrude(height=3) regen_actuator_2d();
 }
 
 3d_assembly();

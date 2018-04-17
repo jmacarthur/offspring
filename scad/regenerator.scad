@@ -28,6 +28,7 @@ module regen_pusher_2d(extra_clearance) {
     for(x=pusher_support_x) {
       translate([x, 10]) square([3,20]);
     }
+    translate([ejector_xpos(3)+pitch/2-20,10]) circle(d=3);
   }
 }
 
