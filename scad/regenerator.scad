@@ -20,7 +20,7 @@ module actuator_arm_2d() {
 
 module regen_pusher_2d(extra_clearance) {
   difference() {
-    square([180,20]);
+    polygon([[0,0], [180,0], [180,10], [160,20], [20,20], [0,10], [0,20]]);
     for(c=[0:7]) {
       translate([ejector_xpos(c)-20,0]) circle(d=channel_width+extra_clearance);
     }
@@ -49,5 +49,19 @@ module regen_rib_2d()
     // Connecting tabs
     translate([0,-3]) square([10,13]);
     translate([50,-3]) square([10,13]);
+  }
+}
+
+module regen_output_comb_2d() {
+  clearance = 0.1;
+  width = 190 -3;
+  difference() {
+    union() {
+      translate([13,0]) square([width,30]);
+      translate([10,20]) square([width+6,10]);
+    }
+    for(c=[0:7]) {
+      translate([ejector_xpos(c)-1.5-clearance, -1]) square([3+clearance*2,22]);
+    }
   }
 }

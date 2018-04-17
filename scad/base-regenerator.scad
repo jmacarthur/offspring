@@ -7,7 +7,7 @@ $fn=20;
 explode = 0;
 
 support_tab_x = [ 10, 200];
-pusher_support_x = [ 30,130];
+pusher_support_x = [ ejector_xpos(0)+pitch/2+1.5,ejector_xpos(4)+pitch/2+1.5];
 
 regen_start_y = 100;
 
@@ -92,10 +92,11 @@ module pusher_support_2d() {
 module output_support_2d() {
   difference() {
     union() {
-      translate([-2,0]) square([25,30]);
-      translate([3,-3]) square([5,36]);
+      translate([-2,0]) square([6,30]);
+      polygon([[3,-3], [25,15], [25,25], [3,33]]);
     }
     translate([18,17]) circle(d=3);
+    translate([3,19]) square([10,3]);
   }
 }
 
@@ -122,6 +123,12 @@ module triagonal_support_2d() {
   }
 }
 
+module pusher_assembly() {
+  translate([0,73,10+channel_width/2-28]) rotate([90,0,0]) linear_extrude(height=3) regen_pusher_2d(0);
+  translate([0,76,10+channel_width/2-28]) rotate([90,0,0]) linear_extrude(height=3) regen_pusher_2d(2);
+  for(x=pusher_support_x) translate([x,0,0]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) regen_swing_arm_2d();
+}
+
 module 3d_assembly() {
   translate([0,0,0]) color([0.5,0.5,0.5])linear_extrude(height=3) baseplate_2d();
   translate([0,0,10]) color([0.5,0.5,0]) linear_extrude(height=3) top_plate_2d();
@@ -132,11 +139,7 @@ module 3d_assembly() {
   }
   for(c=[0:7]) translate([ejector_xpos(c)-1.5, regen_start_y-25,-15]) rotate([0,90,0]) color([0,1.0,1.0]) linear_extrude(height=3) rotate(-$t*10) actuator_arm_2d();
 
-  translate([20,regen_start_y+10,10+channel_width/2]) rotate([90,0,0]) linear_extrude(height=3) regen_pusher_2d(0);
-  translate([20,regen_start_y+13,10+channel_width/2]) rotate([90,0,0]) linear_extrude(height=3) regen_pusher_2d(2);
-
-  for(x=pusher_support_x) translate([x+20,regen_start_y-60-3,28]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) regen_swing_arm_2d();
-
+  translate([20,regen_start_y-63,28]) rotate([-5*$t,0,0]) pusher_assembly();
   for(c=[0:7]) {
     translate([ejector_xpos(c)-channel_width/2,regen_start_y+50,3]) rotate([90,0,0]) rotate([0,-90,0]) linear_extrude(height=3) regen_rib_2d();
     translate([ejector_xpos(c)+channel_width/2+3,regen_start_y+50,3]) rotate([90,0,0]) rotate([0,-90,0]) linear_extrude(height=3) regen_rib_2d();
@@ -150,6 +153,8 @@ module 3d_assembly() {
   // Axles
   translate([0,regen_start_y-60-3,28]) rotate([0,90,0]) cylinder(d=3,h=250);
 
+
+  translate([0,80,-30]) rotate([90,0,0]) linear_extrude(height=3) regen_output_comb_2d();
 }
 
 3d_assembly();
