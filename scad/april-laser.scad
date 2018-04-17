@@ -41,7 +41,7 @@ offset(kerf) {
 
   translate([0,300]) input_gate_2d();
 
-  translate([395,160]) rotate(90) ejector_comb_2d();
+  translate([380,160]) rotate(90) ejector_comb_2d();
 
   // ----------------------------------------
 
@@ -51,10 +51,11 @@ offset(kerf) {
   regen_start_y = 100;
 
 
-  translate([370,160]) rotate(90) baseplate_2d();
-  translate([530,160]) rotate(90) memory_top_plate_2d();
+  translate([350,160]) rotate(90) baseplate_2d();
+  translate([530,160]) rotate(90) top_plate_2d();
 
   translate([550,140]) scale([-1,1]) actuator_arm_2d();
+  translate([450,110]) scale([-1,1]) actuator_arm_2d();
 
   for(y=[0:2]) {
     for(c=[0:1]) {
@@ -62,7 +63,8 @@ offset(kerf) {
     }
   }
 
-  for(x=[0:1]) translate([410,190+x*90]) rotate(90) regen_swing_arm_2d();
+  translate([425,190]) rotate(90) regen_swing_arm_2d();
+  translate([10,115]) regen_swing_arm_2d();
 
   for(x=[0:1]) {
     translate([140+x*40,330])  stop_plate_2d();
@@ -73,9 +75,9 @@ offset(kerf) {
   }
 
   translate([0,130]) regen_pusher_2d(0);
-  translate([200,130]) regen_pusher_2d(2);
+  translate([180,130]) regen_pusher_2d(2);
 
-  translate([390,120])
+  translate([370,120])
     for(x=[0:1]) {
       translate([x*40,0])
 	pusher_support_2d();
