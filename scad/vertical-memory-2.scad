@@ -16,7 +16,7 @@ y_tab_positions = [20,100];
 x_comb_positions = [8,198];
 
 returner_support_y = [ 20,100 ];
-module base_plate_2d()
+module memory_base_plate_2d()
 {
   difference() {
     square([210,130]);
@@ -46,7 +46,7 @@ module base_plate_2d()
   }
 }
 
-module top_plate_2d()
+module memory_top_plate_2d()
 {
   difference() {
     square([210,130]);
@@ -187,8 +187,8 @@ mover_pos = 9;
 
 
 module 3d_assembly() {
-  linear_extrude(height=3) base_plate_2d();
-  translate([0,0,23]) linear_extrude(height=3) top_plate_2d();
+  linear_extrude(height=3) memory_base_plate_2d();
+  translate([0,0,23]) linear_extrude(height=3) memory_top_plate_2d();
 
   for(x=[1:columns]) {
     translate([pitch*x,14*(rows+1),3]) color([1.0,0,0]) linear_extrude(height=3) scale([1,-1]) deflector_line_2d();

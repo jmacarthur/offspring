@@ -203,6 +203,19 @@ module output_plate_2d() {
   }
 }
 
+module ejector_comb_2d() {
+  clearance = 0.1;
+  difference() {
+    square([200,20]);
+    for(c=[0:7]) {
+      translate([ejector_xpos(c)-1.5-clearance,-1]) square([3+clearance*2,10]);
+    }
+    for(x=support_tab_x) {
+      translate([x,-1]) square([3,10]);
+    }
+  }
+}
+
 
 module diverted_output_plate_2d() {
   difference() {
@@ -309,6 +322,9 @@ module 3d_assembly() {
   for(dist=[185,198]) {
     translate([20+dist,bearing_stop_y+channel_height+dist*sin(input_channel_slope),1.5]) rotate([0,0,input_channel_slope]) rotate([0,90,0])  color([0.5,0.9,0.9]) linear_extrude(height=3) input_tube_holder_2d();
   }
+
+  translate([0,65,-20]) rotate([-90,0,0]) linear_extrude(height=3) ejector_comb_2d();
+
 }
 
 3d_assembly();
