@@ -41,7 +41,7 @@ offset(kerf) {
 
   translate([0,300]) input_gate_2d();
 
-  translate([600,400]) ejector_comb_2d();
+  translate([395,160]) rotate(90) ejector_comb_2d();
 
   // ----------------------------------------
 
