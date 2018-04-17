@@ -19,8 +19,9 @@ module actuator_arm_2d() {
 }
 
 module regen_pusher_2d(extra_clearance) {
+  width = 172;
   difference() {
-    polygon([[0,0], [180,0], [180,10], [160,20], [20,20], [0,10], [0,20]]);
+    polygon([[0,0], [width,0], [width,10], [width-20,20], [20,20], [0,10], [0,20]]);
     for(c=[0:7]) {
       translate([ejector_xpos(c)-20,0]) circle(d=channel_width+extra_clearance);
     }
