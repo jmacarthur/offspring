@@ -19,12 +19,12 @@ output_tab_x = [-1,ejector_xpos(4)-pitch/2-2.5, 195];
 spring_bar_width = support_tab_x[1] - support_tab_x[0] - 3;
 interplate_support_y=70;
 
-module generic_plate_shape() {
+module generic_plate_shape(height_extension) {
   width = 200;
   left_height = 40+bearing_stop_y;
   right_height = left_height+width*sin(input_channel_slope);
   difference() {
-    polygon([[0,0], [width,0], [width,right_height], [0,left_height]]);
+    polygon([[0,0], [width,0], [width,right_height+height_extension], [0,left_height+height_extension]]);
     translate([width-10, right_height-7]) circle(d=3);
     translate([5, left_height-7]) circle(d=3);
   }
@@ -33,7 +33,7 @@ module generic_plate_shape() {
 module core_plate_2d() {
   difference() {
     union() {
-      generic_plate_shape();
+      generic_plate_shape(10);
       for(x=output_tab_x) {
 	translate([x,-10]) square([6,10]);
       }
@@ -46,13 +46,21 @@ module core_plate_2d() {
     }
 
     for(c=[0:columns-1]) {
+      // Vertical channels
       translate([ejector_xpos(c)-channel_width/2, bearing_stop_y]) square([channel_width, channel_height+c*pitch*sin(input_channel_slope)]);
       translate([ejector_xpos(c), bearing_stop_y]) circle(d=channel_width);
     }
     translate([ejector_xpos(0),channel_height+bearing_stop_y]) {
+      // Main sloping input channel
       rotate(input_channel_slope) translate([0,-channel_width/2]) square([200,channel_width]);
+      hull() {
+	translate([10,10]) circle(d=channel_width);
+	translate([150,10+150*sin(input_channel_slope)]) circle(d=channel_width);
+	translate([165,165*sin(input_channel_slope)]) circle(d=channel_width);
+	circle(d=channel_width);
+      }
+      // Larger space on the tube attachment
       rotate(input_channel_slope) translate([0,-channel_width/2]) translate([185,channel_width/2-5.5]) square([200,11]);
-      circle(d=channel_width);
     }
 
     translate([0,diverter_y]) diverter_cutout();
