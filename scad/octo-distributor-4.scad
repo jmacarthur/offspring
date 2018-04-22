@@ -128,8 +128,10 @@ module upper_plate_2d() {
       }
 
     }
+    output_channel_width = ball_bearing_diameter;
     for(c=[0:columns-1]) {
-      translate([ejector_xpos(c) - channel_width/2, 30]) square([channel_width,bearing_stop_y-25]);
+      translate([ejector_xpos(c) - channel_width/2, bearing_stop_y-25]) square([channel_width,25]);
+      translate([ejector_xpos(c), bearing_stop_y]) circle(d=output_channel_width);
     }
     translate([ejector_xpos(0) - channel_width/2, -1]) square([pitch*7+channel_width,30]);
     translate([0,diverter_y]) diverter_cutout();
