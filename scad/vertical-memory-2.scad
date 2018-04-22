@@ -200,7 +200,7 @@ module 3d_assembly() {
     color([1.0,0,1.0]) translate([100-3+interruptor_pos-9,y*cell_height,9+column_width/2]) linear_extrude(height=3) row_pusher_2d();
   }
 
-  for(x=x_comb_positions) translate([x,0,3]) rotate([90,0,90]) linear_extrude(height=3) row_comb_2d();
+  for(x=x_comb_positions) translate([x,0,3]) color([0.4,0.8,0.8]) rotate([90,0,90]) linear_extrude(height=3) row_comb_2d();
 
   color([1.0,0.5,0.5]) translate([0,8*cell_height+13,3]) rotate([90,0,0]) linear_extrude(height=3) input_gate_2d();
 
