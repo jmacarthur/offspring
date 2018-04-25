@@ -295,10 +295,10 @@ module interplate_support_2d() {
 
 module 3d_assembly() {
   color([0.6,0.6,0.9]) linear_extrude(height=3) core_plate_2d();
-  translate([0,0,-5]) color([0.5,0.7,0.7]) linear_extrude(height=3) base_plate_2d();
+  //translate([0,0,-5]) color([0.5,0.7,0.7]) linear_extrude(height=3) base_plate_2d();
   translate([support_tab_x[0]+3,bearing_stop_y+35+3,-22]) rotate([90,0,0]) color([0.6,0.7,0.7]) linear_extrude(height=3) spring_bar_2d();
 
-  translate([0,0,5]) color([0.5,0.7,0.7,0.5]) linear_extrude(height=3) upper_plate_2d();
+  translate([0,0,5]) color([0.5,0.7,0.7,1.0]) linear_extrude(height=3) upper_plate_2d();
   for(c=[0:6]) translate([ejector_xpos(c)+channel_width/2,-3,5]) color([0.5,0.7,0.7,0.5]) linear_extrude(height=3) upper_output_separator_2d();
 
   translate([0,0,10]) color([0.5,0.7,0.7,0.5]) linear_extrude(height=3) top_plate_2d();
