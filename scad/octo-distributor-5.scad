@@ -33,8 +33,9 @@ module intake_chamber_2d()
       rotate(-180-intake_slope) translate([90,-tube_diameter/2]) square([50,tube_diameter]);
     }
 
-    translate([40,20]) input_parallelogram(intake_channel_x_size, 90);
+    translate([40,20]) input_parallelogram(intake_channel_x_size+1, 90);
     translate([40,30]) intake_chamber_holes();
+
     // Holes for grade tabs
     translate([37,5]) square([3,10]);
     translate([37,30]) square([3+0.1,10]);
@@ -44,11 +45,23 @@ module intake_chamber_2d()
     translate([80,-1]) square([3,6]);
     translate([10,10]) intake_chamber_holes();
     translate([10,40]) intake_chamber_holes();
+
+    // Fixing hole
+    translate([95,35]) circle(d=3);
   }
 }
 
 module input_parallelogram(width, height) {
   polygon([[0,0], [width, -width*sin(intake_slope)], [width, -width*sin(intake_slope)+height], [0,height]]);
+}
+
+module right_swing_support_2d()
+{
+  difference() {
+    square([18,40]);
+    translate([5,-1]) square([3,10]);
+    translate([13,35]) circle(d=3);
+  }
 }
 
 module intake_sidewalls_2d()
@@ -127,24 +140,51 @@ function bb_centre_position(x) = ball_bearing_diameter+cos(intake_slope)*(x+0.5)
 function bb_divider_position(x) = ball_bearing_diameter+cos(intake_slope)*(x)*ball_bearing_diameter;
 function stage1_output_position(x) = stage1_output_pitch*x;
 
+module stage1_constructor_holes() {
+  for(x=[-7,55])
+    for(y=[12])
+      translate([x,y]) circle(d=3);
+}
+
 module stage1_distributor_2d() {
   difference() {
     union() {
-      square([60,30]);
-      translate([-10,0]) square([80,15]);
+      square([55,30]);
+      translate([-12,0]) square([74,17]);
     }
     for(x=[0:6]) {
       descend = 5*sin(180*x/6);
       translate([bb_divider_position(x),15-descend]) circle(d=stage1_wire_diameter);
       translate([bb_divider_position(x),15-descend-stage1_wire_diameter]) circle(d=stage1_wire_diameter);
-      translate([stage1_output_position(x),0]) circle(d=stage1_wire_diameter);
+      translate([stage1_output_position(x),5]) circle(d=stage1_wire_diameter);
     }
+    stage1_constructor_holes();
+    
   }
 }
+
+module stage1_distributor_top_2d() {
+  difference() {
+    union() {
+      square([55,21]); // The length of this determines the swing of the injector arm
+      translate([-12,0]) square([74,17]);
+    }
+    for(x=[0:6]) {
+      descend = 5*sin(180*x/6);
+      translate([bb_divider_position(x),15-descend]) circle(d=stage1_wire_diameter);
+      translate([bb_divider_position(x),15-descend-stage1_wire_diameter]) circle(d=stage1_wire_diameter);
+      translate([stage1_output_position(x),5]) circle(d=stage1_wire_diameter);
+    }
+    stage1_constructor_holes();
+  }
+}
+
 
 module stage1_distributor_assembly() {
   rotate([stage1_slope, 0,0]) translate([0,-30,0]) {
     color([0.3,0.3,0.3])     linear_extrude(height=3) stage1_distributor_2d();
+
+    color([0.3,0.3,0.3,0.3])     translate([0,0,10]) linear_extrude(height=3) stage1_distributor_top_2d();
 
     // Example wires
     for(x=[0:6]) {
@@ -171,7 +211,9 @@ module 3d_octo5_assembly() {
   color([0.4,0.4,0]) translate([53,10,0]) rotate([0,0,-90]) rotate([90,0,0]) linear_extrude(height=3) output_slopes_2d();
   color([0.4,0.4,0]) translate([83,10,0]) rotate([0,0,-90]) rotate([90,0,0]) linear_extrude(height=3) output_slopes_2d();
 
-translate([40,-3,5]) stage1_distributor_assembly();
+  color([0.8,0.5,0]) translate([90,-8,40]) rotate([0,0,90]) rotate([90,0,0]) linear_extrude(height=3) right_swing_support_2d();
+
+  translate([40,-3,5]) stage1_distributor_assembly();
 
 }
 
