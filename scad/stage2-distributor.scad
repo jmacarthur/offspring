@@ -98,7 +98,8 @@ module 3d_stage2_assembly() {
   translate([87,0,0]) rotate([0,90,0]) linear_extrude(height=3) side_plate();
   translate([-90,0,0]) rotate([0,90,0]) linear_extrude(height=3) side_plate();
   translate([0,stage2b_yoffset+9,-30]) rotate([90,0,0]) rotate([0,0,0]) linear_extrude(height=3) front_plate();
-  translate([-89,3+5,-15]) rotate([90,0,0]) rotate([0,0,0]) linear_extrude(height=3) mounting_plate();
+  translate([-100,3+5,-15]) rotate([90,0,0]) rotate([0,0,0]) linear_extrude(height=3) mounting_plate();
+  translate([60,3+5,-15]) rotate([90,0,0]) rotate([0,0,0]) linear_extrude(height=3) mounting_plate();
 
   // Output bars
 
