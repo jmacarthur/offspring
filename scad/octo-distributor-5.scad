@@ -8,7 +8,7 @@ intake_slope = 5; // Degrees
 intake_channel_x_size = ball_bearing_diameter/2 + ball_bearing_diameter*7*cos(intake_slope);
 intake_chamber_delta_y = -intake_channel_x_size*sin(intake_slope);
 $fn=20;
-
+tube_diameter = 11;
 module intake_chamber_holes()
 {
   translate([0,0]) circle(d=3);
@@ -21,7 +21,8 @@ module intake_chamber_2d()
     union() {
       square([100,50]);
       translate([40,20]) {
-	rotate(-180-intake_slope) translate([5,-channel_width/2-5]) square([40,channel_width+10]);
+	input_channel_size = channel_width+15;
+	rotate(-180-intake_slope) translate([5,-input_channel_size/2]) square([50,input_channel_size]);
       }
     }
 
@@ -29,6 +30,7 @@ module intake_chamber_2d()
     translate([intake_channel_x_size+40,20+intake_chamber_delta_y]) {
       circle(d=channel_width);
       rotate(-180-intake_slope) translate([0,-channel_width/2]) square([100,channel_width]);
+      rotate(-180-intake_slope) translate([90,-tube_diameter/2]) square([50,tube_diameter]);
     }
 
     translate([40,20]) input_parallelogram(intake_channel_x_size, 90);
