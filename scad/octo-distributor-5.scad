@@ -60,7 +60,7 @@ module intake_sidewalls_2d()
   }
 }
 
-explode = 20;
+explode = 0;
 
 
 module intake_rotator_holes()
@@ -121,6 +121,38 @@ module output_slopes_2d() {
   polygon([[0,0], [23,0], [23,5-10*sin(stage1_slope)], [13,5], [10,5], [10,10], [5,10], [5,20],[0,20]]);
 }
 
+stage1_output_pitch = 8;
+
+function bb_centre_position(x) = ball_bearing_diameter+cos(intake_slope)*(x+0.5)*ball_bearing_diameter;
+function bb_divider_position(x) = ball_bearing_diameter+cos(intake_slope)*(x)*ball_bearing_diameter;
+function stage1_output_position(x) = stage1_output_pitch*x;
+
+module stage1_distributor_2d() {
+  difference() {
+    union() {
+      square([60,30]);
+      translate([-10,0]) square([80,15]);
+    }
+    for(x=[0:6]) {
+      descend = 5*sin(180*x/6);
+      translate([bb_divider_position(x),15-descend]) circle(d=stage1_wire_diameter);
+      translate([bb_divider_position(x),15-descend-stage1_wire_diameter]) circle(d=stage1_wire_diameter);
+      translate([stage1_output_position(x),0]) circle(d=stage1_wire_diameter);
+    }
+  }
+}
+
+module stage1_distributor_assembly() {
+  rotate([stage1_slope, 0,0]) translate([0,-30,0]) {
+    color([0.3,0.3,0.3])     linear_extrude(height=3) stage1_distributor_2d();
+
+    // Example wires
+    for(x=[0:6]) {
+      color([0.6,0.3,0.0]) rotate([90,0,0]) translate([bb_divider_position(x),3,-30]) cylinder(d=1,h=15);
+    }
+  }
+}
+
 module 3d_octo5_assembly() {
   rotate([90,0,0]) linear_extrude(height=3) intake_chamber_2d();
   translate([0,5,0]) rotate([90,0,0]) linear_extrude(height=3) intake_sidewalls_2d();
@@ -138,6 +170,9 @@ module 3d_octo5_assembly() {
 
   color([0.4,0.4,0]) translate([53,10,0]) rotate([0,0,-90]) rotate([90,0,0]) linear_extrude(height=3) output_slopes_2d();
   color([0.4,0.4,0]) translate([83,10,0]) rotate([0,0,-90]) rotate([90,0,0]) linear_extrude(height=3) output_slopes_2d();
+
+translate([40,-3,5]) stage1_distributor_assembly();
+
 }
 
 
