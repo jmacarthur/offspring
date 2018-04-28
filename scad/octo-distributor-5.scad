@@ -116,7 +116,7 @@ module intake_grade_2d(side) {
 
 stage1_slope = 10;
 module output_slopes_2d() {
-  polygon([[0,0], [23,0], [23,5-10*sin(stage1_slope)], [13,5], [10,5], [10,10], [0,5]]);
+  polygon([[0,0], [23,0], [23,5-10*sin(stage1_slope)], [13,5], [10,5], [10,10], [5,10], [5,20],[0,20]]);
 }
 
 module 3d_octo5_assembly() {
