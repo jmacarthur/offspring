@@ -22,6 +22,9 @@ data_centre_line_x = stage1_output_position(3)+chamber_x;
 diverter_y = -90;
 discard_slope = 5;
 ejector_rotate = 20;
+flap_rotate = 25;
+diverter_rotate = 25;
+diverted_output_slope = 10;
 module intake_chamber_holes()
 {
   translate([0,0]) circle(d=3);
@@ -119,6 +122,10 @@ module distributor_backing_plate_2d()
 
     // Holes for coupling the intake chamber
     chamber_attachment_holes();
+
+    // Tabs for the diverted output slope
+    translate([-35,-100]) square([3,20]);
+    translate([160,-100]) square([3,20]);
   }
 }
 
@@ -131,6 +138,17 @@ module injector_diverter_support_2d() {
     translate([10,13]) circle(d=3);
     // Cutout for support
     translate([15,7]) square([3,10]);
+  }
+}
+
+module output_slope_2d() {
+  difference() {
+    translate([-10,0]) square([180,30]);
+    translate([ejector_xpos(0)-pitch-channel_width-1,0]) square([3,10]);
+    translate([ejector_xpos(7)-pitch+channel_width-3,0]) square([3,10]);
+    for(c=[0:7]) {
+      translate([ejector_xpos(c)+3-pitch,5]) rotate(20) translate([0,10]) square([3,10]);
+    }
   }
 }
 
@@ -380,6 +398,20 @@ module output_flap_2d() {
   }
 }
 
+
+module discard_flap_assembly() {
+  translate([0,-18,diverter_y-5]) {
+    rotate([-flap_rotate,0,0]) {
+      for(c=[0,7]) {
+	color([0,0.5,0.5]) translate([ejector_xpos(c)-1.5-40,0,0]) rotate([0,90,0]) linear_extrude(height=3) flap_support_2d();
+      }
+      translate([-40+ejector_xpos(0)-channel_width/2-3,18,5]) {
+	color([0,0.8,0.6]) translate([0,-13,-30]) rotate([90,0,0]) linear_extrude(height=3) output_flap_2d();
+      }
+    }
+  }
+}
+
 module discard_channel_side_2d() {
   difference() {
     square([180,39]);
@@ -445,9 +477,6 @@ module 3d_octo5_assembly() {
       if(c==7) bracketed_ejector_channel_2d(); else ejector_channel_2d();
     }
   }
-  for(c=[0,7]) {
-    color([0,0.5,0.5]) translate([ejector_xpos(c)-1.5-40,-18,diverter_y-5]) rotate([0,90,0]) linear_extrude(height=3) flap_support_2d();
-  }
 
   translate([-40,-3,diverter_y-35]) {
     color([0,0.5,0.5]) translate([ejector_xpos(0)-channel_width/2-3,0,0]) rotate([0,90,0]) linear_extrude(height=3) ejector_support_2d();
@@ -457,11 +486,11 @@ module 3d_octo5_assembly() {
   color([0,0.0,1.0]) translate([ejector_xpos(0)-40-channel_width/2-3,20,diverter_y-70]) rotate([90,0,0]) linear_extrude(height=3) ejector_comb_2d();
 
   translate([-40+ejector_xpos(0)-channel_width/2-3,0,diverter_y]) {
-    color([0,0.8,0.6]) translate([0,-13,-30]) rotate([90,0,0]) linear_extrude(height=3) output_flap_2d();
     color([0.5,0.8,0.6]) translate([0,-13,-70]) rotate([90,0,0]) linear_extrude(height=3) discard_channel_side_2d();
     color([0.5,0.4,0.6]) translate([0,-26,-70+30]) rotate([0,discard_slope,0]) linear_extrude(height=3) discard_channel_base_2d();
     color([0.5,0.8,0.6]) translate([0,-26,-70]) rotate([90,0,0]) linear_extrude(height=3) discard_channel_side_2d();
   }
+
 }
 
 
@@ -478,4 +507,6 @@ for(i=[0:7]) {
 
 3d_octo5_assembly();
 translate([40+stage1_output_position(3),-3,-20]) rotate([0,0,180]) 3d_stage2_assembly();
-translate([40+stage1_output_position(3), -17, diverter_y+20]) rotate([90,0,0]) rotate([0,180,0]) centred_diverter_assembly();
+translate([40+stage1_output_position(3), -17, diverter_y+20]) rotate([diverter_rotate,0,0]) rotate([90,0,0]) rotate([0,180,0]) centred_diverter_assembly();
+
+discard_flap_assembly();
