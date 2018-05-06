@@ -284,6 +284,31 @@ module stage1_distributor_assembly() {
   }
 }
 
+module ejector_backplate_2d()
+{
+  difference() {
+    translate([-45,0]) square([215,100]);
+    clearance = 0.5;
+    for(x = [0:7]) {
+      translate([ejector_xpos(x)-40-1.5-clearance,80]) square([3+clearance*2,21]);
+    }
+  }
+}
+
+module ejector_2d() {
+  difference() {
+    union() {
+      translate([-5,0]) square([10,25]);
+      translate([0,0]) circle(d=10);
+      translate([-25,-5]) square([25,10]);
+      // Part that actually touches the bearing
+      polygon([[-20,-17], [-25,-10], [-25,0], [-15,0], [-15,-17]]);
+    }
+    circle(d=3);
+  }
+}
+
+
 module 3d_octo5_assembly() {
   translate([0,0]) rotate([90,0,0]) linear_extrude(height=3) intake_chamber_2d();
   color([0,1.0,0]) rotate([90,0,0]) linear_extrude(height=3) distributor_backing_plate_2d();
@@ -311,6 +336,12 @@ module 3d_octo5_assembly() {
   translate([-20-4,-30,diverter_y+30]) rotate([0,90,0]) linear_extrude(height=3) injector_diverter_support_2d();
   translate([-20+pitch*7+channel_width+1,-30,diverter_y+30]) rotate([0,90,0]) linear_extrude(height=3) injector_diverter_support_2d();
   translate([-50,-23,diverter_y+15-3]) linear_extrude(height=3) injector_diverter_support_bracket_2d();
+
+  // Ejector
+  translate([0,0,diverter_y-110]) rotate([90,0,0]) linear_extrude(height=3) ejector_backplate_2d();
+  for(c=[0:7]) {
+    translate([ejector_xpos(c)-40-1.5,7,diverter_y-40]) rotate([0,90,0]) linear_extrude(height=3) ejector_2d();
+  }
 }
 
 
