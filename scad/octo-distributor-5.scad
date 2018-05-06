@@ -290,7 +290,9 @@ module ejector_backplate_2d()
     translate([-45,0]) square([215,100]);
     clearance = 0.5;
     for(x = [0:7]) {
+      translate([ejector_xpos(x)-40-channel_width/2-3,80]) square([3,10]);
       translate([ejector_xpos(x)-40-1.5-clearance,80]) square([3+clearance*2,21]);
+      translate([ejector_xpos(x)-40+channel_width/2,80]) square([3,10]);
     }
   }
 }
@@ -302,12 +304,42 @@ module ejector_2d() {
       translate([0,0]) circle(d=10);
       translate([-25,-5]) square([25,10]);
       // Part that actually touches the bearing
-      polygon([[-20,-17], [-25,-10], [-25,0], [-15,0], [-15,-17]]);
+      polygon([[-23,-17], [-25,-10], [-25,0], [-15,0], [-15,-17]]);
     }
     circle(d=3);
   }
 }
 
+module ejector_channel_2d() {
+  union() {
+    square([50,10]);
+    translate([10,0]) square([10,13]);
+  }
+}
+
+module bracketed_ejector_channel_2d() {
+  difference() {
+    union() {
+      square([50,10]);
+      translate([10,0]) square([10,13]);
+      polygon([[-10,-10], [0,-10], [0,0], [1,0], [1,10], [0,10], [-10,0]]);
+    }
+    translate([-5,-5]) circle(d=3);
+  }
+}
+
+
+module flap_support_2d() {
+  difference() {
+    union() {
+      circle(d=10);
+      translate([0,-5]) square([20,7]);
+      translate([-5,-20]) square([10,20]);
+      translate([10,-5]) square([10,10]);
+    }
+    circle(d=3);
+  }
+}
 
 module 3d_octo5_assembly() {
   translate([0,0]) rotate([90,0,0]) linear_extrude(height=3) intake_chamber_2d();
@@ -341,6 +373,15 @@ module 3d_octo5_assembly() {
   translate([0,0,diverter_y-110]) rotate([90,0,0]) linear_extrude(height=3) ejector_backplate_2d();
   for(c=[0:7]) {
     translate([ejector_xpos(c)-40-1.5,7,diverter_y-40]) rotate([0,90,0]) linear_extrude(height=3) ejector_2d();
+    color([0.5,0,0]) translate([ejector_xpos(c)-40-channel_width/2-3,-13,diverter_y-10]) rotate([0,90,0]) linear_extrude(height=3) {
+      if(c==0) bracketed_ejector_channel_2d(); else ejector_channel_2d();
+    }
+    color([0.5,0,0]) translate([ejector_xpos(c)-40+channel_width/2,-13,diverter_y-10]) rotate([0,90,0]) linear_extrude(height=3) {
+      if(c==7) bracketed_ejector_channel_2d(); else ejector_channel_2d();
+    }
+  }
+  for(c=[0,7]) {
+    color([0,0.5,0.5]) translate([ejector_xpos(c)-1.5-40,-18,diverter_y-5]) rotate([0,90,0]) linear_extrude(height=3) flap_support_2d();
   }
 }
 
