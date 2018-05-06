@@ -27,6 +27,12 @@ module intake_chamber_holes()
   translate([20,-20*sin(intake_slope)] ) circle(d=3);
 }
 
+module distributor_mounting_holes() {
+  // Mounting holes
+  translate([55,5]) circle(d=3);
+  translate([-10,-5]) circle(d=3);
+}
+
 module distributor_holes() {
   for(x=[0:7]) {
     descend = 5*sin(180*x/6);
@@ -34,9 +40,24 @@ module distributor_holes() {
     translate([bb_divider_position(x),12-bb_divider_position(x)*sin(intake_slope)]) circle(d=stage1_wire_diameter);
     translate([stage1_output_position(x),-10]) circle(d=stage1_wire_diameter);
   }
-  // Mounting holes
-  translate([55,5]) circle(d=3);
+  distributor_mounting_holes();
+}
+
+module chamber_attachment_holes() {
   translate([-10,-5]) circle(d=3);
+  translate([110,-5]) circle(d=3);
+}
+
+module intake_chamber_coupler_2d() {
+  difference() {
+    union() {
+      square([140,20]);
+      translate([70,0])
+      square([50,30]);
+    }
+    translate([20,20]) chamber_attachment_holes();
+    #translate([40+20,20]) distributor_mounting_holes();
+  }
 }
 
 module intake_chamber_2d()
@@ -44,8 +65,7 @@ module intake_chamber_2d()
   overall_backplate_length = 150;
   difference() {
     union() {
-      translate([0,-50]) square([100,100]);
-      translate([-45,50-overall_backplate_length]) square([215,overall_backplate_length-50]);
+      translate([0,-10]) square([100,70]);
       translate([chamber_x,20]) {
 	input_channel_size = channel_width+15;
 	rotate(-180-intake_slope) translate([5,-input_channel_size/2]) square([50,input_channel_size]);
@@ -73,9 +93,24 @@ module intake_chamber_2d()
     // Fixing hole
     translate([95,35]) circle(d=3);
 
+  }
+}
+
+module distributor_backing_plate_2d()
+{
+  overall_backplate_length = 150;
+  difference() {
+    union() {
+      translate([-45,50-overall_backplate_length]) square([215,overall_backplate_length-50]);
+    }
+    translate([0,-10]) square([100,60]);
     // Mounting holes for stage2
     for(x=[-37,-1,123,123+36]) translate([x,-30]) circle(d=4);
     translate([data_centre_line_x,diverter_y]) diverter_cutout();
+    translate([chamber_x,0,0]) distributor_holes();
+
+    // Holes for coupling the intake chamber
+    #chamber_attachment_holes();
   }
 }
 
@@ -221,7 +256,9 @@ module stage1_distributor_assembly() {
 }
 
 module 3d_octo5_assembly() {
-  rotate([90,0,0]) linear_extrude(height=3) intake_chamber_2d();
+  translate([0,0]) rotate([90,0,0]) linear_extrude(height=3) intake_chamber_2d();
+  color([0,1.0,0]) rotate([90,0,0]) linear_extrude(height=3) distributor_backing_plate_2d();
+  translate([-20,3,-20]) color([1.0,1.0,1.0]) rotate([90,0,0]) linear_extrude(height=3) intake_chamber_coupler_2d();
   translate([0,5,0]) rotate([90,0,0]) linear_extrude(height=3) intake_sidewalls_2d();
   translate([0,-5,0]) rotate([90,0,0]) linear_extrude(height=3) intake_sidewalls_2d();
 
