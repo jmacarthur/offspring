@@ -60,7 +60,7 @@ module intake_chamber_coupler_2d() {
       square([50,30]);
     }
     translate([20,20]) chamber_attachment_holes();
-    #translate([40+20,20]) distributor_mounting_holes();
+    translate([40+20,20]) distributor_mounting_holes();
   }
 }
 
@@ -372,7 +372,7 @@ module ejector_comb_2d() {
     translate([-1,5]) square([4,10]);
     translate([pitch*7+channel_width+3,5]) square([4,10]);
     for(c=[0:7]) {
-      translate([ejector_xpos(c)-40-1.5-clearance,ejector_stop_pos]) square([3+clearance*2,100]);
+      translate([ejector_xpos(c)-18.5-clearance,ejector_stop_pos]) square([3+clearance*2,100]);
     }
  }
 }
@@ -512,20 +512,22 @@ module 3d_octo5_assembly() {
 
 }
 
+if(laser_view==undef) {
 
 // Example ball bearings
 
-for(i=[0:7]) {
-  translate([40+ball_bearing_diameter/2,-1.5,20]) {
-    translate([ball_bearing_diameter*i*cos(intake_slope), 0, -ball_bearing_diameter*i*sin(intake_slope)])
-    {
-      sphere(d=ball_bearing_diameter,$fn=20);
+  for(i=[0:7]) {
+    translate([40+ball_bearing_diameter/2,-1.5,20]) {
+      translate([ball_bearing_diameter*i*cos(intake_slope), 0, -ball_bearing_diameter*i*sin(intake_slope)])
+	{
+	  sphere(d=ball_bearing_diameter,$fn=20);
+	}
     }
   }
- }
 
-3d_octo5_assembly();
-translate([40+stage1_output_position(3),-3,-20]) rotate([0,0,180]) 3d_stage2_assembly();
-translate([40+stage1_output_position(3), -17, diverter_y+20]) rotate([diverter_rotate,0,0]) rotate([90,0,0]) rotate([0,180,0]) centred_diverter_assembly();
+  3d_octo5_assembly();
+  translate([40+stage1_output_position(3),-3,-20]) rotate([0,0,180]) 3d_stage2_assembly();
+  translate([40+stage1_output_position(3), -17, diverter_y+20]) rotate([diverter_rotate,0,0]) rotate([90,0,0]) rotate([0,180,0]) centred_diverter_assembly();
 
-discard_flap_assembly();
+  discard_flap_assembly();
+}

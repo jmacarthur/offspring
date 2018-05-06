@@ -71,3 +71,4 @@ columns_per_block = 8; // Number of columns in each injector/diverter block
 
 // Used mainly by injector
 function ejector_xpos(col) = 20+col*pitch+channel_width/2;
+
