@@ -101,7 +101,7 @@ module intake_chamber_2d()
 
 module distributor_backing_plate_2d()
 {
-  overall_backplate_length = 250;
+  overall_backplate_length = 210;
   difference() {
     union() {
       translate([-45,50-overall_backplate_length]) square([215,overall_backplate_length-50]);
@@ -126,6 +126,10 @@ module distributor_backing_plate_2d()
     translate([-35,-100]) square([3,20]);
     translate([160,-100]) square([3,20]);
 
+    // Attachment points for a rubber band return system
+    for(x=[-35,160]) {
+      translate([x+1.5,-115]) circle(d=3);
+    }
 
     // Holes for the ejector channels
     clearance = 0.5;
