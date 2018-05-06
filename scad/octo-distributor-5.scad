@@ -3,6 +3,7 @@
 
 include <globs.scad>
 use <stage2-distributor.scad>;
+use <diverter-parts.scad>;
 intake_slope = 5; // Degrees
 
 intake_channel_x_size = ball_bearing_diameter/2 + ball_bearing_diameter*7*cos(intake_slope);
@@ -13,10 +14,11 @@ tube_diameter = 11;
 stage1_output_pitch = 8;
 explode = 20;
 
-
 function bb_centre_position(x) = ball_bearing_diameter+cos(intake_slope)*(x+0.5)*ball_bearing_diameter;
 function bb_divider_position(x) = ball_bearing_diameter+cos(intake_slope)*(x)*ball_bearing_diameter;
 function stage1_output_position(x) = stage1_output_pitch*x;
+chamber_x = 40;
+data_centre_line_x = stage1_output_position(3)+chamber_x;
 
 module intake_chamber_holes()
 {
@@ -38,11 +40,12 @@ module distributor_holes() {
 
 module intake_chamber_2d()
 {
+  overall_backplate_length = 150;
   difference() {
     union() {
       translate([0,-50]) square([100,100]);
-      translate([-45,-50]) square([215,50]);
-      translate([40,20]) {
+      translate([-45,50-overall_backplate_length]) square([215,overall_backplate_length-50]);
+      translate([chamber_x,20]) {
 	input_channel_size = channel_width+15;
 	rotate(-180-intake_slope) translate([5,-input_channel_size/2]) square([50,input_channel_size]);
       }
@@ -55,8 +58,8 @@ module intake_chamber_2d()
       rotate(-180-intake_slope) translate([90,-tube_diameter/2]) square([50,tube_diameter]);
     }
 
-    translate([40,20]) input_parallelogram(intake_channel_x_size+1, 90);
-    translate([40,30]) intake_chamber_holes();
+    translate([chamber_x,20]) input_parallelogram(intake_channel_x_size+1, 90);
+    translate([chamber_x,30]) intake_chamber_holes();
 
     // Holes for grade tabs
     translate([37,5]) square([3,10]);
@@ -65,12 +68,14 @@ module intake_chamber_2d()
     translate([10,10]) intake_chamber_holes();
     translate([10,40]) intake_chamber_holes();
 
-    translate([40,0,0]) distributor_holes();
+    translate([chamber_x,0,0]) distributor_holes();
     // Fixing hole
     translate([95,35]) circle(d=3);
 
     // Mounting holes for stage2
-    #for(x=[-37,-1,123,123+36]) translate([x,-30]) circle(d=4);
+    for(x=[-37,-1,123,123+36]) translate([x,-30]) circle(d=4);
+    diverter_y = -75;
+    translate([data_centre_line_x,diverter_y]) diverter_cutout();
   }
 }
 
