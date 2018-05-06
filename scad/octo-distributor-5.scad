@@ -107,11 +107,39 @@ module distributor_backing_plate_2d()
     // Mounting holes for stage2
     for(x=[-37,-1,123,123+36]) translate([x,-30]) circle(d=4);
     translate([data_centre_line_x,diverter_y]) diverter_cutout();
+
+    // We use a slightly wider than usual diverer cutout to accomodate two supports,
+    // so we repeat the calculation here
+    clearance = 1;
+    cutout_width = (columns_per_block-1)*pitch+channel_width+clearance*2;
+    translate([data_centre_line_x-cutout_width/2-3,diverter_y]) square([3,30]);
+    translate([data_centre_line_x+cutout_width/2,diverter_y]) square([3,30]);
     translate([chamber_x,0,0]) distributor_holes();
 
     // Holes for coupling the intake chamber
-    #chamber_attachment_holes();
+    chamber_attachment_holes();
   }
+}
+
+module injector_diverter_support_2d() {
+  difference() {
+    union() {
+      polygon([[5,0], [-3,47], [0,47], [0,50], [30,50], [30,47], [33,47], [15,0]]);
+    }
+    translate([10,33]) circle(d=3);
+    // Cutout for support
+    translate([15,17]) square([3,10]);
+  }
+}
+
+module injector_diverter_support_bracket_2d() {
+  difference() {
+    union() {
+      square([20,30]);
+      square([23,10]);
+    }
+  }
+
 }
 
 module distributor_cover_2d() {
@@ -279,6 +307,9 @@ module 3d_octo5_assembly() {
 
   color([0.5,0.5,0.5,0.5]) translate([40,-10,0]) rotate([90,0,0]) linear_extrude(height=3) distributor_cover_2d();
 
+  translate([-20-4,-50,diverter_y+30]) rotate([0,90,0]) linear_extrude(height=3) injector_diverter_support_2d();
+  translate([-20+pitch*7+channel_width+1,-50,diverter_y+30]) rotate([0,90,0]) linear_extrude(height=3) injector_diverter_support_2d();
+  translate([-50,-33,diverter_y+15-3]) linear_extrude(height=3) injector_diverter_support_bracket_2d();
 }
 
 
