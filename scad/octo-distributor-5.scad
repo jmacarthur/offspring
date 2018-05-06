@@ -364,10 +364,11 @@ module flap_support_2d() {
     union() {
       circle(d=10);
       translate([0,-5]) square([20,7]);
-      translate([-5,-20]) square([10,20]);
+      translate([-5,-30]) square([10,30]);
       translate([10,-5]) square([10,10]);
     }
     circle(d=3);
+    translate([0,-15]) circle(d=3);
   }
 }
 
