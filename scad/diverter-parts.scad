@@ -4,9 +4,13 @@ include <globs.scad>;
 
 diverter_width = (columns_per_block-1)*pitch+channel_width;
 
+// diverter_cutout and centred_diverter_assemble are centred in the X axis so 0 is the
+// central division between bits 4 and 5.
+
 module diverter_cutout() {
     clearance = 1;
-    translate([ejector_xpos(0)-channel_width/2-clearance, -clearance]) square([diverter_width+clearance*2,31+clearance*2]);
+    cutout_width = diverter_width+clearance*2;
+    translate([-cutout_width/2, -clearance]) square([cutout_width,31+clearance*2]);
 }
 
 module diverter_2d() {

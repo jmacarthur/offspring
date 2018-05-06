@@ -63,7 +63,7 @@ module core_plate_2d() {
       rotate(input_channel_slope) translate([0,-channel_width/2]) translate([185,channel_width/2-5.5]) square([200,11]);
     }
 
-    translate([0,diverter_y]) diverter_cutout();
+    translate([ejector_xpos(3)+pitch/2,diverter_y]) diverter_cutout();
   }
 }
 
