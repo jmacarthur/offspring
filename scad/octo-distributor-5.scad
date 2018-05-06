@@ -19,6 +19,7 @@ function bb_divider_position(x) = ball_bearing_diameter+cos(intake_slope)*(x)*ba
 function stage1_output_position(x) = stage1_output_pitch*x;
 chamber_x = 40;
 data_centre_line_x = stage1_output_position(3)+chamber_x;
+diverter_y = -90;
 
 module intake_chamber_holes()
 {
@@ -74,7 +75,6 @@ module intake_chamber_2d()
 
     // Mounting holes for stage2
     for(x=[-37,-1,123,123+36]) translate([x,-30]) circle(d=4);
-    diverter_y = -75;
     translate([data_centre_line_x,diverter_y]) diverter_cutout();
   }
 }
@@ -258,3 +258,4 @@ for(i=[0:7]) {
 
 3d_octo5_assembly();
 translate([40+stage1_output_position(3),-3,-20]) rotate([0,0,180]) 3d_stage2_assembly();
+translate([40+stage1_output_position(3), -17, diverter_y+20]) rotate([90,0,0]) rotate([0,180,0]) centred_diverter_assembly();

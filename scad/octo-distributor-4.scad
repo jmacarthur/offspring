@@ -306,7 +306,7 @@ module 3d_assembly() {
   translate([0,interplate_support_y,23]) color([0.5,0.7,0.2]) rotate([-90,0,0]) linear_extrude(height=3) interplate_support_2d();
 
   // Diverter and support arms
-  translate([208,diverter_y+20,17])
+  translate([ejector_xpos(3)+pitch/2,diverter_y+20,17])
   {
     rotate([$t*40,0,0]) rotate([0,180,0]) centred_diverter_assembly();
   }

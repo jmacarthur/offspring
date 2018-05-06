@@ -47,11 +47,13 @@ module diverter_rib_2d() {
 
 module centred_diverter_assembly() {
   columns = columns_per_block;
-  translate([0, -20, 4]) color([0.7,0.7,0.7]) linear_extrude(height=3) diverter_2d();
-  translate([ejector_xpos(0)+channel_width/2,0,0]) rotate([0,90,0]) linear_extrude(height=3) diverter_rotate_arm_2d();
-  translate([ejector_xpos(7)-channel_width/2-3,0,0]) rotate([0,90,0]) linear_extrude(height=3) diverter_rotate_arm_2d();
-  for(c=[1:columns-1]) {
-    if(c<columns-1) color([0,1,0]) translate([ejector_xpos(c)-channel_width/2-3,-0,7]) rotate([0,90,0]) rotate([0,0,90])  translate([-15,-3,0]) linear_extrude(height=3) diverter_rib_2d();
-    if(c>1) color([0,1,0]) translate([ejector_xpos(c-1)+channel_width/2,-0,7]) rotate([0,90,0]) rotate([0,0,90])  translate([-15,-3,0]) linear_extrude(height=3) diverter_rib_2d();
+  translate([-20-diverter_width/2,0,0]) {
+    translate([0, -20, 4]) color([0.7,0.7,0.7]) linear_extrude(height=3) diverter_2d();
+    translate([ejector_xpos(0)+channel_width/2,0,0]) rotate([0,90,0]) linear_extrude(height=3) diverter_rotate_arm_2d();
+    translate([ejector_xpos(7)-channel_width/2-3,0,0]) rotate([0,90,0]) linear_extrude(height=3) diverter_rotate_arm_2d();
+    for(c=[1:columns-1]) {
+      if(c<columns-1) color([0,1,0]) translate([ejector_xpos(c)-channel_width/2-3,-0,7]) rotate([0,90,0]) rotate([0,0,90])  translate([-15,-3,0]) linear_extrude(height=3) diverter_rib_2d();
+      if(c>1) color([0,1,0]) translate([ejector_xpos(c-1)+channel_width/2,-0,7]) rotate([0,90,0]) rotate([0,0,90])  translate([-15,-3,0]) linear_extrude(height=3) diverter_rib_2d();
+    }
   }
 }
