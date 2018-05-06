@@ -66,7 +66,6 @@ module intake_chamber_coupler_2d() {
 
 module intake_chamber_2d()
 {
-  overall_backplate_length = 150;
   difference() {
     union() {
       translate([0,-10]) square([100,70]);
@@ -102,7 +101,7 @@ module intake_chamber_2d()
 
 module distributor_backing_plate_2d()
 {
-  overall_backplate_length = 150;
+  overall_backplate_length = 250;
   difference() {
     union() {
       translate([-45,50-overall_backplate_length]) square([215,overall_backplate_length-50]);
@@ -126,6 +125,23 @@ module distributor_backing_plate_2d()
     // Tabs for the diverted output slope
     translate([-35,-100]) square([3,20]);
     translate([160,-100]) square([3,20]);
+
+
+    // Holes for the ejector channels
+    clearance = 0.5;
+    translate([0,-200]) {
+      for(x = [0:7]) {
+	translate([ejector_xpos(x)-40-channel_width/2-3,80]) square([3,10]);
+	translate([ejector_xpos(x)-40-1.5-clearance,80]) square([3+clearance*2,21]);
+	translate([ejector_xpos(x)-40+channel_width/2,80]) square([3,10]);
+      }
+    }
+    translate([0,100]) {
+      translate([ejector_xpos(0)-40-channel_width/2-3,65]) square([3,10]);
+      translate([ejector_xpos(7)-40+channel_width/2,65]) square([3,10]);
+    }
+
+
   }
 }
 
@@ -467,7 +483,6 @@ module 3d_octo5_assembly() {
   translate([-50,-23,diverter_y+15-3]) linear_extrude(height=3) injector_diverter_support_bracket_2d();
 
   // Ejector
-  translate([0,0,diverter_y-110]) rotate([90,0,0]) linear_extrude(height=3) ejector_backplate_2d();
   for(c=[0:7]) {
     translate([ejector_xpos(c)-40-1.5,7,diverter_y-40]) rotate([-ejector_rotate,0,0]) rotate([0,90,0]) linear_extrude(height=3) ejector_2d();
     color([0.5,0,0]) translate([ejector_xpos(c)-40-channel_width/2-3,-13,diverter_y-10]) rotate([0,90,0]) linear_extrude(height=3) {
