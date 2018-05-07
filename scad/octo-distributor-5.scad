@@ -140,11 +140,11 @@ module distributor_backing_plate_2d()
 	translate([ejector_xpos(x)-40+channel_width/2,80]) square([3,10]);
       }
     }
-    translate([0,100]) {
+    // Holes for the comb support
+    translate([0,-200]) {
       translate([ejector_xpos(0)-40-channel_width/2-3,65]) square([3,10]);
       translate([ejector_xpos(7)-40+channel_width/2,65]) square([3,10]);
     }
-
 
   }
 }
