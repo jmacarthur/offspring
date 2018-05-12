@@ -358,6 +358,11 @@ module triangular_support_plate_2d()
     // slot for the axle reinforcer
     translate([follower_axis_y-1.5,-1]) square([3,4]);
 
+    // Holes for attaching the memory sender. 4mm diameter, 40mm
+    // apart. These are meant to be exactly between the 2nd and 3rd
+    // enumerator rod.
+    translate([10+5+2+1.5,10]) circle(d=4);
+    translate([10+5+2+1.5,50]) circle(d=4);
   }
 }
 
