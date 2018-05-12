@@ -16,6 +16,10 @@ active = false;
 
 pusher_pos = active? -enumerator_rod_travel : 0;
 drive_lever_rotate=active ? -10 : 0;
+
+
+function lever_position_y(n) = 3+(joiner_width-3)/2+enumerator_rod_spacing*2;
+
 module hook_plate_2d()
 {
   notch_y = 10;
@@ -36,13 +40,31 @@ module hook_joiner_2d() {
   }
 }
 
-module sender_drive_lever_2d() {
-  drive_lever_length=100;
+module short_sender_drive_lever_2d() {
   difference() {
-    translate([-drive_lever_length/2,-5]) square([drive_lever_length,10]);
+    translate([-50,-5]) square([60,10]);
     circle(d=3); // Main axle
   }
 }
+
+module long_sender_drive_lever_2d() {
+  difference() {
+    union() {
+      translate([-50,-5]) square([60,10]);
+      translate([-40,-40]) square([10,40]);
+    }
+    circle(d=3); // Main axle
+    translate([-35,-35]) circle(d=3); // Driver pin hole
+  }
+}
+
+module drive_lever_support_2d() {
+  difference() {
+    square([10,20]);
+    translate([5,5]) circle(d=3);
+  }
+}
+
 
 module intake_slope_2d() {
   triangle_height=7;
@@ -73,7 +95,7 @@ module inner_intake_plate_2d() {
   union() {
     outer_intake_plate_2d();
     for(bit=[0:4]) {
-      translate([enumerator_rod_spacing*bit+5,-15]) square([joiner_width,16]);
+      translate([enumerator_rod_spacing*bit+7,-14]) square([joiner_width,15]);
     }
   }
 }
@@ -109,7 +131,8 @@ module sender_triangle_bracket_2d()
 	translate(axle_position) circle(d=10);
 	translate([-30,3]) square([5,6]);
 	translate([30,3]) square([6,6]);
-	translate([-20,50]) circle(d=10);
+	translate([-20,60]) circle(d=10);
+	translate([30,60]) circle(d=10);
 	translate([-30,20]) circle(d=10);
       }
       translate([-30,0]) square([5,6]);
@@ -120,6 +143,22 @@ module sender_triangle_bracket_2d()
 
     translate([-18,18]) rotate(-20) square([3,30]);
     translate([-18,18]) rotate(-20) translate([-10,0]) square([3,30]);
+
+    // Tabs for hanger 'U-channel'
+    for(x=[0,1]) {
+      translate([-20+x*42,50-10*x]) square([15,3]);
+      translate([-20+x*42,50-10*x]) square([3,10]);
+      translate([-5+x*42, 50-10*x]) square([3,10]);
+    }
+  }
+}
+
+
+module hanger_plate_2d() {
+  width = space_between_triangles+6;
+  difference() {
+    square([width,18]);
+    translate([7+joiner_width/2+1.5*enumerator_rod_spacing,9]) circle(d=4);
   }
 }
 
@@ -140,15 +179,29 @@ module memory_sender_3d() {
       translate([-20,3+joiner_width,0]) vertical_plate_x() intake_slope_2d();
     }
   }
-  translate([50,3 + (joiner_width-3)/2,25]) rotate([0,drive_lever_rotate,0]) vertical_plate_x() sender_drive_lever_2d();
+
+  translate([50,0,25]) {
+    for(bit=[0:4]) {
+      translate([0,lever_position_y(bit),0]) rotate([0,drive_lever_rotate,0]) {
+	vertical_plate_x() {
+	  if(bit==2) {long_sender_drive_lever_2d();} else { short_sender_drive_lever_2d();}
+	}
+      }
+    }
+  }
 
   translate([-18,-7,18]) rotate([0,20,0]) vertical_plate_y() inner_intake_plate_2d();
   translate([-18,-7,18]) rotate([0,20,0]) translate([-10,0,0]) vertical_plate_y() outer_intake_plate_2d();
 
   color([0.5,0.5,0]) translate([-30,-10,0]) horizontal_plate() sender_base_plate_2d();
 
-  color([0.9,0.5,0.8]) translate([0,-4,0]) vertical_plate_x() sender_triangle_bracket_2d();
+  //color([0.9,0.5,0.8]) translate([0,-4,0]) vertical_plate_x() sender_triangle_bracket_2d();
   color([0.9,0.5,0.8]) translate([0,-1+space_between_triangles,0]) vertical_plate_x() sender_triangle_bracket_2d();
+
+  translate([40,-7,40]) rotate([0,0,90]) horizontal_plate() hanger_plate_2d();
+  translate([-2,-7,50]) rotate([0,0,90]) horizontal_plate() hanger_plate_2d();
+
+  translate([-40,lever_position_y(2),-15]) vertical_plate_x() drive_lever_support_2d();
 }
 
 module bearing_path(pos1, pos2)
