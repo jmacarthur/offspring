@@ -86,3 +86,8 @@ module vertical_plate_y()
   rotate([0,0,90]) rotate([90,0,0]) linear_extrude(height=3) children();
 }
 
+module horizontal_plate()
+{
+  linear_extrude(height=3) children();
+}
+
