@@ -12,13 +12,12 @@ hook_clearance = 1;
 space_between_triangles = enumerator_rod_spacing*4+joiner_width+6+hook_clearance*2;
 $fn=20;
 
-active = false;
+active = true;
 
 pusher_pos = active? -enumerator_rod_travel : 0;
-drive_lever_rotate=active ? -10 : 0;
+drive_lever_rotate=active ? -10*$t : 0;
 
-
-function lever_position_y(n) = 3+(joiner_width-3)/2+enumerator_rod_spacing*2;
+function lever_position_y(n) = 3+(joiner_width-3)/2+enumerator_rod_spacing*n;
 
 module hook_plate_2d()
 {
@@ -42,7 +41,10 @@ module hook_joiner_2d() {
 
 module short_sender_drive_lever_2d() {
   difference() {
-    translate([-50,-5]) square([60,10]);
+    union() {
+      translate([-50,-5]) square([50,10]);
+      translate([0,0]) circle(d=10);
+    }
     circle(d=3); // Main axle
   }
 }
@@ -50,21 +52,71 @@ module short_sender_drive_lever_2d() {
 module long_sender_drive_lever_2d() {
   difference() {
     union() {
-      translate([-50,-5]) square([60,10]);
-      translate([-40,-40]) square([10,40]);
+      translate([-50,-5]) square([50,10]);
+      translate([0,0]) circle(d=10);
+      translate([-40,-40]) square([10,45]);
+      translate([-35,-40]) circle(d=10);
     }
     circle(d=3); // Main axle
-    translate([-35,-35]) circle(d=3); // Driver pin hole
+    translate([-35,-40]) circle(d=3); // Driver pin hole
   }
 }
 
 module drive_lever_support_2d() {
   difference() {
-    square([10,20]);
+    square([10,30]);
+    translate([5,20]) square([10,3]);
     translate([5,5]) circle(d=3);
   }
 }
 
+module drive_lever_2d() {
+  slot_position = 40;
+  slot_length = 20;
+  difference() {
+    union() {
+      circle(d=10);
+      translate([0,-5]) square([100,10]);
+      translate([100,0]) circle(d=10);
+      translate([slot_position,0]) circle(d=15);
+      translate([slot_position,-7.5]) square([slot_length, 15]);
+      translate([slot_position+slot_length,0]) circle(d=15);
+
+    }
+    circle(d=3);
+    translate([slot_position,0]) circle(d=3);
+    translate([slot_position,-1.5]) square([slot_length, 3]);
+    translate([slot_position+slot_length,0]) circle(d=3);
+
+    translate([100,0]) circle(d=3);
+  }
+}
+
+module support_holes() {
+  translate([5,10]) circle(d=3);
+  translate([20,10]) circle(d=3);
+}
+
+module bowden_cable_support_2d() {
+  difference() {
+    union() {
+      translate([0,3]) square([25,20]);
+      for(i=[0:2]) translate([i*10,0]) square([5,20]);
+    }
+    translate([25/2-bowden_cable_inner_diameter/2,-1]) square([bowden_cable_inner_diameter, 10+1]);
+    translate([25/2-bowden_cable_outer_diameter/2,10]) square([bowden_cable_outer_diameter, 20]);
+    support_holes();
+  }
+}
+
+module bowden_cable_outer_2d() {
+  difference() {
+    union() {
+      translate([0,3]) square([25,20]);
+    }
+    support_holes();
+  }
+}
 
 module intake_slope_2d() {
   triangle_height=7;
@@ -103,7 +155,10 @@ module inner_intake_plate_2d() {
 module sender_base_plate_2d()
 {
   difference() {
-    square([80,space_between_triangles+12]);
+    hull() {
+      square([70,space_between_triangles+12]);
+      translate([120,lever_position_y(2)+7+1.5]) circle(d=10);
+    }
     // Cutouts for input slopes
     for(bit=[0:4]) {
       translate([0,enumerator_rod_spacing*bit]) {
@@ -119,6 +174,13 @@ module sender_base_plate_2d()
       #translate([x,3]) square([6,3]);
       #translate([x,6+space_between_triangles]) square([6,3]);
     }
+    translate([-1,lever_position_y(2)+7]) square([2,3]);
+    translate([50,lever_position_y(2)+7-1]) square([5,5]);
+
+    // Hole and slots for drive cable
+    translate([90,lever_position_y(2)+7]) square([5,3]);
+    translate([100,lever_position_y(2)+7]) square([5,3]);
+    translate([110,lever_position_y(2)+7]) square([5,3]);
   }
 }
 
@@ -201,7 +263,12 @@ module memory_sender_3d() {
   translate([40,-7,40]) rotate([0,0,90]) horizontal_plate() hanger_plate_2d();
   translate([-2,-7,50]) rotate([0,0,90]) horizontal_plate() hanger_plate_2d();
 
-  translate([-40,lever_position_y(2),-15]) vertical_plate_x() drive_lever_support_2d();
+  translate([-40+6,lever_position_y(2),-20]) vertical_plate_x() drive_lever_support_2d();
+  translate([-40+6+5,lever_position_y(2)-3,-15]) vertical_plate_x() rotate(drive_lever_rotate*0.6) drive_lever_2d();
+
+  translate([60,lever_position_y(2),10]) vertical_plate_x() bowden_cable_support_2d();
+  translate([60,lever_position_y(2)-3,10]) vertical_plate_x() bowden_cable_outer_2d();
+  translate([60,lever_position_y(2)+3,10]) vertical_plate_x() bowden_cable_outer_2d();
 }
 
 module bearing_path(pos1, pos2)
