@@ -345,7 +345,7 @@ module ejector_2d() {
       translate([0,0]) circle(d=10);
       translate([-25,-5]) square([25,10]);
       // Part that actually touches the bearing
-      polygon([[-23,-17], [-25,-10], [-25,0], [-15,0], [-15,-17]]);
+      polygon([[-23,-17-3], [-25,-10], [-25,0], [-15,0], [-17,-17]]);
       translate([-15,-7]) square([10,10]);
     }
     circle(d=3);
