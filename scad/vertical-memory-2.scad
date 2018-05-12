@@ -65,7 +65,8 @@ module memory_top_plate_2d()
     for(y=returner_support_y) {
       translate([12,y]) square([10,3]);
     }
-
+    // Cutout for bowden cable support
+    translate([50,60]) square([20,3]);
   }
 }
 
@@ -213,6 +214,28 @@ module returner_plate_2d() {
 }
 
 
+module bowden_cable_holes() {
+  translate([10,8]) circle(d=3);
+  translate([10,22]) circle(d=3);
+}
+
+module bowden_cable_support_2d() {
+  difference() {
+    square([20,28]);
+    bowden_cable_holes();
+    translate([-1,15-bowden_cable_inner_diameter/2]) square([30,bowden_cable_inner_diameter]);
+    translate([10,15-bowden_cable_outer_diameter/2]) square([30,bowden_cable_outer_diameter]);
+  }
+}
+
+module bowden_cable_outer_support_2d() {
+  difference() {
+    translate([0,3]) square([20,25]);
+    bowden_cable_holes();
+  }
+}
+
+
 interruptor_pos = 0;
 mover_pos = 9;
 
@@ -249,7 +272,9 @@ module 3d_assembly() {
     color([0.5,0.5,0.5]) translate([-3,0,-22.5+7]) vertical_plate_y() returner_plate_2d();
   }
 
-
+  translate([50,60,23]) vertical_plate_x() bowden_cable_outer_support_2d();
+  translate([50,60+3,23]) vertical_plate_x() bowden_cable_support_2d();
+  translate([50,60+6,23]) vertical_plate_x() bowden_cable_outer_support_2d();
 }
 
 
