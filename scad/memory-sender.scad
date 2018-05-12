@@ -113,7 +113,7 @@ module bowden_cable_support_2d() {
       translate([0,3]) square([25,20]);
       for(i=[0:2]) translate([i*10,0]) square([5,20]);
     }
-    translate([25/2-bowden_cable_inner_diameter/2,-1]) square([bowden_cable_inner_diameter, 10+1]);
+    translate([25/2-bowden_cable_inner_diameter/2,-1]) square([bowden_cable_inner_diameter, 10+2]);
     translate([25/2-bowden_cable_outer_diameter/2,10]) square([bowden_cable_outer_diameter, 20]);
     support_holes();
   }
@@ -181,8 +181,8 @@ module sender_base_plate_2d()
 
     // Tabs for large triangular plates
     for(x=[-1,60]) {
-      #translate([x,3]) square([6,3]);
-      #translate([x,6+space_between_triangles]) square([6,3]);
+      translate([x,3]) square([6,3]);
+      translate([x,6+space_between_triangles]) square([6,3]);
     }
     translate([-1,lever_position_y(2)+7]) square([2,3]);
     translate([50,lever_position_y(2)+7-1]) square([5,5]);
@@ -234,6 +234,14 @@ module hanger_plate_2d() {
   }
 }
 
+module hanger_side_plate_2d() {
+  width = space_between_triangles+6;
+  difference() {
+    square([width,7]);
+  }
+}
+
+
 // 3D assembly
 
 module memory_sender_3d() {
@@ -270,8 +278,14 @@ module memory_sender_3d() {
   //color([0.9,0.5,0.8]) translate([0,-4,0]) vertical_plate_x() sender_triangle_bracket_2d();
   color([0.9,0.5,0.8]) translate([0,-1+space_between_triangles,0]) vertical_plate_x() sender_triangle_bracket_2d();
 
-  translate([40,-7,40]) rotate([0,0,90]) horizontal_plate() hanger_plate_2d();
-  translate([-2,-7,50]) rotate([0,0,90]) horizontal_plate() hanger_plate_2d();
+  channel_positions = [ [40,-7,40], [-2,-7,50] ];
+  for(c=channel_positions) {
+    translate(c) {
+      rotate([0,0,90]) horizontal_plate() hanger_plate_2d();
+      translate([-3,0,3]) vertical_plate_y() hanger_side_plate_2d();
+      translate([-3-15,0,3]) vertical_plate_y() hanger_side_plate_2d();
+    }
+  }
 
   translate([-40+6,lever_position_y(2),-20]) vertical_plate_x() drive_lever_support_2d();
   translate([-40+6+5,lever_position_y(2)-3,-15]) vertical_plate_x() rotate(drive_lever_rotate*0.6) drive_lever_2d();
@@ -296,12 +310,11 @@ intake_pos_3 = [4,2,15];
 intake_pos_4 = [4,2,8];
 intake_pos_5 = [-5,2,5];
 
-bearing_path(intake_pos_1, intake_pos_2);
-bearing_path(intake_pos_2, intake_pos_3);
-bearing_path(intake_pos_4, intake_pos_5);
-
 3d_assembly = true;
 
 if(3d_assembly) {
   memory_sender_3d();
+  bearing_path(intake_pos_1, intake_pos_2);
+  bearing_path(intake_pos_2, intake_pos_3);
+  bearing_path(intake_pos_4, intake_pos_5);
 }
