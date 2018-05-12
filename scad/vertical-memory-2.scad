@@ -193,17 +193,27 @@ module returner_swing_arm_2d() {
 	circle(d=10);
 	translate([-4-1.5,0]) circle(d=5);
       }
-      translate([-8,0]) square([5,20]);
-      translate([-8,15]) square([8,5]);
+      translate([-8,0]) square([5,15]);
+      translate([-8,8]) square([8,5]);
+      translate([-5,-20]) square([10,20]);
     }
     circle(d=3);
+    translate([0,-10]) circle(d=3);
     translate([0,5]) square([10,20]);
   }
 }
 
+module returner_plate_2d() {
+  difference() {
+    square([120,10]);
+    for(y=returner_support_y) {
+      translate([y+3,2.5]) square([3,5]);
+    }
+  }
+}
 
 
-interruptor_pos = 9;
+interruptor_pos = 0;
 mover_pos = 9;
 
 
@@ -230,9 +240,15 @@ module 3d_assembly() {
     color([1.0,1.0,0.5]) translate([22,y,26]) rotate([-90,0,0]) linear_extrude(height=3) rotate(180) returner_support_2d();
   }
 
-  for(y=returner_support_y) {
-    translate([-3,y+3,31]) rotate([180,0,0]) vertical_plate_x() returner_swing_arm_2d();
+  translate([-3,0,31]) rotate([0,38,0]) {
+
+    for(y=returner_support_y) {
+      translate([0,y+3,0])
+	rotate([180,0,0]) vertical_plate_x() returner_swing_arm_2d();
+    }
+    color([0.5,0.5,0.5]) translate([-3,0,-22.5+7]) vertical_plate_y() returner_plate_2d();
   }
+
 
 }
 
