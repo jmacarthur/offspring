@@ -23,7 +23,7 @@ module hook_plate_2d()
 {
   notch_y = 10;
   notch_width = 8;
-  plate_height = 60;
+  plate_height = 50;
   difference() {
     polygon([[0,0], [20,0], [20,plate_height], [0,plate_height], [0,notch_y+10], [notch_width,notch_y+10], [notch_width,notch_y+notch_width*sin(output_slope)], [0,notch_y]]);
 
@@ -33,9 +33,19 @@ module hook_plate_2d()
 }
 
 module hook_joiner_2d() {
-  union() {
-    square([joiner_width,200]);
-    translate([-3,5]) square([3+3+joiner_width, 10]);
+  difference () {
+    union() {
+      square([joiner_width,20]);
+      translate([-3,5]) square([3+3+joiner_width, 10]);
+      translate([-3,20]) square([3+3+joiner_width, 20]);
+    }
+    // T-slot to connect to the decoder
+    translate([0,20]) {
+      nut_width = 5.5;
+      nut_height = 2.5;
+      translate([joiner_width/2-nut_width/2,10]) square([nut_width,nut_height]);
+      translate([joiner_width/2-1.5,7]) square([3, 20]);
+    }
   }
 }
 
