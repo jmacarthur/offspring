@@ -8,6 +8,8 @@ output_slope = 10;
 joiner_height = 35;
 joiner_width = 3.5;
 enumerator_rod_spacing = 10;
+hook_clearance = 1;
+space_between_triangles = enumerator_rod_spacing*4+joiner_width+6+hook_clearance*2;
 $fn=20;
 
 active = false;
@@ -56,11 +58,11 @@ module intake_slope_2d() {
 module outer_intake_plate_2d() {
   stagger = 10;
   difference() {
-    square([55,30]);
+    square([space_between_triangles+6,30]);
     for(bit=[0:4]) {
       raise_input = (bit % 2 == 1) ? stagger : 0;
-      translate([enumerator_rod_spacing*bit+5+joiner_width/2,10+raise_input]) circle(d=11);
-      translate([enumerator_rod_spacing*bit+5+joiner_width/2,20-raise_input]) circle(d=3);
+      translate([enumerator_rod_spacing*bit+7+joiner_width/2,10+raise_input]) circle(d=11);
+      translate([enumerator_rod_spacing*bit+7+joiner_width/2,20-raise_input]) circle(d=3);
     }
   }
 }
@@ -78,7 +80,47 @@ module inner_intake_plate_2d() {
 
 module sender_base_plate_2d()
 {
-  square([100,100]);
+  difference() {
+    square([80,space_between_triangles+12]);
+    // Cutouts for input slopes
+    for(bit=[0:4]) {
+      translate([0,enumerator_rod_spacing*bit]) {
+	translate([10,10-3]) square([10,3]);
+	translate([10,10-3+joiner_width+3]) square([10,3]);
+      }
+    }
+    // Large cutout for all hook plates
+    translate([30-hook_clearance-7,10-3-hook_clearance]) square([20+hook_clearance*2+7,enumerator_rod_spacing*4+joiner_width+6+hook_clearance*2]);
+
+    // Tabs for large triangular plates
+    for(x=[-1,60]) {
+      #translate([x,3]) square([6,3]);
+      #translate([x,6+space_between_triangles]) square([6,3]);
+    }
+  }
+}
+
+module sender_triangle_bracket_2d()
+{
+  axle_position = [50,25];
+  difference() {
+    union() {
+      hull() {
+	translate(axle_position) circle(d=10);
+	translate([-30,3]) square([5,6]);
+	translate([30,3]) square([6,6]);
+	translate([-20,50]) circle(d=10);
+	translate([-30,20]) circle(d=10);
+      }
+      translate([-30,0]) square([5,6]);
+      translate([30,0]) square([6,6]);
+    }
+    translate(axle_position) circle(d=3);
+    // Tabs for intake plates
+
+    translate([-18,18]) rotate(-20) square([3,30]);
+    translate([-18,18]) rotate(-20) translate([-10,0]) square([3,30]);
+  }
 }
 
 // 3D assembly
@@ -100,9 +142,13 @@ module memory_sender_3d() {
   }
   translate([50,3 + (joiner_width-3)/2,25]) rotate([0,drive_lever_rotate,0]) vertical_plate_x() sender_drive_lever_2d();
 
-  translate([-18,-5,18]) rotate([0,20,0]) vertical_plate_y() inner_intake_plate_2d();
-  translate([-18,-5,18]) rotate([0,20,0]) translate([-10,0,0]) vertical_plate_y() outer_intake_plate_2d();
-  horizontal_plate() sender_base_plate_2d();
+  translate([-18,-7,18]) rotate([0,20,0]) vertical_plate_y() inner_intake_plate_2d();
+  translate([-18,-7,18]) rotate([0,20,0]) translate([-10,0,0]) vertical_plate_y() outer_intake_plate_2d();
+
+  color([0.5,0.5,0]) translate([-30,-10,0]) horizontal_plate() sender_base_plate_2d();
+
+  color([0.9,0.5,0.8]) translate([0,-4,0]) vertical_plate_x() sender_triangle_bracket_2d();
+  color([0.9,0.5,0.8]) translate([0,-1+space_between_triangles,0]) vertical_plate_x() sender_triangle_bracket_2d();
 }
 
 module bearing_path(pos1, pos2)
