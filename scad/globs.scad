@@ -69,6 +69,20 @@ channel_width = 7; // Width of channels ball bearings roll in
 
 columns_per_block = 8; // Number of columns in each injector/diverter block
 
+enumerator_rod_travel = 7;
+
 // Used mainly by injector
 function ejector_xpos(col) = 20+col*pitch+channel_width/2;
+
+
+//Operator modules to produce acrylic plates easily
+module vertical_plate_x()
+{
+  rotate([90,0,0]) linear_extrude(height=3) children();
+}
+
+module vertical_plate_y()
+{
+  rotate([0,0,90]) rotate([90,0,0]) linear_extrude(height=3) children();
+}
 

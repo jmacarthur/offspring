@@ -52,7 +52,6 @@ drop_angle = atan2(10,85-18+extend_back+12);
 // Attachment distance is the distance from the axis of the follower to the point we should
 // attach to get the correct travel.
 attachment_distance = memory_travel / sin(drop_angle);
-enumerator_rod_travel = 7;
 
 distance_between_xbars = 55;
 
