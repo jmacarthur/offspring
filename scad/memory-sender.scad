@@ -135,7 +135,7 @@ module intake_slope_2d() {
     union() {
       polygon([[0,0], [10,0], [10,triangle_height], [20,triangle_height+5], [0,slope_height]]);
     }
-    translate([2,17]) rotate(-20) square([3,20]);
+    translate([-5,17]) rotate(-20) square([10,20]);
   }
 }
 
