@@ -241,6 +241,14 @@ module hanger_side_plate_2d() {
   }
 }
 
+module lever_coupler_2d() {
+  difference() {
+    square([space_between_triangles,20]);
+    for(bit=[0:4]) {
+      translate([lever_position_y(bit), 5]) square([3,10]);
+    }
+  }
+}
 
 // 3D assembly
 
@@ -268,6 +276,10 @@ module memory_sender_3d() {
 	}
       }
     }
+    rotate([0,drive_lever_rotate,0]) {
+      translate([-10,-3,-10]) vertical_plate_y() lever_coupler_2d();
+    }
+
   }
 
   translate([-18,-7,18]) rotate([0,20,0]) vertical_plate_y() inner_intake_plate_2d();
