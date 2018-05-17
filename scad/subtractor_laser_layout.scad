@@ -39,7 +39,7 @@ offset(delta = kerf, chamfer = true) {
     translate([350,30+40*i]) rotate(270) output_guard_a_2d();
   }
 
-  for(i=[0:1]) translate([320+20*i,180]) rotate(-50) reset_lever_2d();
+  for(i=[0:1]) translate([330+20*i,180]) rotate(-50) reset_lever_2d();
 
   translate([390,30]) rotate(-51-90) reset_bar_2d();
 }
