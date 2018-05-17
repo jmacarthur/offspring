@@ -91,3 +91,7 @@ module horizontal_plate()
   linear_extrude(height=3) children();
 }
 
+
+// Distance between vertical support rails (centre to centre)
+
+support_rail_separation = 250;

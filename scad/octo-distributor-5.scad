@@ -530,4 +530,10 @@ if(laser_view==undef) {
   translate([40+stage1_output_position(3), -17, diverter_y+20]) rotate([diverter_rotate,0,0]) rotate([90,0,0]) rotate([0,180,0]) centred_diverter_assembly();
 
   discard_flap_assembly();
+
+  // Support rails
+  translate([-7.5-50,0,-500]) {
+    cube([15,15,2000]);
+    translate([support_rail_separation,0,-500]) cube([15,15,2000]);
+  }
 }

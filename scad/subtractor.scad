@@ -329,3 +329,13 @@ module subtractor_assembly() {
 
 subtractor_assembly();
 translate([-8*pitch,-8*subtractor_pitch_y]) subtractor_assembly();
+
+
+color([1.0,0,0]) translate([0,0,0]) cylinder(d=3,h=100);
+color([1.0,0,0]) translate([-23*5,-130,0]) cylinder(d=3,h=100);
+
+// Support rails
+rotate([90,0,0]) translate([-220,0,-500]) {
+  cube([15,15,1000]);
+  translate([support_rail_separation,0,0]) cube([15,15,1000]);
+}
