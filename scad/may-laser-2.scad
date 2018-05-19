@@ -7,7 +7,7 @@ use <subtractor.scad>;
 
 //color([0.1,0.1,0.1]) translate([0,0,-5]) square([420,297]);
 
-kerf = 0;
+kerf = 0.1;
 
 offset(delta = kerf, chamfer = true) {
   // Support plates
