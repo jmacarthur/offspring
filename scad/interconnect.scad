@@ -41,17 +41,23 @@ peg_spacing = 5.6;
 peg_top_diameter = 3.4;
 peg_thread_diameter = 2.4;
 
+module cable_clamp_cutout_2d() {
+  union() {
+    square([connector_length, connector_body_height]);
+    for(side = [-1,1]) {
+      translate([connector_length/2 + side*peg_spacing/2 - peg_thread_diameter/2,0]) square([peg_thread_diameter,connector_total_height]);
+      translate([connector_length/2 + side*peg_spacing/2 - peg_top_diameter/2,connector_total_height-2]) square([peg_top_diameter,2]);
+    }
+  }
+}
+
 module cable_connector_2d()
 {
   union() {
     difference() {
       square([slider_body_length,18]);
       translate([8,5]) {
-	square([connector_length, connector_body_height]);
-	for(side = [-1,1]) {
-	  translate([connector_length/2 + side*peg_spacing/2 - peg_thread_diameter/2,0]) square([peg_thread_diameter,connector_total_height]);
-	  translate([connector_length/2 + side*peg_spacing/2 - peg_top_diameter/2,connector_total_height-2]) square([peg_top_diameter,2]);
-	}
+	cable_clamp_coutout_2d();
 	// exit path for cable
 	translate([0,0.5]) square([50,bowden_cable_inner_diameter]);
       }

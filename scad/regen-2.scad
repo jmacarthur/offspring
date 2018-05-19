@@ -1,5 +1,7 @@
 include <globs.scad>;
 
+use <interconnect.scad>;
+
 base_plate_tab_x = [ ejector_xpos(1)+pitch/2, ejector_xpos(5)+pitch/2 ];
 $fn=20;
 depth = 40;
@@ -10,7 +12,7 @@ travel = channel_width;
 animated_travel = travel*(1+sin($t*360))/2;
 input_pushrod_length = 30;
 output_pushrod_length = 40;
-drive_plate_depth = 50;
+drive_plate_depth = 40;
 
 module vertical_plate_holes() {
   clearance = 0.25;
@@ -137,12 +139,18 @@ module lower_output_comb_2d() {
 module drive_plate_2d() {
   difference() {
     union() {
-      square([200,50]);
-      translate([ejector_xpos(0)-channel_width/2-t-20,0]) square([20,100]);
-      translate([ejector_xpos(7)+channel_width/2+t,0]) square([20,100]);
+      square([200,drive_plate_depth]);
+      translate([ejector_xpos(0)-channel_width/2-t-20,0]) square([20,drive_plate_depth+40]);
+      translate([ejector_xpos(7)+channel_width/2+t,0]) square([20,drive_plate_depth+40]);
     }
     for(c=[0:7]) {
-      translate([ejector_xpos(c)-t/2,30]) square([3,21]);
+      translate([ejector_xpos(c)-t/2,drive_plate_depth-11]) square([3,21]);
+    }
+    cd = bowden_cable_inner_diameter;
+    translate([ejector_xpos(3)+pitch/2-cd/2,drive_plate_depth-15]) {
+      translate([0,0]) square([cd,21]);
+
+      translate([cd+0.5,-10]) rotate(90) cable_clamp_cutout_2d();
     }
   }
 }
@@ -165,7 +173,7 @@ module 3d_regenerator_assembly() {
   translate([0,-depth,10]) horizontal_plate() base_plate_2d();
   translate([-t/2,21,-20+3]) vertical_plate_x() lower_output_comb_2d();
 
-  translate([0,-depth-drive_plate_depth-t-50,13+channel_width/2-1.5]) horizontal_plate() drive_plate_2d();
+  translate([0,-depth-drive_plate_depth-t-travel,13+channel_width/2-1.5]) horizontal_plate() drive_plate_2d();
 
 }
 
