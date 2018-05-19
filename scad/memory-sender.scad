@@ -146,7 +146,6 @@ module outer_intake_plate_2d() {
     for(bit=[0:4]) {
       raise_input = (bit % 2 == 1) ? stagger : 0;
       translate([enumerator_rod_spacing*bit+7+joiner_width/2,10+raise_input]) circle(d=11);
-      translate([enumerator_rod_spacing*bit+7+joiner_width/2,20-raise_input]) circle(d=3);
     }
   }
 }
