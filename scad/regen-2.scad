@@ -10,8 +10,10 @@ travel = channel_width;
 animated_travel = travel*(1+sin($t*360))/2;
 input_pushrod_length = 30;
 output_pushrod_length = 40;
+drive_plate_depth = 50;
 
 module vertical_plate_holes() {
+  clearance = 0.25;
   for(c=[0:7]) {
     translate([ejector_xpos(c)+channel_width/2,13]) square([3,channel_width]);
     translate([ejector_xpos(c)-t-channel_width/2,13]) square([3,channel_width]);
@@ -23,6 +25,12 @@ module vertical_plate_holes() {
       square([5,3]);
     }
   }
+
+  // For the drive cable
+  translate([ejector_xpos(3)+pitch/2,20]) circle(d=bowden_cable_inner_diameter);
+  // For the pusher plate
+  translate([ejector_xpos(0)-channel_width/2-t-20,13+channel_width/2-1.5]) square([20,3]);
+  translate([ejector_xpos(7)+channel_width/2+t,13+channel_width/2-1.5]) square([20,3]);
 }
 
 module back_plate_2d()
@@ -81,7 +89,6 @@ module input_pushrod_2d() {
       translate([input_pushrod_length-hole_pos_y+input_stop-travel,-3]) square([3,channel_width+6]);
     }
     translate([input_pushrod_length+3,channel_width/2]) circle(d=8);
-    translate([5,channel_width/2]) circle(d=3);
   }
 }
 
@@ -127,6 +134,19 @@ module lower_output_comb_2d() {
   }
 }
 
+module drive_plate_2d() {
+  difference() {
+    union() {
+      square([200,50]);
+      translate([ejector_xpos(0)-channel_width/2-t-20,0]) square([20,100]);
+      translate([ejector_xpos(7)+channel_width/2+t,0]) square([20,100]);
+    }
+    for(c=[0:7]) {
+      translate([ejector_xpos(c)-t/2,30]) square([3,21]);
+    }
+  }
+}
+
 module 3d_regenerator_assembly() {
   color([1.0,1.0,0]) translate([0,3,0])    vertical_plate_x() back_plate_2d();
   color([1.0,1.0,0]) translate([0,-depth,0])    vertical_plate_x() front_plate_2d();
@@ -144,6 +164,9 @@ module 3d_regenerator_assembly() {
   }
   translate([0,-depth,10]) horizontal_plate() base_plate_2d();
   translate([-t/2,21,-20+3]) vertical_plate_x() lower_output_comb_2d();
+
+  translate([0,-depth-drive_plate_depth-t-50,13+channel_width/2-1.5]) horizontal_plate() drive_plate_2d();
+
 }
 
 
