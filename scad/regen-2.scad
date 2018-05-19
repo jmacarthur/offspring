@@ -41,7 +41,11 @@ module back_plate_2d()
     union() {
       square([200,50]);
     }
+
     vertical_plate_holes();
+    // For the bowden cable connector
+    translate([ejector_xpos(3)+pitch/2-t/2,10]) square([3,5]);
+    translate([ejector_xpos(3)+pitch/2-t/2,25]) square([3,5]);
   }
 }
 
@@ -155,6 +159,28 @@ module drive_plate_2d() {
   }
 }
 
+module bowden_cable_mount_holes() {
+  translate([10,5]) circle(d=3);
+  translate([10,15]) circle(d=3);
+}
+
+module bowden_cable_mount_2d() {
+  cd = bowden_cable_outer_diameter;
+  difference() {
+    square([20,20]);
+    translate([-1,5]) square([4,10]);
+    translate([-1,10-cd/2]) square([100,cd]);
+    bowden_cable_mount_holes();
+  }
+}
+
+module bowden_cable_outer_mount_2d() {
+  difference() {
+    translate([3,0]) square([20-3,20]);
+    bowden_cable_mount_holes();
+  }
+}
+
 module 3d_regenerator_assembly() {
   color([1.0,1.0,0]) translate([0,3,0])    vertical_plate_x() back_plate_2d();
   color([1.0,1.0,0]) translate([0,-depth,0])    vertical_plate_x() front_plate_2d();
@@ -174,6 +200,10 @@ module 3d_regenerator_assembly() {
   translate([-t/2,21,-20+3]) vertical_plate_x() lower_output_comb_2d();
 
   translate([0,-depth-drive_plate_depth-t-travel,13+channel_width/2-1.5]) horizontal_plate() drive_plate_2d();
+
+  translate([ejector_xpos(3)+pitch/2-t/2,10,10]) vertical_plate_y() bowden_cable_mount_2d();
+  translate([ejector_xpos(3)+pitch/2-t/2-t,10,10]) vertical_plate_y() bowden_cable_outer_mount_2d();
+  translate([ejector_xpos(3)+pitch/2-t/2+t,10,10]) vertical_plate_y() bowden_cable_outer_mount_2d();
 
 }
 
