@@ -13,13 +13,16 @@ animated_travel = travel*(1+sin($t*360))/2;
 input_pushrod_length = 30;
 output_pushrod_length = 40;
 drive_plate_depth = 40;
+vertical_plate_height = 35;
+
+connector_pos_y = 13+channel_width/2;
 
 module vertical_plate_holes() {
   clearance = 0.25;
   for(c=[0:7]) {
     translate([ejector_xpos(c)+channel_width/2,13]) square([3,channel_width]);
     translate([ejector_xpos(c)-t-channel_width/2,13]) square([3,channel_width]);
-    translate([ejector_xpos(c)-t/2,13]) square([3,channel_width]);
+    translate([ejector_xpos(c)-t/2-clearance/2,13-clearance/2]) square([3+clearance,channel_width+clearance]);
   }
   // Mounting tabs
   for(x=base_plate_tab_x) {
@@ -29,7 +32,7 @@ module vertical_plate_holes() {
   }
 
   // For the drive cable
-  translate([ejector_xpos(3)+pitch/2,20]) circle(d=bowden_cable_inner_diameter);
+  translate([ejector_xpos(3)+pitch/2,13+channel_width/2]) circle(d=bowden_cable_inner_diameter);
   // For the pusher plate
   translate([ejector_xpos(0)-channel_width/2-t-20,13+channel_width/2-1.5]) square([20,3]);
   translate([ejector_xpos(7)+channel_width/2+t,13+channel_width/2-1.5]) square([20,3]);
@@ -39,13 +42,20 @@ module back_plate_2d()
 {
   difference() {
     union() {
-      square([200,50]);
+      square([200,vertical_plate_height]);
     }
 
     vertical_plate_holes();
     // For the bowden cable connector
-    translate([ejector_xpos(3)+pitch/2-t/2,10]) square([3,5]);
-    translate([ejector_xpos(3)+pitch/2-t/2,25]) square([3,5]);
+
+    translate([ejector_xpos(3)+pitch/2-t/2,connector_pos_y+5]) square([3,5]);
+    translate([ejector_xpos(3)+pitch/2-t/2,connector_pos_y-10]) square([3,5]);
+
+    // For bolting to openbeam
+    for(x=[1,5]) {
+      translate([ejector_xpos(x)+pitch/2,vertical_plate_height-7.5]) circle(d=3);
+    }
+
   }
 }
 
@@ -53,7 +63,7 @@ module back_plate_2d()
 module front_plate_2d()
 {
   difference() {
-    square([200,50]);
+    square([200,vertical_plate_height]);
     vertical_plate_holes();
   }
 }
@@ -133,9 +143,13 @@ module output_crank_2d() {
 module lower_output_comb_2d() {
   clearance = 0.5;
   difference() {
-    square([200,20]);
+    union() {
+      square([200,20]);
+      translate([ejector_xpos(7)+channel_width/2+t,0]) square([3,23]);
+      translate([ejector_xpos(0)-channel_width/2-t-t,0]) square([3,23]);
+    }
     for(c=[0:7]) {
-      translate([ejector_xpos(c)-clearance/2,5]) square([t+clearance, 16]);
+      translate([ejector_xpos(c)-clearance/2-t/2,5]) square([t+clearance, 16]);
     }
   }
 }
@@ -197,15 +211,23 @@ module 3d_regenerator_assembly() {
     }
   }
   translate([0,-depth,10]) horizontal_plate() base_plate_2d();
-  translate([-t/2,21,-20+3]) vertical_plate_x() lower_output_comb_2d();
+  translate([0,21,-20+3]) vertical_plate_x() lower_output_comb_2d();
+
 
   translate([0,-depth-drive_plate_depth-t-travel,13+channel_width/2-1.5]) horizontal_plate() drive_plate_2d();
 
-  translate([ejector_xpos(3)+pitch/2-t/2,10,10]) vertical_plate_y() bowden_cable_mount_2d();
-  translate([ejector_xpos(3)+pitch/2-t/2-t,10,10]) vertical_plate_y() bowden_cable_outer_mount_2d();
-  translate([ejector_xpos(3)+pitch/2-t/2+t,10,10]) vertical_plate_y() bowden_cable_outer_mount_2d();
+  translate([ejector_xpos(3)+pitch/2-t/2,0,connector_pos_y-10]) {
+    translate([0,0,0]) vertical_plate_y() bowden_cable_mount_2d();
+    translate([-t,0,0]) vertical_plate_y() bowden_cable_outer_mount_2d();
+    translate([t,0,0]) vertical_plate_y() bowden_cable_outer_mount_2d();
+  }
 
 }
 
 
 3d_regenerator_assembly();
+
+
+// Example openbeam
+
+color([0.3,0.3,0.3]) translate([0,-15,20]) cube([200,15,15]);
