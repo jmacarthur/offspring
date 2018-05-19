@@ -2,12 +2,14 @@ include <globs.scad>;
 
 base_plate_tab_x = [ ejector_xpos(1)+pitch/2, ejector_xpos(5)+pitch/2 ];
 $fn=20;
-depth = 50;
-hole_pos_y = 30;
+depth = 40;
+hole_pos_y = 20;
 t = 3; // Plate thickness
 travel = channel_width;
 
 animated_travel = travel*(1+sin($t*360))/2;
+input_pushrod_length = 30;
+output_pushrod_length = 40;
 
 module vertical_plate_holes() {
   for(c=[0:7]) {
@@ -72,9 +74,14 @@ module output_pushrod_2d() {
 }
 
 module input_pushrod_2d() {
+  input_stop = 4; // TODO: Figure out why this is 4
   difference() {
-    square([20,channel_width]);
-    translate([20+3,channel_width/2]) circle(d=8);
+    union() {
+      square([input_pushrod_length,channel_width]);
+      translate([input_pushrod_length-hole_pos_y+input_stop-travel,-3]) square([3,channel_width+6]);
+    }
+    translate([input_pushrod_length+3,channel_width/2]) circle(d=8);
+    translate([5,channel_width/2]) circle(d=3);
   }
 }
 
@@ -129,13 +136,13 @@ module 3d_regenerator_assembly() {
       translate([-3-channel_width/2,-depth-3,13])    vertical_plate_y() if(c==0) { end_separator_plate_2d(); } else { separator_plate_2d(); }
 
       translate([-t/2,-depth+hole_pos_y-channel_width/2+animated_travel,13]) vertical_plate_y() output_pushrod_2d();
-      translate([-t/2,-depth+hole_pos_y-channel_width/2-20-channel_width+animated_travel,13]) vertical_plate_y() input_pushrod_2d();
+      translate([-t/2,-depth+hole_pos_y-channel_width/2-input_pushrod_length-channel_width+animated_travel,13]) vertical_plate_y() input_pushrod_2d();
 
 
       translate([-t/2,10+3,-2]) vertical_plate_y() rotate(sin($t/360)*20) output_crank_2d();
     }
   }
-  translate([0,-50,10]) horizontal_plate() base_plate_2d();
+  translate([0,-depth,10]) horizontal_plate() base_plate_2d();
   translate([-t/2,21,-20+3]) vertical_plate_x() lower_output_comb_2d();
 }
 
