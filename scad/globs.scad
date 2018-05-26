@@ -95,3 +95,5 @@ module horizontal_plate()
 // Distance between vertical support rails (centre to centre)
 
 support_rail_separation = 250;
+
+// 250mm separation gives 235mm internal spacing between bars
