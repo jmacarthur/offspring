@@ -32,7 +32,7 @@ module vertical_plate_holes() {
   }
 
   // For the drive cable
-  translate([ejector_xpos(3)+pitch/2,13+channel_width/2]) circle(d=bowden_cable_inner_diameter);
+  translate([ejector_xpos(3)+pitch/2,13+channel_width/2]) circle(d=bowden_cable_inner_diameter+clearance);
   // For the pusher plate
   translate([ejector_xpos(0)-channel_width/2-t-20,13+channel_width/2-1.5]) square([20,3]);
   translate([ejector_xpos(7)+channel_width/2+t,13+channel_width/2-1.5]) square([20,3]);
