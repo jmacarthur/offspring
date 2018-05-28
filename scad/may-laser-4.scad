@@ -24,6 +24,14 @@ offset(delta = kerf, chamfer = true) {
       translate([0,20+40*i]) row_interruptor_2d();
     }
   }
+
+  // Memory diverted output components
+  translate([0,345])  {
+    translate([0,0]) diverted_output_pipeplate_2d();
+    translate([0,25]) diverted_output_slope_2d();
+    translate([3,60]) diverted_output_support_2d();
+    translate([60,80]) rotate(180) diverted_output_support_2d();
+  }
   
   // All injector arms
   translate([30,165]) {
