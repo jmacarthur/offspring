@@ -25,6 +25,8 @@ ejector_rotate = 20;
 flap_rotate = 25;
 diverter_rotate = 25;
 diverted_output_slope = 10;
+diverted_support_slots = [-35, 160];
+
 module intake_chamber_holes()
 {
   translate([0,0]) circle(d=3);
@@ -123,8 +125,9 @@ module distributor_backing_plate_2d()
     chamber_attachment_holes();
 
     // Tabs for the diverted output slope
-    translate([-35,-100]) square([3,20]);
-    translate([160,-100]) square([3,20]);
+    for(x=diverted_support_slots) {
+      translate([x,-100]) square([3,20]);
+    }
 
     // Attachment points for a rubber band return system
     for(x=[-35,160]) {
@@ -445,7 +448,29 @@ module discard_channel_base_2d() {
   }
 }
 
+module diverted_output_support_2d() {
+  difference() {
+    union() {
+      translate([0,-5]) square([20,30]);
+      translate([-3,0]) square([23,20]);
+    }
+    translate([20,8]) rotate(180-10) translate([-3,0]) square([13,3]);
+  }
+}
 
+module diverted_output_slope_2d() {
+  difference() {
+    union() {
+      square([210,23]);
+      translate([20,0]) square([168,25]);
+    }
+    for(x=diverted_support_slots) {
+      #translate([x+40,13]) square([3,10]);
+    }
+  }
+}
+
+// ---------------------------------------- 3D ASSEMBLY
 
 module 3d_octo5_assembly() {
   translate([0,0]) rotate([90,0,0]) linear_extrude(height=3) intake_chamber_2d();
@@ -496,6 +521,11 @@ module 3d_octo5_assembly() {
     color([0.5,0.8,0.6]) translate([0,-26,-70]) rotate([90,0,0]) linear_extrude(height=3) discard_channel_side_2d();
   }
 
+  
+  for(x=diverted_support_slots) {
+    translate([x,0,-100]) vertical_plate_y() diverted_output_support_2d();
+  }
+  color([0.4,0.4,0.4]) translate([-40,20,-100+8]) rotate([170,0,0]) translate([0,-3,0]) horizontal_plate() diverted_output_slope_2d();
 }
 
 if(laser_view==undef) {
