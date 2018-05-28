@@ -161,17 +161,6 @@ module injector_diverter_support_2d() {
   }
 }
 
-module output_slope_2d() {
-  difference() {
-    translate([-10,0]) square([180,30]);
-    translate([ejector_xpos(0)-pitch-channel_width-1,0]) square([3,10]);
-    translate([ejector_xpos(7)-pitch+channel_width-3,0]) square([3,10]);
-    for(c=[0:7]) {
-      translate([ejector_xpos(c)+3-pitch,5]) rotate(20) translate([0,10]) square([3,10]);
-    }
-  }
-}
-
 module injector_diverter_support_bracket_2d() {
   difference() {
     union() {
@@ -474,9 +463,6 @@ module 3d_octo5_assembly() {
   color([0.8,0.5,0]) translate([40-3,explode,0]) rotate([0,0,90]) rotate([90,0,0]) linear_extrude(height=3) intake_grade_2d(1);
   color([0.4,0,0.4]) translate([43,5,17+10]) rotate([0,0,-90]) rotate([90,0,0]) linear_extrude(height=3) rotating_plate_2d(0);
   color([0.4,0,0.4]) translate([43+44,5,17+10]) rotate([0,0,-90]) rotate([90,0,0]) linear_extrude(height=3) rotating_plate_2d(44*sin(intake_slope));
-
-  //color([0.4,0.4,0]) translate([53,10,0]) rotate([0,0,-90]) rotate([90,0,0]) linear_extrude(height=3) output_slopes_2d();
-  //color([0.4,0.4,0]) translate([83,10,0]) rotate([0,0,-90]) rotate([90,0,0]) linear_extrude(height=3) output_slopes_2d();
 
   color([0.8,0.5,0]) translate([90,-8,40]) rotate([0,0,90]) rotate([90,0,0]) linear_extrude(height=3) right_swing_support_2d();
 
