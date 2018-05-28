@@ -101,13 +101,6 @@ module 3d_stage2_assembly() {
   translate([-100,3+5,-15]) rotate([90,0,0]) rotate([0,0,0]) linear_extrude(height=3) mounting_plate();
   translate([60,3+5,-15]) rotate([90,0,0]) rotate([0,0,0]) linear_extrude(height=3) mounting_plate();
 
-  // Output bars
-
-  color(bb_trace_colour) for(x=[0:3]) {
-    translate([ ball_bearing_radius+pitch*x,ball_bearing_radius-1,-80]) cylinder(d=ball_bearing_diameter, h=50);
-    translate([-ball_bearing_radius-pitch*x,ball_bearing_radius-1,-80]) cylinder(d=ball_bearing_diameter, h=50);
-  }
-
 }
 
 
