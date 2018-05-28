@@ -6,6 +6,7 @@
 ball_bearing_diameter = 6.35;
 ball_bearing_radius = ball_bearing_diameter / 2;
 pipe_outer_diameter = 11;
+pipe_inner_diameter = 8;
 
 /* All dimensions are in millimetres */
 memory_slope = 10; // Degrees
