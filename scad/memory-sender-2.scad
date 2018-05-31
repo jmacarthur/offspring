@@ -5,7 +5,7 @@
 include <globs.scad>;
 use <generic_conrods.scad>;
 memory_rod_spacing = 10;
-
+memory_travel = 14;
 $fn=20;
 
 function channel_centre_ypos(i) = i*memory_rod_spacing+10;
@@ -91,9 +91,22 @@ module sender_toggle_2d() {
 }
 
 module sender_rod_2d() {
-  union() {
-    translate([3,0]) square([7,70]);
-    translate([0,20]) polygon([[0,28],[3,26], [10,30], [10,70], [0,70]]);
+  difference() {
+    union() {
+      translate([3,0]) square([7,70]);
+      translate([0,20]) polygon([[0,28],[3,26], [10,30], [10,70], [0,70]]);
+      translate([-5,65+3+memory_travel]) square([20,20]);
+    }
+
+
+    // T-slot to connect to the decoder
+    joiner_width=10;
+    translate([0,65+3+memory_travel]) {
+      nut_width = 5.5;
+      nut_height = 2.5;
+      translate([joiner_width/2-nut_width/2,10]) square([nut_width,nut_height]);
+      translate([joiner_width/2-1.5,7]) square([3, 20]);
+    }
   }
 }
 
