@@ -44,7 +44,7 @@ module sender_slope_2d()
 {
   difference() {
     union() {
-      polygon([[0,0], [20,0], [30,10], [0,10]]);
+      polygon([[0,0], [10,0], [20,10], [0,10]]);
       square([10,20]);
       translate([-3,10]) square([4,10]);
     }
@@ -56,13 +56,13 @@ module sender_slope_2d()
 module sender_separator_2d() {
   difference() {
     union() {
-      square([30,30]);
+      polygon([[0,0], [25,0], [25,15], [channel_width,30], [0,30]]);
       square([channel_width,40]);
-      translate([0,-10]) square([60,20]);
-      translate([50,-13]) square([10,4]);
+      translate([0,-10]) square([50,20]);
+      translate([40,-13]) square([10,4]);
       translate([-3,5]) square([4,5]);
     }
-    translate([35+toggle_axis_offset,-5]) circle(d=3);
+    translate([25+toggle_axis_offset,-5]) circle(d=3);
     translate([channel_width, 25]) square([3,5+1]);
  }
 }
@@ -117,14 +117,14 @@ module sender_top_plate_2d()
   clearance = 0.5;
   difference() {
     union() {
-      square([80,60]);
+      square([70,60]);
       for(x=top_tab_pos) translate([-3,x-2.5]) square([4,5]);
     }
     for(x=top_tab_pos) translate([channel_width,x-2.5]) square([3,5]);
-    offset(clearance) for(i=[0:4]) translate([50,channel_centre_ypos(i)-1.5]) square([10,3]);
+    offset(clearance) for(i=[0:4]) translate([40,channel_centre_ypos(i)-1.5]) square([10,3]);
 
-    translate([55-20,channel_centre_ypos(1.5)]) circle(d=4);
-    translate([55+20,channel_centre_ypos(1.5)]) circle(d=4);
+    translate([45-20,channel_centre_ypos(1.5)]) circle(d=4);
+    translate([45+20,channel_centre_ypos(1.5)]) circle(d=4);
   }
 }
 
@@ -138,11 +138,11 @@ module 3d_sender_assembly() {
   translate([3,0,0]) { // Account for thickness of first plate
     translate([channel_width,0,20]) vertical_plate_y() sender_input_comb_2d();
     for(i=[0:5]) color([0,1.0,0]) translate([0,separator_centre_ypos(i)-1.5+3,0]) vertical_plate_x() sender_separator_2d();
-    for(i=[0:4]) color([1.0,1.0,0]) translate([35+toggle_axis_offset,channel_centre_ypos(i)-1.5+3,-5]) vertical_plate_x() rotate(toggle_rotation) sender_toggle_2d();
-    for(i=[0:4]) color([1.0,0,1.0]) translate([50,channel_centre_ypos(i)-1.5+3,-25]) vertical_plate_x() sender_rod_2d();
-    translate([45,0,-13]) horizontal_plate() sender_lower_output_comb_2d();
+    for(i=[0:4]) color([1.0,1.0,0]) translate([25+toggle_axis_offset,channel_centre_ypos(i)-1.5+3,-5]) vertical_plate_x() rotate(toggle_rotation) sender_toggle_2d();
+    for(i=[0:4]) color([1.0,0,1.0]) translate([40,channel_centre_ypos(i)-1.5+3,-25]) vertical_plate_x() sender_rod_2d();
+    translate([35,0,-13]) horizontal_plate() sender_lower_output_comb_2d();
     translate([0,0,40]) color([0.5,0.5,1.0]) horizontal_plate() sender_top_plate_2d();
-    for(i=[-1,5]) color([1.0,1.0,0]) translate([35+toggle_axis_offset,channel_centre_ypos(i),-5]) vertical_plate_x() rotate(90-40) sender_reset_arm_2d();
+    for(i=[-1,5]) color([1.0,1.0,0]) translate([25+toggle_axis_offset,channel_centre_ypos(i),-5]) vertical_plate_x() rotate(90-40) sender_reset_arm_2d();
     
   }
 }
@@ -150,6 +150,6 @@ module 3d_sender_assembly() {
 3d_sender_assembly();
 
 
-translate([30+3+ball_bearing_radius,channel_centre_ypos(0),10]) sphere(d=ball_bearing_diameter);
+translate([20+3+ball_bearing_radius,channel_centre_ypos(0),10]) sphere(d=ball_bearing_diameter);
 
 translate([80-2,channel_centre_ypos(1.5), -20]) cylinder(d=4,h=300);
