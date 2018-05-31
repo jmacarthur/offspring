@@ -16,8 +16,8 @@ top_tab_pos = [channel_centre_ypos(0), channel_centre_ypos(4)];
 toggle_axis_offset = 2;
 // Intake grid
 
-// -20 engaged, 5 idle
-toggle_rotation = 5;
+// -22 engaged, 5 idle
+toggle_rotation = -22;
 
 module intake_grid_2d() {  
   adjust = 0.5;
@@ -86,7 +86,7 @@ module sender_toggle_2d() {
 module sender_rod_2d() {
   union() {
     translate([3,0]) square([7,70]);
-    polygon([[0,28],[3,26], [10,30], [10,70], [0,70]]);
+    translate([0,20]) polygon([[0,28],[3,26], [10,30], [10,70], [0,70]]);
   }
 }
 
@@ -114,7 +114,7 @@ module sender_top_plate_2d()
 }
 
 module sender_reset_arm_2d() {
-  conrod(length=24);
+  conrod(length=22);
 }
 
 module 3d_sender_assembly() {
@@ -122,12 +122,12 @@ module 3d_sender_assembly() {
   for(i=[0:4]) color([1.0,0,0]) translate([3,channel_centre_ypos(i)-1.5+3,0]) vertical_plate_x() sender_slope_2d();
   translate([3,0,0]) { // Account for thickness of first plate
     translate([channel_width,0,20]) vertical_plate_y() sender_input_comb_2d();
-    //for(i=[0:5]) color([0,1.0,0]) translate([0,separator_centre_ypos(i)-1.5+3,0]) vertical_plate_x() sender_separator_2d();
+    for(i=[0:5]) color([0,1.0,0]) translate([0,separator_centre_ypos(i)-1.5+3,0]) vertical_plate_x() sender_separator_2d();
     for(i=[0:4]) color([1.0,1.0,0]) translate([35+toggle_axis_offset,channel_centre_ypos(i)-1.5+3,-5]) vertical_plate_x() rotate(toggle_rotation) sender_toggle_2d();
-    for(i=[0:4]) color([1.0,0,1.0]) translate([50,channel_centre_ypos(i)-1.5+3,-5]) vertical_plate_x() sender_rod_2d();
+    for(i=[0:4]) color([1.0,0,1.0]) translate([50,channel_centre_ypos(i)-1.5+3,-25]) vertical_plate_x() sender_rod_2d();
     translate([45,0,-13]) horizontal_plate() sender_lower_output_comb_2d();
     translate([0,0,40]) color([0.5,0.5,1.0]) horizontal_plate() sender_top_plate_2d();
-    for(i=[-1,5]) color([1.0,1.0,0]) translate([35+toggle_axis_offset,channel_centre_ypos(i),-5]) vertical_plate_x() rotate(90-35) sender_reset_arm_2d();
+    for(i=[-1,5]) color([1.0,1.0,0]) translate([35+toggle_axis_offset,channel_centre_ypos(i),-5]) vertical_plate_x() rotate(90-40) sender_reset_arm_2d();
     
   }
 }
