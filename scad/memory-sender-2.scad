@@ -27,8 +27,14 @@ module intake_grid_2d() {
     for(i=[0:4]) {
       translate([channel_centre_ypos(i), 20+hole_diameter/2+8*(i%2)]) circle(d=hole_diameter);
       translate([channel_centre_ypos(i)-1.5,10]) square([3,10]);
+
+
     }
     for(x=top_tab_pos) translate([x-2.5,40]) square([5,3]);
+    for(i=[0:5]) {
+      translate([separator_centre_ypos(i)-1.5,5]) square([3,5]);
+    }
+    
   }
 }
 
@@ -54,10 +60,11 @@ module sender_separator_2d() {
       square([channel_width,40]);
       translate([0,-10]) square([60,20]);
       translate([50,-13]) square([10,4]);
+      translate([-3,5]) square([4,5]);
     }
     translate([35+toggle_axis_offset,-5]) circle(d=3);
     translate([channel_width, 25]) square([3,5+1]);
-  }
+ }
 }
 
 module sender_input_comb_2d() {
@@ -94,9 +101,14 @@ module sender_lower_output_comb_2d()
 {
   clearance = 0.5;
   difference() {
-    square([20,70]);
+    hull() {
+      square([20,70]);
+      translate([10+20,channel_centre_ypos(1.5)]) circle(d=12);
+    }
+	  
     offset(clearance) for(i=[0:4]) translate([8, channel_centre_ypos(i)-1.5]) square([7,3]); 
     for(i=[0:5]) translate([5, separator_centre_ypos(i)-1.5]) square([10,3]);
+    translate([10+20,channel_centre_ypos(1.5)]) circle(d=4);
   }
 }
 
@@ -105,11 +117,14 @@ module sender_top_plate_2d()
   clearance = 0.5;
   difference() {
     union() {
-      square([70,60]);
+      square([80,60]);
       for(x=top_tab_pos) translate([-3,x-2.5]) square([4,5]);
     }
     for(x=top_tab_pos) translate([channel_width,x-2.5]) square([3,5]);
     offset(clearance) for(i=[0:4]) translate([50,channel_centre_ypos(i)-1.5]) square([10,3]);
+
+    translate([55-20,channel_centre_ypos(1.5)]) circle(d=4);
+    translate([55+20,channel_centre_ypos(1.5)]) circle(d=4);
   }
 }
 
@@ -136,3 +151,5 @@ module 3d_sender_assembly() {
 
 
 translate([30+3+ball_bearing_radius,channel_centre_ypos(0),10]) sphere(d=ball_bearing_diameter);
+
+translate([80-2,channel_centre_ypos(1.5), -20]) cylinder(d=4,h=300);
