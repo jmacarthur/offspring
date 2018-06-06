@@ -15,8 +15,13 @@ channel0_pos_x = 30+7.5;
 centre_line_x = channel0_pos_x +pitch*3.5;
 rail_centre_x = [7.5, 7.5+support_rail_separation];
 
-double_splitter_height = 100;
+double_splitter_height = 105;
 double_splitter_width = support_rail_separation+15;
+
+diverted_output_slope = 10;
+diverted_support_slots = [25, 25+195];
+
+
 module generic_splitter_cutouts() {
   for(y=diverter_y) {
     for(x=support_tab_x) translate([x,y]) square([3,30]);
@@ -27,10 +32,11 @@ module generic_splitter_cutouts() {
 module baseplate_2d()
 {
   difference() {
-    square([double_splitter_width, double_splitter_height]);
+    translate([0,-5]) square([double_splitter_width, double_splitter_height]);
     generic_splitter_cutouts();
     for(y=diverter_y) {
       for(x=rail_centre_x) translate([x,y+15]) circle(d=3);
+      for(x=diverted_support_slots) translate([x,y-10]) square([3,20]);
     }
   }
 }
@@ -38,7 +44,7 @@ module baseplate_2d()
 module top_plate_2d()
 {
   difference() {
-    square([double_splitter_width, double_splitter_height]);
+    translate([0,-5]) square([double_splitter_width, double_splitter_height]);
     generic_splitter_cutouts();
     for(y=diverter_y) {
       for(x=rail_centre_x) translate([x,y+15]) circle(d=6);
@@ -71,6 +77,8 @@ module 3d_assembly() {
   }
 
 }
+
+translate([0,0,-10]) rotate([-90,0,0]) 3d_diverted_assembly();
 
 3d_assembly();
 

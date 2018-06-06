@@ -57,3 +57,53 @@ module centred_diverter_assembly() {
     }
   }
 }
+
+
+// Output supports which can be used to take output out into plastic pipes
+
+module diverted_output_support_2d() {
+  difference() {
+    union() {
+      translate([0,-5]) square([20,30]);
+      translate([-3,0]) square([23,20]);
+      translate([0,20]) square([30,5]);
+    }
+    translate([20,8]) rotate(180-10) translate([-3,0]) square([13,3]);
+  }
+}
+
+module diverted_output_slope_2d() {
+  difference() {
+    union() {
+      square([210,20]);
+      translate([20,0]) square([168,25]);
+    }
+    for(x=diverted_support_slots) {
+      translate([x-20,13]) square([3,10]);
+    }
+    for(i=[0:7]) {
+      translate([ejector_xpos(i)+6,20]) rotate(180-20) translate([0,5]) square([3,10]);
+    }
+  }
+}
+
+module diverted_output_pipeplate_2d() {
+  difference() {
+    translate([0,-5]) square([210,25]);
+    for(i=[0:7]) {
+      translate([ejector_xpos(i)-12,pipe_inner_diameter/2-1]) circle(d=pipe_outer_diameter);
+    }
+    for(x=diverted_support_slots) {
+      translate([x-20,12]) square([3,5]);
+    }
+  }
+}
+
+module 3d_diverted_assembly() {
+  for(x=diverted_support_slots) {
+    translate([x,0,0]) vertical_plate_y() diverted_output_support_2d();
+  }
+  color([0.4,0.4,0.4]) translate([20,20,8]) rotate([170,0,0]) translate([0,-3,0]) horizontal_plate() diverted_output_slope_2d();
+
+  translate([20,26,8]) vertical_plate_x() diverted_output_pipeplate_2d();
+}
