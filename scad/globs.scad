@@ -98,3 +98,18 @@ module horizontal_plate()
 support_rail_separation = 250;
 
 // 250mm separation gives 235mm internal spacing between bars
+
+
+// Canonical channel 0 position - the leftmost channel - should be 30mm right of the centre of the rail.
+
+/*
+     30mm
+   <------>
+ 15mm     v
+<---->    v
+|    |    v
+|BEAM|    v
+|    |    v
+
+*/
+
