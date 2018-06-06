@@ -2,13 +2,11 @@
 
 include <globs.scad>;
 include <diverter-parts.scad>;
-include <regenerator.scad>;
 
 $fn=20;
 explode = 0;
 
 diverter_y = [50,100,270];
-
 support_tab_x = [ 10, 200];
 pusher_support_x = [ 30,170];
 
@@ -20,7 +18,7 @@ centre_line_x = channel0_pos_x +pitch*3.5;
 module baseplate_2d()
 {
   difference() {
-    square([220, 297]);
+    square([297, 210]);
     for(y=diverter_y) {
       translate([centre_line_x,y]) diverter_cutout();
       for(x=support_tab_x) translate([x,y]) square([3,30]);
