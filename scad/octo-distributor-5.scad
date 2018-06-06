@@ -25,7 +25,7 @@ ejector_rotate = 20;
 flap_rotate = 25;
 diverter_rotate = 25;
 diverted_output_slope = 10;
-diverted_support_slots = [-35, 160];
+diverted_support_slots = [25, 25+195];
 
 module intake_chamber_holes()
 {
@@ -147,6 +147,9 @@ module distributor_backing_plate_2d()
     translate([0,-200]) {
       translate([ejector_xpos(0)-40-channel_width/2-3,65]) square([3,10]);
       translate([ejector_xpos(7)-40+channel_width/2,65]) square([3,10]);
+    }
+    for(x=diverted_support_slots) {
+      translate([x-60,-100]) square([3,20]);
     }
 
   }
@@ -449,45 +452,6 @@ module discard_channel_base_2d() {
   }
 }
 
-module diverted_output_support_2d() {
-  difference() {
-    union() {
-      translate([0,-5]) square([20,30]);
-      translate([-3,0]) square([23,20]);
-      translate([0,20]) square([30,5]);
-    }
-    translate([20,8]) rotate(180-10) translate([-3,0]) square([13,3]);
-  }
-}
-
-module diverted_output_slope_2d() {
-  difference() {
-    union() {
-      square([210,20]);
-      translate([20,0]) square([168,25]);
-    }
-    for(x=diverted_support_slots) {
-      translate([x+40,13]) square([3,10]);
-    }
-    for(i=[0:7]) {
-      translate([ejector_xpos(i)+6,20]) rotate(180-20) translate([0,5]) square([3,10]);
-    }
-  }
-}
-
-module diverted_output_pipeplate_2d() {
-  difference() {
-    translate([0,-5]) square([210,25]);
-    for(i=[0:7]) {
-      translate([ejector_xpos(i)-12,pipe_inner_diameter/2-1]) circle(d=pipe_outer_diameter);
-    }
-    for(x=diverted_support_slots) {
-      translate([x+40,12]) square([3,5]);
-    }
-  }
-}
-
-
 // ---------------------------------------- 3D ASSEMBLY
 
 module 3d_octo5_assembly() {
@@ -540,12 +504,7 @@ module 3d_octo5_assembly() {
   }
 
   
-  for(x=diverted_support_slots) {
-    translate([x,0,-100]) vertical_plate_y() diverted_output_support_2d();
-  }
-  color([0.4,0.4,0.4]) translate([-40,20,-100+8]) rotate([170,0,0]) translate([0,-3,0]) horizontal_plate() diverted_output_slope_2d();
-
-  translate([-40,26,-100+8]) vertical_plate_x() diverted_output_pipeplate_2d();
+  translate([-60,0,-100]) 3d_diverted_assembly();
 }
 
 if(laser_view==undef) {

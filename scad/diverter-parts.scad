@@ -3,6 +3,7 @@
 include <globs.scad>;
 
 diverter_width = (columns_per_block-1)*pitch+channel_width;
+diverted_support_slots = [25, 25+195];
 
 // diverter_cutout and centred_diverter_assemble are centred in the X axis so 0 is the
 // central division between bits 4 and 5.
