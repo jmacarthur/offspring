@@ -1,4 +1,4 @@
-/* Regenerator & splitter unit for atachment below memory. */
+/* Coimbination regenerator & splitter unit for atachment below memory. */
 
 include <globs.scad>;
 include <diverter-parts.scad>;
@@ -20,11 +20,6 @@ module baseplate_2d()
       for(x=support_tab_x) translate([x,y]) square([3,30]);
     }
 
-    // cutouts for actuator arms
-    for(c=[0:7]) {
-      clearance = 0.5;
-      translate([ejector_xpos(c)-1.5-clearance,220+3]) square([3+clearance*2,20]);
-    }
   }
 }
 
@@ -36,8 +31,6 @@ module top_plate_2d()
       translate([0,y]) diverter_cutout();
       for(x=support_tab_x) translate([x,y]) square([3,30]);
     }
-    // Cutout for regen
-    translate([15,220]) square([190,30]);
 
     // Cutout for pusher supports
     for(x=support_tab_x) translate([x,140]) square([3,30]);
@@ -80,11 +73,6 @@ module 3d_assembly() {
   for(x=support_tab_x) {
     color([1.0,0.4,0.5]) translate([x+3,140,10]) rotate([0,-90,0]) linear_extrude(height=3) pusher_support_2d();
   }
-  for(c=[0:7]) translate([ejector_xpos(c)-1.5, 195,-15]) rotate([0,90,0]) color([0,1.0,1.0]) linear_extrude(height=3) rotate(-$t*10) actuator_arm_2d();
-  translate([20,230,10+channel_width/2]) rotate([90,0,0]) linear_extrude(height=3) regen_pusher_2d(0);
-  translate([20,233,10+channel_width/2]) rotate([90,0,0]) linear_extrude(height=3) regen_pusher_2d(2);
-
-  for(x=pusher_support_x) translate([x+20,160-3,28]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) regen_swing_arm_2d();
 
   for(y=diverter_y) {
     translate([0,y+20,17]) rotate([0,90,0]) cylinder(d=3,h=250);
