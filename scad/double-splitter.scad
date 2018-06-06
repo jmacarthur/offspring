@@ -7,8 +7,8 @@ $fn=20;
 explode = 0;
 
 diverter_y = [10,60];
-support_tab_x = [ 20, 200];
-pusher_support_x = [ 30,170];
+support_tab_x = [20, 210];
+pusher_support_x = [30, 170];
 
 channel0_pos_x = 30+7.5;
 
@@ -19,6 +19,7 @@ double_splitter_height = 100;
 double_splitter_width = support_rail_separation+15;
 module generic_splitter_cutouts() {
   for(y=diverter_y) {
+    for(x=support_tab_x) translate([x,y]) square([3,30]);
     translate([centre_line_x,y]) diverter_cutout();
   }
 }
@@ -40,7 +41,6 @@ module top_plate_2d()
     square([double_splitter_width, double_splitter_height]);
     generic_splitter_cutouts();
     for(y=diverter_y) {
-      for(x=support_tab_x) translate([x,y]) square([3,30]);
       for(x=rail_centre_x) translate([x,y+15]) circle(d=6);
     }
   }
@@ -49,10 +49,10 @@ module top_plate_2d()
 module diverter_support_2d() {
   difference() {
     union() {
-      translate([-2,0]) square([15,30]);
-      translate([3,-3]) square([5,36]);
+      translate([0,0]) square([22,30]);
+      translate([3,-3]) square([7,36]);
     }
-    translate([7,20]) circle(d=3);
+    translate([17,20]) circle(d=3);
   }
 }
 
@@ -62,7 +62,7 @@ module 3d_assembly() {
   translate([0,0,10]) linear_extrude(height=3) top_plate_2d();
   for(y=diverter_y) {
     for(x=support_tab_x) {
-      color([1.0,0.4,0.5]) translate([x+3,y,10]) rotate([0,-90,0]) linear_extrude(height=3) diverter_support_2d();
+      color([1.0,0.4,0.5]) translate([x+3,y,0]) rotate([0,-90,0]) linear_extrude(height=3) diverter_support_2d();
     }
     translate([centre_line_x,y+20,17]) rotate([0,180,0]) centred_diverter_assembly();
   }
