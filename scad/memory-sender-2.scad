@@ -73,7 +73,7 @@ module sender_input_comb_2d() {
       square([60,20]);
       for(x=top_tab_pos) translate([x-2.5,20-1]) square([5,4]);
     }
-    for(i=[0:4]) {
+    for(i=[0:5]) {
       translate([separator_centre_ypos(i)-1.5, -1]) square([3,5+1]);
     }
   }
