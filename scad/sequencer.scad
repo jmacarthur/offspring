@@ -26,16 +26,21 @@ cam_width=5;
 cam_spacing = 14;
 
 axle_diameter = 20;
-
+bearing_outer_diameter=28; // Fairly typical needle roller bearing 
 instruction_positions = 5;
 
 num_cams = 17;
 
 gap_position = 8; // Gap for the drive gear happens after this many cams
 gap_width = 40;
+
+follower_axle_y = cam_diameter/2+15;
+follower_axle_z = cam_diameter/2;
+
+instruction_axle_y = follower_axle_y+42;
+instruction_axle_z = follower_axle_z+25;
+
 // Example cams
-
-
 module cam_2d() {
   difference() {
     circle(d=cam_diameter);
@@ -90,16 +95,14 @@ module instruction_output_rod_2d() {
 
 
 module camshaft() {
-  follower_axle_y = cam_diameter/2+15;
   for(i=[0:num_cams-1]) {
     offset = (i>=gap_position?gap_width:0);
     translate([cam_spacing*i+offset, 0,0]) rotate([0,90,0]) linear_extrude(height=cam_width) cam_2d();
-    translate([cam_spacing*i+offset, follower_axle_y,cam_diameter/2]) rotate([0,90,0]) linear_extrude(height=3) follower_2d();
+    translate([cam_spacing*i+offset, follower_axle_y,follower_axle_z]) rotate([0,90,0]) linear_extrude(height=3) follower_2d();
 
     if(i<instruction_positions) {
       translate([cam_spacing*(i-1)+offset, follower_axle_y+21,cam_diameter/2]) rotate([0,90,0]) linear_extrude(height=3) decoder_drop_rod_2d();
-      translate([cam_spacing*(i-1)+offset, follower_axle_y+42,cam_diameter/2+25]) rotate([0,90,0]) linear_extrude(height=3) instruction_output_rod_2d();
-      
+      translate([cam_spacing*(i-1)+offset, instruction_axle_y,instruction_axle_z]) rotate([0,90,0]) linear_extrude(height=3) instruction_output_rod_2d();
     }
   }
   // Bonus follower which is driven by the first cam, to drive CMP or LDN
@@ -108,14 +111,66 @@ module camshaft() {
 }
 
 
+module outer_plate_2d() {
+  sideplate_holes = [ [0,0,bearing_outer_diameter],
+		      [follower_axle_y, follower_axle_z, 3],
+  		      [instruction_axle_y, instruction_axle_z, 3],
+		      [decoder_origin_y+18, decoder_origin_z, 4],
+		      [decoder_origin_y+18, decoder_origin_z+40, 4]];
+  instruction_holder_slots = [decoder_origin_y-5, decoder_origin_y+30];
+  difference() {
+    hull() {
+      for(hole=sideplate_holes) {
+	translate([-hole[1],hole[0]]) circle(d=hole[2]+10);
+      }
+      offset(5) {
+	for(slot=instruction_holder_slots)
+	  translate([-decoder_origin_z-30, slot]) square([20,3]);
+      }
+    }
+    for(hole=sideplate_holes) {
+      translate([-hole[1],hole[0]]) circle(d=hole[2]);
+    }
+    for(slot=instruction_holder_slots)
+       #translate([-decoder_origin_z-30, slot]) square([20,3]);
 
-camshaft();
-
-translate([-27,174,40]) decoder_assembly(3);
-
-// Example enumerator rods
-
-for(i=[0:2]) {
-  translate([-34,179+10*i,50]) rotate([90,0,0]) linear_extrude(height=3) enumerator_rod(i, 3, 14, 5, 10);
+    // Cutout for enumerator rods.
+    translate([-decoder_origin_z-35,decoder_origin_y+1]) square([30,25]);
+  }
+  
 }
 
+module reader_support_2d() {
+  square([50,20]);
+}
+
+module reader_assembly() {
+  for(y=[0,35]) {
+    translate([0,y,0]) rotate([90,0,0]) linear_extrude(height=3) reader_support_2d();
+  }
+}
+
+
+decoder_origin_x = -27;
+decoder_origin_y = 174;
+decoder_origin_z = 40;
+
+module instruction_decoder() {
+ 
+  translate([decoder_origin_x,decoder_origin_y,decoder_origin_z]) decoder_assembly(3);
+
+  // Example enumerator rods
+
+  for(i=[0:2]) {
+    translate([decoder_origin_x-7,decoder_origin_y+5+10*i,decoder_origin_z+10]) rotate([90,0,0]) linear_extrude(height=3) enumerator_rod(i, 3, 14, 5, 10);
+  }
+}
+
+module sequencer_assembly() {
+  color([0.7,0.7,0]) translate([-30,0,0]) rotate([0,90,0]) linear_extrude(height=3) outer_plate_2d();
+  camshaft();
+  instruction_decoder();
+  translate([decoder_origin_x-50,decoder_origin_y-2,decoder_origin_z+10]) reader_assembly();
+}
+
+sequencer_assembly();
