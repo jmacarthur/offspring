@@ -2,9 +2,23 @@
 
 
 use <generic_conrods.scad>;
-
+use <decoder.scad>;
 // At the moment, there are 17 cams. 4 of these are selective and only drive if certain instructions are in use. The rest are always in use.
 // The instructions which need a gate are LDN, STO, JRP, JMP and CMP. LDN and CMP have the same cam pattern so share one (although they must have independent outputs). SUB is the default instruction so does not need a gate; HLT is unimplemented.
+
+
+// The respective instruction bits are (using conventional representation with LSB on the right)
+
+// 0 0 0  JMP
+// 0 0 1  JRP
+// 0 1 0  LDN
+// 0 1 1  STO
+// 1 0 0  SUB
+// 1 0 1  Second store, not used
+// 1 1 0  CMP
+
+// We will need a decoder with custom enumerator rods to engage only on the first five positions (this could also enable the second store decode).
+
 
 cam_diameter = 150;
 cam_width=5;
@@ -66,8 +80,11 @@ module camshaft() {
   }
   // Bonus follower which is driven by the first cam, to drive CMP or LDN
   translate([cam_spacing*-1, follower_axle_y, cam_diameter/2]) rotate([0,90,0]) linear_extrude(height=3) follower_2d();
-
   translate([cam_spacing*gap_position,0,0]) rotate([0,90,0]) drive_gear();
 }
 
+
+
 camshaft();
+
+translate([0,200,200]) decoder_assembly(3);
