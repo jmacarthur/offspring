@@ -14,10 +14,6 @@ explode = 30; // Moves parts apart for easier inspection
 gap_adjust = 0.2; // In case of thicker than 3mm acrylic, make this positive to increase the width of the slots for the followers.
 memory_travel = 14;
 
-// Number of inputs. This was originally defined for 5 inputs;
-// other numbers may work, but are in development.
-n_inputs = 4;
-
 // Mid-section gap - allows a gap in between two sets of follower rods
 gap = memory_unit_gap;
 gap_position = 8;
@@ -26,20 +22,23 @@ gap_position = 8;
 // The position of the input rods for this rendering
 input_data = [ 0, 1, 1, 1, 0 ];
 
+
+render_inputs = 4; // Render this many inputs
+
 // Enumerator supports still have to be manually placed when changing n_inputs.
 // For n=5, we suggest [64,225].
 enumerator_support_x = [64, 135, 230];
 
 // Calculated globals
-n_positions = pow(2,n_inputs);
+render_positions = pow(2,render_inputs);
 
 // Calculates the position of the fallen input follower and raised
 // crank for this rendering.
-raise_position = n_positions-1-(input_data[0] + input_data[1]*2+input_data[2]*4+
+raise_position = render_positions-1-(input_data[0] + input_data[1]*2+input_data[2]*4+
 		     input_data[3]*8+input_data[4]*16);
 
 // The spacing between internal plates (i.e. the gap between them plus one thickness)
-x_internal_space = follower_spacing*n_positions+gap;
+function x_internal_space(n_positions) = follower_spacing*n_positions+gap;
 
 thin = 0.1;
 
@@ -55,9 +54,9 @@ attachment_distance = memory_travel / sin(drop_angle);
 
 distance_between_xbars = 55;
 
-xbar_length = x_internal_space + 20;
+function xbar_length(n_positions) = x_internal_space(n_positions) + 20;
 
-mounting_holes_x = [ 20, xbar_length-20, floor(xbar_length/2) ];
+function mounting_holes_x(n_positions) = [ 20, xbar_length(n_positions)-20, floor(xbar_length(n_positions)/2) ];
 mounting_screw_diameter = 10;
 
 
@@ -72,12 +71,13 @@ mounting_screw_diameter = 10;
 // rise_height - how much each bump is raised above the baseline.
 module enumerator_rod(value, n_inputs, follower_spacing, travel, rise_height)
 {
+  n_positions = pow(2,n_inputs);
   actual_travel = (travel==0)?follower_spacing/2:travel;
   extend_above = 10;
   difference() {
     union() {
       translate([-extend_above, 0])
-	square(size=[50+x_internal_space+extend_above,10+rise_height]);
+	square(size=[50+x_internal_space(n_positions)+extend_above,10+rise_height]);
 
       // Stops which prevent the rod travelling too far
       translate([2,-2]) square([5,24]);
@@ -97,7 +97,7 @@ module enumerator_rod(value, n_inputs, follower_spacing, travel, rise_height)
     }
 
     // T-slot to chain to next decoder
-    translate([x_internal_space+40,0]) {
+    translate([x_internal_space(n_positions)+40,0]) {
       nut_width = 5.5;
       nut_height = 2.5;
       translate([0,10-nut_width/2]) square([nut_height, nut_width]);
@@ -105,16 +105,18 @@ module enumerator_rod(value, n_inputs, follower_spacing, travel, rise_height)
     }
 
     // Slot which can be used to make an end stop
-    translate([x_internal_space+34,18]) square([0.8,5]);
+    translate([x_internal_space(n_positions)+34,18]) square([0.8,5]);
 
   }
 }
 
 // Place enumeration rods on 3D diagram
-for(s=[0:n_inputs-1]) {
-  translate([-12+1.5-enumerator_rod_travel/2+input_data[s]*enumerator_rod_travel,5+10*s,10])
-    rotate([90,0,0]) linear_extrude(height=3) {
-    enumerator_rod(s, n_inputs, follower_spacing, 0, 10);
+module enumerator_rods(n_inputs) {  
+  for(s=[0:n_inputs-1]) {
+    translate([-12+1.5-enumerator_rod_travel/2+input_data[s]*enumerator_rod_travel,5+10*s,10])
+      rotate([90,0,0]) linear_extrude(height=3) {
+      enumerator_rod(s, n_inputs, follower_spacing, 0, 10);
+    }
   }
 }
 
@@ -190,18 +192,18 @@ module back_lifter_lever() {
   }
 }
 
-module follower_slots(slotStart, slotHeight) {
+module follower_slots(n_positions, slotStart, slotHeight) {
   for(i=[1:n_positions]) {
     // Slots for followers
     translate([i*follower_spacing-4-gap_adjust/2+(i>gap_position?gap:0),5+slotStart]) square([3+gap_adjust,slotHeight]);
   }
 }
 
-module lifter_bar_axles()
+module lifter_bar_axles(n_positions)
 {
     // Mounts for lifter bar
     translate([45,-4]) circle(d=3);
-    translate([x_internal_space+5,-4]) circle(d=3);
+    translate([x_internal_space(pow(2,n_positions))+5,-4]) circle(d=3);
 }
 
 module enumerator_support_slots()
@@ -213,70 +215,70 @@ module enumerator_support_slots()
 
 // An xBar is one of the 'input combs' which accomodate the followers.
 
-module xBar_2d(slotStart, slotHeight, height) {
+module xBar_2d(n_positions, slotStart, slotHeight, height) {
   difference() {
     union() {
-      translate([0,-20]) square([xbar_length,height+10]);
+      translate([0,-20]) square([xbar_length(n_positions),height+10]);
       // Tabs to connect to side plate
       translate([20,height-10-thin]) square([10,3+thin]);
       translate([100,height-10-thin]) square([10,3+thin]);
     }
-    follower_slots(slotStart, slotHeight);
-    lifter_bar_axles();
+    follower_slots(n_positions, slotStart, slotHeight);
+    lifter_bar_axles(n_positions);
     enumerator_support_slots();
 
     // Tabs to connect to the triangular plate
     translate([-thin,30]) square([3+thin,15]);
     translate([-thin,-10-thin]) square([3+thin,20]);
-    translate([xbar_length-3,30]) square([3+thin,15]);
-    translate([xbar_length-3,-10-thin]) square([3+thin,20]);
+    translate([xbar_length(n_positions)-3,30]) square([3+thin,15]);
+    translate([xbar_length(n_positions)-3,-10-thin]) square([3+thin,20]);
 
   }
 }
 
-module top_plate_2d() {
+module top_plate_2d(n_positions) {
   slotStart = 5;
   slotHeight = 20;
   height = 90;
   difference() {
     union() {
-      translate([0,-50]) square([xbar_length,height]);
+      translate([0,-50]) square([xbar_length(n_positions),height]);
       // Tabs to connect to side plate
       translate([20,height-50-thin]) square([10,3+thin]);
       translate([100,height-50-thin]) square([10,3+thin]);
     }
-    follower_slots(slotStart, slotHeight);
+    follower_slots(n_positions, slotStart, slotHeight);
     lifter_bar_axles();
     enumerator_support_slots();
 
     // Tabs to connect to the triangular plate
     translate([-thin,-5]) square([3+thin,35]);
-    translate([xbar_length-3,-5]) square([3+thin,35]);
+    translate([xbar_length(n_positions)-3,-5]) square([3+thin,35]);
 
     // Holes to mount the whole assembly to the base
-    for(x=mounting_holes_x) {
+    for(x=mounting_holes_x(n_positions)) {
       translate([x,-35]) circle(d=mounting_screw_diameter);
     }
   }
 }
 
 // Fixed sections (chassis)
-module xBar(slotStart, slotHeight, height) {
+module xBar(n_positions, slotStart, slotHeight, height) {
   color([0.5,0.5,0.5]) {
     translate([0,3,0])
     rotate([90,0,0])
     linear_extrude(height=3) {
-      xBar_2d(slotStart, slotHeight, height);
+      xBar_2d(n_positions, slotStart, slotHeight, height);
     }
   }
 }
 
-module topPlate() {
+module topPlate(n_positions) {
   color([0.5,0.5,0.5]) {
     translate([0,3,0])
     rotate([90,0,0])
     linear_extrude(height=3) {
-      top_plate_2d();
+      top_plate_2d(n_positions);
     }
   }
 }
@@ -306,21 +308,21 @@ module yComb() {
   }
 }
 
-module lifter_bar_2d()
+module lifter_bar_2d(n_positions)
 {
   difference() {
-    square([30+x_internal_space,10]);
+    square([30+x_internal_space(n_positions),10]);
     translate([17,5]) circle(d=3);
-    translate([x_internal_space-23,5]) circle(d=3);
+    translate([x_internal_space(n_positions)-23,5]) circle(d=3);
   }
 }
 
 // Lifting bars
-module lifter_bar()
+module lifter_bar(n_positions)
 {
   rotate([90,0,0])
   linear_extrude(height=3) {
-    lifter_bar_2d();
+    lifter_bar_2d(n_positions);
   }
 }
 
@@ -370,16 +372,16 @@ module triangular_support_plate()
   translate([0,0,50]) rotate([-90,0,90]) linear_extrude(height=3) triangular_support_plate_2d();
 }
 
-module side_plate_2d() {
+module side_plate_2d(n_positions) {
   difference() {
-    square([xbar_length,100]);
+    square([xbar_length(n_positions),100]);
     // Tab holes
     for(y=[-thin, distance_between_xbars]) {
       edge = (y==-thin? 1:0);
       translate([20,y]) square([10,3+thin*edge]);
       translate([100,y]) square([10,3+thin*edge]);
     }
-    for(x=[-thin, xbar_length-3]) {
+    for(x=[-thin, xbar_length(n_positions)-3]) {
       translate([x,10+3]) square([3+thin,10]);
       translate([x,50+3]) square([3+thin,10]);
     }
@@ -393,8 +395,8 @@ module side_plate_2d() {
 }
 
 
-module side_plate() {
-  linear_extrude(height=3) side_plate_2d();
+module side_plate(n_positions) {
+  linear_extrude(height=3) side_plate_2d(n_positions);
 }
 
 lever_balance_length = 75; // Distance between mounting holes
@@ -433,7 +435,8 @@ module lever_support() {
 
 lever_rotation = atan2(enumerator_rod_travel, (lever_balance_length/2));
 
-module decoder_assembly() {
+module decoder_assembly(n_inputs) {
+  n_positions = pow(2,n_inputs);
   color([0.5,0,0]) {
     for(i=[0:n_positions-1]) {
       rot = (i==raise_position?drop_angle:0);
@@ -443,13 +446,13 @@ module decoder_assembly() {
 
   // Three bars which extend in the x dimension
 
-  translate([0,-3,10]) topPlate();
-  translate([0,-3+distance_between_xbars,10]) xBar(5,20,50); // Middle
+  translate([0,-3,10]) topPlate(n_positions);
+  translate([0,-3+distance_between_xbars,10]) xBar(n_positions, 5,20,50); // Middle
 
   for(x=enumerator_support_x)
     translate([x,-8,0]) yComb();
 
-  translate([0,-3,50]) side_plate();
+  translate([0,-3,50]) side_plate(n_positions);
 
   for(input=[0:4]) {
     color([0.5,0.5,1.0]) translate([-15,2+10*input,55+3]) rotate([0,-lever_rotation*input_data[input],0]) input_lever();
@@ -457,38 +460,42 @@ module decoder_assembly() {
   }
 
   for(side=[0:1]) {
-    translate([3+side*(xbar_length-3),0,0]) triangular_support_plate();
+    translate([3+side*(xbar_length(n_positions)-3),0,0]) triangular_support_plate();
   }
 
-  translate([0,-9,10]) lifter_bar();
+  translate([0,-9,10]) lifter_bar(n_positions);
   translate([15,-6,10]) rotate([0,17,0]) front_lifter_lever();
-  translate([x_internal_space-25,-6,10]) rotate([0,17,0]) back_lifter_lever();
+  translate([x_internal_space(n_positions)-25,-6,10]) rotate([0,17,0]) back_lifter_lever();
 }
 
 // False raised plate - to account for the mismatched output height to memory
-color([0.5,0.3,0]) translate([0,-50,-200]) difference() {
-  cube([300,18,200]);
-  for(x=mounting_holes_x) {
-    translate([x,-50,200-25]) rotate([-90,0,0]) cylinder(d=mounting_screw_diameter,h=100);
+
+module false_raised_plate(n_positions) {
+  color([0.5,0.3,0]) translate([0,-50,-200]) difference() {
+    cube([300,18,200]);
+    for(x=mounting_holes_x(n_positions)) {
+      translate([x,-50,200-25]) rotate([-90,0,0]) cylinder(d=mounting_screw_diameter,h=100);
+    }
   }
 }
-
 
 // Drift attached behind plate to extend the height
-color([0.5,0.35,0]) translate([0,-32,-50]) difference() {
-  cube([300,29,50]);
-  for(x=mounting_holes_x) {
-    translate([x,-50,50-25]) rotate([-90,0,0]) cylinder(d=mounting_screw_diameter,h=100);
+module support_drift(n_positions) {
+  color([0.5,0.35,0]) translate([0,-32,-50]) difference() {
+    cube([300,29,50]);
+    for(x=mounting_holes_x(n_positions)) {
+      translate([x,-50,50-25]) rotate([-90,0,0]) cylinder(d=mounting_screw_diameter,h=100);
+    }
   }
 }
 
-module reinforcing_strip()
+module reinforcing_strip(n_positions)
 {
   // Intended to be steel or aluminum rather than acrylic.
   translate([-10,20,-35]) difference()
     {
-      cube([xbar_length+20, 3, 20]);
-      for(x=mounting_holes_x) {
+      cube([xbar_length(n_positions)+20, 3, 20]);
+      for(x=mounting_holes_x(n_positions)) {
 	translate([x+10,-35,10]) rotate([-90,0,0]) cylinder(d=mounting_screw_diameter,h=100);
       }
     }
@@ -496,22 +503,22 @@ module reinforcing_strip()
 
 axle_reinforce_x = [ follower_spacing*5, follower_spacing*13+gap, follower_spacing*8+gap/2 ];
 
-module axle_reinforcing_strip_2d()
+module axle_reinforcing_strip_2d(n_positions)
 {
   difference() {
-    square([xbar_length+20, 20]);
+    square([xbar_length(n_positions)+20, 20]);
     // cutouts for triangular supports
     translate([10,-1]) square([3,4]);
-    translate([xbar_length+7,-1]) square([3,4]);
+    translate([xbar_length(n_positions)+7,-1]) square([3,4]);
     // Cutouts for the axle supports
     for(x=axle_reinforce_x) {
       translate([x,-1]) square([3,4]);
     }
   }
 }
-module axle_reinforcing_strip()
+module axle_reinforcing_strip(n_positions)
 {
-  rotate([90,0,0]) linear_extrude(height=3) axle_reinforcing_strip_2d();
+  rotate([90,0,0]) linear_extrude(height=3) axle_reinforcing_strip_2d(n_positions);
 }
 
 module axle_reinforcer_2d()
@@ -532,9 +539,13 @@ module axle_reinforcer()
   rotate([0,0,90]) rotate([90,0,0]) linear_extrude(height=3) axle_reinforcer_2d();
 }
 
-translate([-10,follower_axis_y+1.5,44]) axle_reinforcing_strip();
+translate([-10,follower_axis_y+1.5,44]) axle_reinforcing_strip(render_positions);
 for(x=axle_reinforce_x) {
-  translate([x-10,follower_axis_y,44-14+20-15]) axle_reinforcer();
+  translate([x-10,follower_axis_y,44-14+20-15]) axle_reinforcer(render_positions);
 }
-reinforcing_strip();
-decoder_assembly();
+
+reinforcing_strip(render_positions);
+decoder_assembly(render_inputs);
+enumerator_rods(render_inputs);
+support_drift(render_positions);
+false_raised_plate(render_positions);
