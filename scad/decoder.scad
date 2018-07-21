@@ -38,7 +38,7 @@ raise_position = render_positions-1-(input_data[0] + input_data[1]*2+input_data[
 		     input_data[3]*8+input_data[4]*16);
 
 // The spacing between internal plates (i.e. the gap between them plus one thickness)
-function x_internal_space(n_positions) = follower_spacing*n_positions+gap;
+function x_internal_space(n_positions) = follower_spacing*n_positions+(n_positions>gap_position?gap:0);
 
 thin = 0.1;
 
@@ -452,12 +452,7 @@ module decoder_assembly(n_inputs) {
   for(x=enumerator_support_x)
     translate([x,-8,0]) yComb();
 
-  translate([0,-3,50]) side_plate(n_positions);
-
-  for(input=[0:4]) {
-    color([0.5,0.5,1.0]) translate([-15,2+10*input,55+3]) rotate([0,-lever_rotation*input_data[input],0]) input_lever();
-    translate([-15,5+10*input,55+3]) lever_support();
-  }
+  color([0.5,0.5,0.5,0.5]) translate([0,-3,50]) side_plate(n_positions);
 
   for(side=[0:1]) {
     translate([3+side*(xbar_length(n_positions)-3),0,0]) triangular_support_plate();
@@ -466,6 +461,13 @@ module decoder_assembly(n_inputs) {
   translate([0,-9,10]) lifter_bar(n_positions);
   translate([15,-6,10]) rotate([0,17,0]) front_lifter_lever();
   translate([x_internal_space(n_positions)-25,-6,10]) rotate([0,17,0]) back_lifter_lever();
+}
+
+module lever_assembly(n_inputs) {
+  for(input=[0:n_inputs]) {
+    color([0.5,0.5,1.0]) translate([-15,2+10*input,55+3]) rotate([0,-lever_rotation*input_data[input],0]) input_lever();
+    translate([-15,5+10*input,55+3]) lever_support();
+  }
 }
 
 // False raised plate - to account for the mismatched output height to memory
@@ -546,6 +548,7 @@ for(x=axle_reinforce_x) {
 
 reinforcing_strip(render_positions);
 decoder_assembly(render_inputs);
+lever_assembly(render_inputs);
 enumerator_rods(render_inputs);
 support_drift(render_positions);
 false_raised_plate(render_positions);
