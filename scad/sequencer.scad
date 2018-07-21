@@ -22,9 +22,12 @@ use <decoder.scad>;
 
 cam_diameter = 150;
 cam_width=5;
-cam_spacing = 2*cam_width;
+// Cam spacing: It's easier if we make this match the decoder default spacing. This can be achieved with a 5mm cam and 3x3mm washers in between.
+cam_spacing = 14;
 
 axle_diameter = 20;
+
+instruction_positions = 5;
 
 num_cams = 17;
 
@@ -71,12 +74,33 @@ module follower_2d() {
   }
 }
 
+module decoder_drop_rod_2d() {
+  union() {
+    conrod(cam_diameter/2-25);
+    translate([cam_diameter/2-25,-10]) square([10,20]);
+  }
+}
+
+module instruction_output_rod_2d() {
+  union() {
+    conrod(cam_diameter/2+15);
+    translate([cam_diameter/2+15,-10]) square([10,20]);
+  }
+}
+
+
 module camshaft() {
   follower_axle_y = cam_diameter/2+15;
   for(i=[0:num_cams-1]) {
     offset = (i>=gap_position?gap_width:0);
     translate([cam_spacing*i+offset, 0,0]) rotate([0,90,0]) linear_extrude(height=cam_width) cam_2d();
     translate([cam_spacing*i+offset, follower_axle_y,cam_diameter/2]) rotate([0,90,0]) linear_extrude(height=3) follower_2d();
+
+    if(i<instruction_positions) {
+      translate([cam_spacing*(i-1)+offset, follower_axle_y+21,cam_diameter/2]) rotate([0,90,0]) linear_extrude(height=3) decoder_drop_rod_2d();
+      translate([cam_spacing*(i-1)+offset, follower_axle_y+42,cam_diameter/2+25]) rotate([0,90,0]) linear_extrude(height=3) instruction_output_rod_2d();
+      
+    }
   }
   // Bonus follower which is driven by the first cam, to drive CMP or LDN
   translate([cam_spacing*-1, follower_axle_y, cam_diameter/2]) rotate([0,90,0]) linear_extrude(height=3) follower_2d();
@@ -87,4 +111,11 @@ module camshaft() {
 
 camshaft();
 
-translate([0,200,200]) decoder_assembly(3);
+translate([-27,174,40]) decoder_assembly(3);
+
+// Example enumerator rods
+
+for(i=[0:2]) {
+  translate([-34,179+10*i,50]) rotate([90,0,0]) linear_extrude(height=3) enumerator_rod(i, 3, 14, 5, 10);
+}
+
