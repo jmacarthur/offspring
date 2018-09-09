@@ -93,8 +93,7 @@ module horizontal_plate()
 }
 
 
-// Distance between vertical support rails (centre to centre)
-
+// Distance between vertical support rails (centre to centre). This is for the internal rails. There are larger superrails which connect over longer distances.
 support_rail_separation = 250;
 
 // 250mm separation gives 235mm internal spacing between bars
