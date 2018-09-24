@@ -33,7 +33,7 @@ $EXTMAX
  10
 455.5
  20
-579
+954
  30
 0
   9
@@ -1115,9 +1115,9 @@ AcDbViewportTableRecord
  21
 1
  12
-174.1571353369079
+225.7204859034047
  22
-214.9054394381716
+252.9325382997966
  13
 0
  23
@@ -1143,7 +1143,7 @@ AcDbViewportTableRecord
  37
 0
  40
-525.262385743687
+656.5779821796099
  41
 1.38788522848034
  42
@@ -9896,6 +9896,94 @@ AcDbCircle
 -45
  20
 17.00000000000003
+ 40
+1.5
+  0
+CIRCLE
+  5
+14A
+100
+AcDbEntity
+  8
+Drill holes
+  6
+ByLayer
+ 62
+  256
+370
+   -1
+100
+AcDbCircle
+ 10
+3.500000000000007
+ 20
+276
+ 40
+1.5
+  0
+CIRCLE
+  5
+14B
+100
+AcDbEntity
+  8
+Drill holes
+  6
+ByLayer
+ 62
+  256
+370
+   -1
+100
+AcDbCircle
+ 10
+141.5
+ 20
+276
+ 40
+1.5
+  0
+CIRCLE
+  5
+14C
+100
+AcDbEntity
+  8
+Drill holes
+  6
+ByLayer
+ 62
+  256
+370
+   -1
+100
+AcDbCircle
+ 10
+3.500000000000007
+ 20
+130
+ 40
+1.5
+  0
+CIRCLE
+  5
+14D
+100
+AcDbEntity
+  8
+Drill holes
+  6
+ByLayer
+ 62
+  256
+370
+   -1
+100
+AcDbCircle
+ 10
+141.5
+ 20
+130
  40
 1.5
   0
