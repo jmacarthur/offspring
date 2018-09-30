@@ -39,6 +39,9 @@ module base_plate_2d()
       translate([10,10+pitch*i]) circle(d=3);
       // Output holes
       translate([42,15+pitch*i]) circle(d=8);
+
+      // Regen axle holes
+      translate([60,14+pitch+pitch*i]) circle(d=6);
     }
   }
 }
@@ -55,12 +58,42 @@ module exit_plate_2d()
 }
 
 
+module regen_crank_2d()
+{
+  // Regen cranks use the same hexagon rods to transmit force as the subtractor.
+  difference() {
+    union() {
+      translate([0,-8]) square([20,10]);
+      circle(d=16);
+    }
+    hex_bar_2d();
+  }
+}
+
+module regen_pusher_bar_2d() {
+  union() {
+    translate([0,0]) square([10,200]);
+    for(i=[0:7]) {
+      translate([9,16+pitch*i]) square([11,6]);
+    }
+  }
+}
+
+module regen_assembly() {
+  for(i=[0:7]) {
+    color([0.75,0.5,0.5]) translate([50,pitch+4+i*pitch,0]) linear_extrude(height=3) regen_crank_2d();
+  }
+}
+
 module planar_diverter_assembly()
 {  
   linear_extrude(height=3) diverter_array_2d();
   color([0.5,0.5,0.5]) translate([-10,-10,-5]) linear_extrude(height=3) base_plate_2d();
-  translate([36,-10,20]) rotate([0,90,0]) linear_extrude(height=3) exit_plate_2d();
+  translate([36,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) exit_plate_2d();
+  translate([62,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) regen_pusher_bar_2d();
+  regen_assembly();
 }
 
 planar_diverter_assembly();
 
+translate([63.5,15,2]) sphere(d=25.4/4, $fn=20);
