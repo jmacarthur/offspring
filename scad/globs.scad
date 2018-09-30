@@ -112,3 +112,19 @@ support_rail_separation = 250;
 
 */
 
+
+hex_bar_af = 4.75; // 6BA hex bar from Noggin End Metals measured as 4.75mm AF.
+
+// Calculate the max radius of the bar
+hex_bar_max_radius = (hex_bar_af / 2) / cos(30);
+
+module hex_bar_2d() {
+    r = hex_bar_max_radius;
+    polygon(points = [ [ r * cos(0), r * sin(0) ],
+		       [ r * cos(60), r * sin(60) ],
+		       [ r * cos(120), r * sin(120) ],
+		       [ r * cos(180), r * sin(180) ],
+		       [ r * cos(240), r * sin(240) ],
+		       [ r * cos(300), r * sin(300) ] ]);
+}
+
