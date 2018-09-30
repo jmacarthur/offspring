@@ -8,6 +8,12 @@ include <generic_conrods.scad>;
 
 diverter_rotate = -10+20*$t;
 $fn=20;
+
+diverter_2_offset = 10;
+diverter_2_y = 75;
+diverter_3_offset = 15;
+diverter_3_y = 120;
+
 module diverter_tab_2d(len) {
   difference() {
     union() {
@@ -30,29 +36,40 @@ module diverter_array_2d() {
   }
 }
 
-module base_plate_2d()
-{
-  difference() {
-    square([200,200]);
+module diverter_holes() {
     for(i=[0:7]) {
       // Diverter axle
       translate([10,10+pitch*i]) circle(d=3);
       // Output holes
       translate([42,15+pitch*i]) circle(d=8);
+    }
+}
 
+module base_plate_2d()
+{
+  difference() {
+    translate([-10,-10]) square([210,297]);
+    for(i=[0:7]) {
       // Regen axle holes
       translate([60,14+pitch+pitch*i]) circle(d=6);
     }
+    diverter_holes();
+    translate([diverter_2_y,diverter_2_offset]) diverter_holes(); 
+    translate([diverter_3_y,diverter_3_offset]) diverter_holes();
+
+    // Mounting holes for openbeam
+    translate([0,0]) circle(d=3);
+    translate([0,250]) circle(d=3);
   }
 }
 
-module exit_plate_2d()
+module exit_plate_2d(offset)
 {
   difference() {
     square([20,200]);
     for(i=[0:7]) {
-      translate([15,26+pitch*i]) circle(d=8);
-      translate([15,26+pitch*i-4]) square([8,8]);
+      translate([15,offset+26+pitch*i]) circle(d=8);
+      translate([15,offset+26+pitch*i-4]) square([8,8]);
     }
   }
 }
@@ -130,11 +147,15 @@ module regen_assembly() {
 module planar_diverter_assembly()
 {  
   linear_extrude(height=3) diverter_array_2d();
+  translate([diverter_2_y,diverter_2_offset]) linear_extrude(height=3) diverter_array_2d();
+  translate([diverter_3_y,diverter_3_offset]) linear_extrude(height=3) diverter_array_2d();
   color([0.5,0.5,0.5]) translate([-10,-10,-5]) linear_extrude(height=3) base_plate_2d();
   color([0.5,0.5,0.5]) translate([-10,-10,5]) linear_extrude(height=3) diverter_top_plate_2d();
   color([0.5,0.5,0.5]) translate([12,-10,5]) linear_extrude(height=3) diverter_slider_plate_2d();
 
-  translate([36,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) exit_plate_2d();
+  translate([36,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) exit_plate_2d(0);
+  translate([diverter_2_y+36,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) exit_plate_2d(diverter_2_offset);
+  translate([diverter_3_y+36,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) exit_plate_2d(diverter_3_offset);
   translate([66,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) regen_exit_plate_2d();
   translate([62,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) regen_pusher_bar_2d();
   regen_assembly();
