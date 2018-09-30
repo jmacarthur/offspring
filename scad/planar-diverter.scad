@@ -57,6 +57,22 @@ module exit_plate_2d()
   }
 }
 
+module regen_exit_plate_2d()
+{
+  difference() {
+    union() {
+      translate([0,0]) square([14,200]);
+      for(i=[0:7]) {
+	translate([9,20+pitch*i]) square([4,6+3.5]);
+	translate([9,22+pitch*i]) square([11,6]);
+      }
+    }
+    for(i=[0:7]) {
+      translate([12+3.5,22+6+3.5+pitch*i]) circle(d=7);
+    }
+  }
+}
+
 module diverter_top_plate_2d() {
   difference() {
     square([20,200]);
@@ -119,6 +135,7 @@ module planar_diverter_assembly()
   color([0.5,0.5,0.5]) translate([12,-10,5]) linear_extrude(height=3) diverter_slider_plate_2d();
 
   translate([36,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) exit_plate_2d();
+  translate([66,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) regen_exit_plate_2d();
   translate([62,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) regen_pusher_bar_2d();
   regen_assembly();
 }
