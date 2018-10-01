@@ -73,6 +73,11 @@ module base_plate_2d()
 	translate([46+offset_y,offset+12+pitch*i]) square([3,5]);
       }
     }
+
+    // Mounting holes for regen exit plate
+    for(i=[0:7]) {
+      translate([76,22+pitch*i]) square([3,6]);
+    }
   }
 }
 
@@ -99,7 +104,7 @@ module regen_exit_plate_2d()
       translate([0,0]) square([14,200]);
       for(i=[0:7]) {
 	translate([9,20+pitch*i]) square([4,6+3.5]);
-	translate([9,22+pitch*i]) square([11,6]);
+	translate([9,22+pitch*i]) square([11+3,6]);
       }
     }
     for(i=[0:7]) {
