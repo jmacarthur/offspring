@@ -16,7 +16,7 @@ diverter_3_y = 120;
 
 diverter_offsets = [0, diverter_2_offset, diverter_3_offset];
 diverter_y = [0, diverter_2_y, diverter_3_y];
-
+clearance=0.1;
 module diverter_tab_2d(len) {
   difference() {
     union() {
@@ -66,7 +66,7 @@ module base_plate_2d()
 
 
     // Mounting holes for diverter exit plates
-    for(d=[0:3]) {
+    for(d=[0:2]) {
       offset = diverter_offsets[d];
       offset_y = diverter_y[d];
       for(i=[0:7]) {
@@ -78,6 +78,13 @@ module base_plate_2d()
     for(i=[0:7]) {
       translate([76,22+pitch*i]) square([3,6]);
     }
+
+
+    // Mounting holes for side plate
+    for(i=[0:4]) {
+      translate([10+i*40,-3]) square([5,3]);
+    }
+
   }
 }
 
@@ -115,7 +122,10 @@ module regen_exit_plate_2d()
 
 module diverter_top_plate_2d() {
   difference() {
-    square([20,200]);
+    union() {      
+      square([20,200]);
+      translate([5,-3]) square([5,206]);
+    }
     for(i=[0:7]) {
       // Diverter axle
       translate([10,10+pitch*i]) circle(d=3);
@@ -149,7 +159,7 @@ module regen_crank_2d()
 module regen_pusher_bar_2d() {
   difference() {
     union() {
-      translate([0,0]) square([14,200]);
+      translate([0,-10]) square([14,220]);
       for(i=[0:7]) {
 	translate([9,16+pitch*i]) square([6,6+3.5]);
 	translate([9,16+pitch*i]) square([11,6]);
@@ -158,6 +168,32 @@ module regen_pusher_bar_2d() {
     for(i=[0:7]) {
       translate([12+3.5,16+6+3.5+pitch*i]) circle(d=7);
     }
+  }
+}
+
+module side_plate_2d() {
+  difference() {
+    union() {
+      translate([0,5]) square([20,190]);
+      // Tabs to enter base plate
+      for(i=[0:4]) {
+	translate([0,10+i*40]) square([23,5]);
+      }
+    }
+    // Cutout for diverter sliders
+    for(y=diverter_y) {
+      depth = (y>0 ? 10: 25);
+      translate([5,20+y]) square([depth,25]);
+    }
+    // Cutout for pusher rod
+    translate([0,72-clearance]) square([14+clearance,3+clearance*2]);
+
+    // Cutout for diverter static plate
+    for(y=diverter_y) {
+      translate([10,5+y]) square([3,5]);
+    }
+
+    
   }
 }
 
@@ -182,6 +218,9 @@ module planar_diverter_assembly()
   translate([66,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) regen_exit_plate_2d();
   translate([62,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) regen_pusher_bar_2d();
   regen_assembly();
+
+  color([0.4,0.4,0.8]) translate([-10,-10,18]) rotate([90,90,0]) linear_extrude(height=3) side_plate_2d();
+
 }
 
 planar_diverter_assembly();
