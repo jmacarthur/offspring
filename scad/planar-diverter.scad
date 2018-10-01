@@ -14,6 +14,9 @@ diverter_2_y = 75;
 diverter_3_offset = 15;
 diverter_3_y = 120;
 
+diverter_offsets = [0, diverter_2_offset, diverter_3_offset];
+diverter_y = [0, diverter_2_y, diverter_3_y];
+
 module diverter_tab_2d(len) {
   difference() {
     union() {
@@ -60,13 +63,28 @@ module base_plate_2d()
     // Mounting holes for openbeam
     translate([0,0]) circle(d=3);
     translate([0,250]) circle(d=3);
+
+
+    // Mounting holes for diverter exit plates
+    for(d=[0:3]) {
+      offset = diverter_offsets[d];
+      offset_y = diverter_y[d];
+      for(i=[0:7]) {
+	translate([46+offset_y,offset+12+pitch*i]) square([3,5]);
+      }
+    }
   }
 }
 
 module exit_plate_2d(offset)
 {
   difference() {
-    square([20,200]);
+    union() {
+      square([20,200]);
+      for(i=[0:7]) {
+	translate([15,offset+12+pitch*i]) square([5+3,5]);
+      }
+    }
     for(i=[0:7]) {
       translate([15,offset+26+pitch*i]) circle(d=8);
       translate([15,offset+26+pitch*i-4]) square([8,8]);
@@ -150,8 +168,8 @@ module planar_diverter_assembly()
   translate([diverter_2_y,diverter_2_offset]) linear_extrude(height=3) diverter_array_2d();
   translate([diverter_3_y,diverter_3_offset]) linear_extrude(height=3) diverter_array_2d();
   color([0.5,0.5,0.5]) translate([-10,-10,-5]) linear_extrude(height=3) base_plate_2d();
-  color([0.5,0.5,0.5]) translate([-10,-10,5]) linear_extrude(height=3) diverter_top_plate_2d();
-  color([0.5,0.5,0.5]) translate([12,-10,5]) linear_extrude(height=3) diverter_slider_plate_2d();
+  color([0.5,0.8,0.5]) translate([-10,-10,5]) linear_extrude(height=3) diverter_top_plate_2d();
+  color([0.5,0.8,0.5]) translate([12,-10,5]) linear_extrude(height=3) diverter_slider_plate_2d();
 
   translate([36,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) exit_plate_2d(0);
   translate([diverter_2_y+36,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) exit_plate_2d(diverter_2_offset);
