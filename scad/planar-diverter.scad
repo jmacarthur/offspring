@@ -18,6 +18,7 @@ diverter_offsets = [0, diverter_2_offset, diverter_3_offset];
 diverter_y = [0, diverter_2_y, diverter_3_y];
 clearance=0.1;
 module diverter_tab_2d(len) {
+  // This is a single diverter tab.
   difference() {
     union() {
       intersection() {
@@ -33,6 +34,7 @@ module diverter_tab_2d(len) {
 }
 
 module diverter_array_2d() {
+  // This is a set of 8 diverter tabs.
   for(i=[0:7]) {
     translate([0,i*pitch])
       rotate(diverter_rotate) diverter_tab_2d(30);
@@ -40,12 +42,12 @@ module diverter_array_2d() {
 }
 
 module diverter_holes() {
-    for(i=[0:7]) {
-      // Diverter axle
-      translate([10,10+pitch*i]) circle(d=3);
-      // Output holes
-      translate([42,15+pitch*i]) circle(d=8);
-    }
+  for(i=[0:7]) {
+    // Diverter axle
+    translate([10,10+pitch*i]) circle(d=3);
+    // Output holes
+    translate([42,15+pitch*i]) circle(d=8);
+  }
 }
 
 module base_plate_2d()
@@ -92,7 +94,7 @@ module exit_plate_2d(offset)
 {
   difference() {
     union() {
-      square([20,200]);
+      square([20,220]);
       for(i=[0:7]) {
 	translate([15,offset+12+pitch*i]) square([5+3,5]);
       }
@@ -108,7 +110,7 @@ module regen_exit_plate_2d()
 {
   difference() {
     union() {
-      translate([0,0]) square([14,200]);
+      translate([0,0]) square([14,220]);
       for(i=[0:7]) {
 	translate([9,20+pitch*i]) square([4,6+3.5]);
 	translate([9,22+pitch*i]) square([11+3,6]);
@@ -120,25 +122,26 @@ module regen_exit_plate_2d()
   }
 }
 
-module diverter_top_plate_2d() {
+module diverter_top_plate_2d(offset) {
+  // This is the static plate which holes the top of all the diverters.
   difference() {
     union() {      
-      square([20,200]);
-      translate([5,-3]) square([5,206]);
+      translate([-5,0]) square([16,220]);
+      translate([-5,-3]) square([5,226]);
     }
     for(i=[0:7]) {
       // Diverter axle
-      translate([10,10+pitch*i]) circle(d=3);
+      translate([0,10+offset+pitch*i]) circle(d=3);
     }
   }
 }
 
-module diverter_slider_plate_2d() {
+module diverter_slider_plate_2d(offset) {
   difference() {
-    square([20,220]);
+    square([25,250]);
     for(i=[0:7]) {
-      translate([10,10+pitch*i]) circle(d=3);
-      translate([10,8.5+pitch*i]) square([10,3]);
+      translate([10,15+pitch*i+offset]) circle(d=3);
+      translate([10,13.5+pitch*i+offset]) square([15,3]);
     }
   }
 }
@@ -159,7 +162,7 @@ module regen_crank_2d()
 module regen_pusher_bar_2d() {
   difference() {
     union() {
-      translate([0,-10]) square([14,220]);
+      translate([0,-10]) square([14,250]);
       for(i=[0:7]) {
 	translate([9,16+pitch*i]) square([6,6+3.5]);
 	translate([9,16+pitch*i]) square([11,6]);
@@ -167,6 +170,15 @@ module regen_pusher_bar_2d() {
     }
     for(i=[0:7]) {
       translate([12+3.5,16+6+3.5+pitch*i]) circle(d=7);
+    }
+  }
+}
+
+module regen_top_plate_2d() {
+  difference() {
+    union() {
+      square([20-clearance,220]);
+      translate([0,-3]) square([5,226]);
     }
   }
 }
@@ -182,11 +194,13 @@ module side_plate_2d() {
     }
     // Cutout for diverter sliders
     for(y=diverter_y) {
-      depth = (y>0 ? 10: 25);
-      translate([5,20+y]) square([depth,25]);
+      translate([10-clearance,20+y]) square([3+clearance*2,27]);
+      if(y==0) translate([10-clearance,30+y]) square([20,15]);
     }
     // Cutout for pusher rod
     translate([0,72-clearance]) square([14+clearance,3+clearance*2]);
+    // Cutout for regen top
+    translate([10,52]) square([3,5]);
 
     // Cutout for diverter static plate
     for(y=diverter_y) {
@@ -203,24 +217,47 @@ module regen_assembly() {
   }
 }
 
+module m3_screw(length) {
+  color([0.5,0.5,0.5]) {
+    cylinder(d=3, h=length);
+    translate([0,0,length-2]) cylinder(d=6,h=2);
+  }
+}
+
 module planar_diverter_assembly()
 {  
   linear_extrude(height=3) diverter_array_2d();
   translate([diverter_2_y,diverter_2_offset]) linear_extrude(height=3) diverter_array_2d();
   translate([diverter_3_y,diverter_3_offset]) linear_extrude(height=3) diverter_array_2d();
   color([0.5,0.5,0.5]) translate([-10,-10,-5]) linear_extrude(height=3) base_plate_2d();
-  color([0.5,0.8,0.5]) translate([-10,-10,5]) linear_extrude(height=3) diverter_top_plate_2d();
-  color([0.5,0.8,0.5]) translate([12,-10,5]) linear_extrude(height=3) diverter_slider_plate_2d();
+  for(i=[0:2]) {
+    color([0.5,0.8,0.5]) translate([diverter_y[i],-10,5]) linear_extrude(height=3) diverter_top_plate_2d(diverter_offsets[i]);
+  }
+
+  for(i=[0:2]) {
+    color([0.8,0.3,0.3]) translate([diverter_y[i]-1,-10,0]) translate([12,-10,5]) linear_extrude(height=3) diverter_slider_plate_2d(diverter_offsets[i]);
+  }
 
   translate([36,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) exit_plate_2d(0);
   translate([diverter_2_y+36,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) exit_plate_2d(diverter_2_offset);
   translate([diverter_3_y+36,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) exit_plate_2d(diverter_3_offset);
   translate([66,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) regen_exit_plate_2d();
   translate([62,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) regen_pusher_bar_2d();
+  color([0.5,0.5,0.5,0.5]) translate([42,-10,5]) linear_extrude(height=3) regen_top_plate_2d();
+  
   regen_assembly();
 
-  color([0.4,0.4,0.8]) translate([-10,-10,18]) rotate([90,90,0]) linear_extrude(height=3) side_plate_2d();
+  for(x=[0,223]) {
+    color([0.4,0.4,0.8]) translate([-10,-10+x,18]) rotate([90,90,0]) linear_extrude(height=3) side_plate_2d();
+  }
 
+  // Add screws
+  for(i=[0:2]) {
+    for(j=[0:7]) {
+      translate([diverter_y[i], diverter_offsets[i]+pitch*j,0]) m3_screw(20);
+    }
+  }
+  
 }
 
 planar_diverter_assembly();
