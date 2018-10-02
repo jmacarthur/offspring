@@ -5,7 +5,7 @@
 
 include <globs.scad>;
 include <generic_conrods.scad>;
-
+include <interconnect.scad>;
 diverter_rotate = -10+20*$t;
 $fn=20;
 
@@ -83,8 +83,10 @@ module base_plate_2d()
 
 
     // Mounting holes for side plate
-    for(i=[0:4]) {
-      translate([10+i*40,-3]) square([5,3]);
+    for(x=[0,223,250]) {
+      for(i=[0:4]) {
+	translate([10+i*40,-3+x]) square([5,3]);
+      }
     }
 
   }
@@ -139,10 +141,12 @@ module diverter_top_plate_2d(offset) {
 module diverter_slider_plate_2d(offset) {
   difference() {
     square([25,250]);
-    for(i=[0:7]) {
+    for(i=[0:8]) {
       translate([10,15+pitch*i+offset]) circle(d=3);
       translate([10,13.5+pitch*i+offset]) square([15,3]);
     }
+    translate([17,230]) rotate(90) cable_clamp_cutout_2d();
+    translate([14.5,230]) square([bowden_cable_inner_diameter,30]);
   }
 }
 
@@ -180,6 +184,10 @@ module regen_top_plate_2d() {
       square([20-clearance,220]);
       translate([0,-3]) square([5,226]);
     }
+    for(i=[0:7]) {
+      // Regen axle holes
+      translate([8,14+pitch+pitch*i]) circle(d=6);
+    }
   }
 }
 
@@ -208,6 +216,22 @@ module side_plate_2d() {
     }
 
     
+  }
+}
+
+
+module bowden_plate_2d() {
+  difference() {
+    union() {
+      translate([0,5]) square([20,190]);
+      // Tabs to enter base plate
+      for(i=[0:4]) {
+	translate([0,10+i*40]) square([23,5]);
+      }
+    }
+    for(y=diverter_y) {
+      translate([10,y+36.5]) circle(d=bowden_cable_inner_diameter);
+    }
   }
 }
 
@@ -251,6 +275,9 @@ module planar_diverter_assembly()
     color([0.4,0.4,0.8]) translate([-10,-10+x,18]) rotate([90,90,0]) linear_extrude(height=3) side_plate_2d();
   }
 
+  color([0.4,0.4,0.8]) translate([-10,-10+250,18]) rotate([90,90,0]) linear_extrude(height=3) bowden_plate_2d();
+
+  
   // Add screws
   for(i=[0:2]) {
     for(j=[0:7]) {
