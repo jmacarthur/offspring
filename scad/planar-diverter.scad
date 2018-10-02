@@ -34,15 +34,15 @@ module diverter_tab_2d(len) {
 }
 
 module diverter_array_2d() {
-  // This is a set of 8 diverter tabs.
-  for(i=[0:7]) {
+  // This is a set of 9 diverter tabs.
+  for(i=[0:8]) {
     translate([0,i*pitch])
       rotate(diverter_rotate) diverter_tab_2d(30);
   }
 }
 
 module diverter_holes() {
-  for(i=[0:7]) {
+  for(i=[0:8]) {
     // Diverter axle
     translate([10,10+pitch*i]) circle(d=3);
     // Output holes
@@ -54,7 +54,7 @@ module base_plate_2d()
 {
   difference() {
     translate([-10,-10]) square([210,297]);
-    for(i=[0:7]) {
+    for(i=[0:8]) {
       // Regen axle holes
       translate([60,14+pitch+pitch*i]) circle(d=6);
     }
@@ -83,7 +83,7 @@ module base_plate_2d()
 
 
     // Mounting holes for side plate
-    for(x=[0,223,250]) {
+    for(x=[0,223,253]) {
       for(i=[0:4]) {
 	translate([10+i*40,-3+x]) square([5,3]);
       }
@@ -131,7 +131,7 @@ module diverter_top_plate_2d(offset) {
       translate([-5,0]) square([16,220]);
       translate([-5,-3]) square([5,226]);
     }
-    for(i=[0:7]) {
+    for(i=[0:8]) {
       // Diverter axle
       translate([0,10+offset+pitch*i]) circle(d=3);
     }
@@ -166,7 +166,7 @@ module regen_crank_2d()
 module regen_pusher_bar_2d() {
   difference() {
     union() {
-      translate([0,-10]) square([14,250]);
+      translate([-5,-10]) square([19,250]);
       for(i=[0:7]) {
 	translate([9,16+pitch*i]) square([6,6+3.5]);
 	translate([9,16+pitch*i]) square([11,6]);
@@ -175,6 +175,9 @@ module regen_pusher_bar_2d() {
     for(i=[0:7]) {
       translate([12+3.5,16+6+3.5+pitch*i]) circle(d=7);
     }
+
+    translate([10,225]) rotate(90) cable_clamp_cutout_2d();
+    translate([7.5,225]) square([bowden_cable_inner_diameter, 30]);
   }
 }
 
@@ -230,8 +233,9 @@ module bowden_plate_2d() {
       }
     }
     for(y=diverter_y) {
-      translate([10,y+36.5]) circle(d=bowden_cable_inner_diameter);
+      translate([10+1.5,y+36.5]) circle(d=bowden_cable_inner_diameter);
     }
+    translate([8,72+1.5]) circle(d=bowden_cable_inner_diameter);
   }
 }
 
@@ -259,7 +263,7 @@ module planar_diverter_assembly()
   }
 
   for(i=[0:2]) {
-    color([0.8,0.3,0.3]) translate([diverter_y[i]-1,-10,0]) translate([12,-10,5]) linear_extrude(height=3) diverter_slider_plate_2d(diverter_offsets[i]);
+    color([0.8,0.3,0.3]) translate([diverter_y[i]-1,-10+10*$t,0]) translate([12,-10,5]) linear_extrude(height=3) diverter_slider_plate_2d(diverter_offsets[i]);
   }
 
   translate([36,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) exit_plate_2d(0);
@@ -275,7 +279,7 @@ module planar_diverter_assembly()
     color([0.4,0.4,0.8]) translate([-10,-10+x,18]) rotate([90,90,0]) linear_extrude(height=3) side_plate_2d();
   }
 
-  color([0.4,0.4,0.8]) translate([-10,-10+250,18]) rotate([90,90,0]) linear_extrude(height=3) bowden_plate_2d();
+  color([0.4,0.4,0.8]) translate([-10,-10+253,18]) rotate([90,90,0]) linear_extrude(height=3) bowden_plate_2d();
 
   
   // Add screws
