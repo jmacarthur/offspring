@@ -25,9 +25,9 @@ input_data = [ 0, 1, 1, 1, 0 ];
 
 render_inputs = 4; // Render this many inputs
 
-// Enumerator supports still have to be manually placed when changing n_inputs.
-// For n=5, we suggest [64,225].
-enumerator_support_x = [64, 135, 230];
+// Enumerator are chosen manually for various n_inputs.
+function enumerator_support_positions(num_inputs) = (num_inputs == 5 ? [64, 135, 230] :
+						     num_inputs == 4 ? [64, 135, 230] : [64]);
 
 // Calculated globals
 render_positions = pow(2,render_inputs);
@@ -206,10 +206,10 @@ module lifter_bar_axles(n_positions)
     translate([x_internal_space(pow(2,n_positions))+5,-4]) circle(d=3);
 }
 
-module enumerator_support_slots()
+module enumerator_support_slots(num_inputs)
 {
     // Slots to allow enumerator support
-  for(x = enumerator_support_x)
+  for(x = enumerator_support_positions(num_inputs))
     translate([x,-15]) square([3,10]);
 }
 
@@ -225,7 +225,7 @@ module xBar_2d(n_positions, slotStart, slotHeight, height) {
     }
     follower_slots(n_positions, slotStart, slotHeight);
     lifter_bar_axles(n_positions);
-    enumerator_support_slots();
+    enumerator_support_slots(n_positions);
 
     // Tabs to connect to the triangular plate
     translate([-thin,30]) square([3+thin,15]);
@@ -449,7 +449,7 @@ module decoder_assembly(n_inputs) {
   translate([0,-3,10]) topPlate(n_positions);
   translate([0,-3+distance_between_xbars,10]) xBar(n_positions, 5,20,50); // Middle
 
-  for(x=enumerator_support_x)
+  for(x=enumerator_support_positions(n_inputs))
     translate([x,-8,0]) yComb();
 
   color([0.5,0.5,0.5,0.5]) translate([0,-3,50]) side_plate(n_positions);
