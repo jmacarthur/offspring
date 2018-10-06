@@ -1,6 +1,6 @@
 // Cam drive and sequencer unit for mechanical SSEM.
 
-
+include <globs.scad>;
 use <generic_conrods.scad>;
 use <decoder.scad>;
 // At the moment, there are 17 cams. 4 of these are selective and only drive if certain instructions are in use. The rest are always in use.
@@ -141,13 +141,38 @@ module outer_plate_2d() {
 }
 
 module reader_support_2d() {
-  square([50,20]);
+  union() {
+    square([50,20]);
+    translate([10,-3]) square([10,4]);
+  }
+}
+
+module reader_base_2d() {
+  difference() {
+    w=38;
+    square([26,w]);
+    translate([10,-1]) square([10,4]);
+    translate([10,w-3]) square([10,4]);
+  }
+}
+
+module reader_pusher_2d() {
+  difference() {
+    square([32,32]);
+    for(c=[0:2]) {
+      translate([25,5.5+c*10]) circle(d=7);
+      translate([25,5.5+c*10-3.5]) square([10,7]);
+    }
+  }
 }
 
 module reader_assembly() {
   for(y=[0,35]) {
-    translate([0,y,0]) rotate([90,0,0]) linear_extrude(height=3) reader_support_2d();
+    color([0.1,0.5,0.5]) translate([0,y,0]) rotate([90,0,0]) linear_extrude(height=3) reader_support_2d();
   }
+  translate([0,-3,-3]) rotate([0,0,0]) linear_extrude(height=3) reader_base_2d();
+  translate([0,0,2]) rotate([0,0,0]) linear_extrude(height=3) reader_pusher_2d();
+  translate([30,5.5,3]) sphere(d=ball_bearing_diameter, $fn=20);
 }
 
 
