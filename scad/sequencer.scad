@@ -3,6 +3,8 @@
 include <globs.scad>;
 use <generic_conrods.scad>;
 use <decoder.scad>;
+use <interconnect.scad>;
+
 // At the moment, there are 17 cams. 4 of these are selective and only drive if certain instructions are in use. The rest are always in use.
 // The instructions which need a gate are LDN, STO, JRP, JMP and CMP. LDN and CMP have the same cam pattern so share one (although they must have independent outputs). SUB is the default instruction so does not need a gate; HLT is unimplemented.
 
@@ -142,8 +144,29 @@ module outer_plate_2d() {
 
 module reader_support_2d() {
   union() {
-    square([50,20]);
+    translate([-10,0]) square([60,20]);
     translate([10,-3]) square([10,4]);
+    translate([-13,5]) square([4,10]);
+    translate([15,0]) square([20,25]);
+    for(y=[0,17])
+      {
+	translate([15+y,0]) square([3,28]);
+      }
+  }
+}
+
+module reader_input_plate_2d() {
+  difference() {
+    w=38;
+    square([20,w]);
+    for(y=[-1,17])
+      {
+	translate([y,-1]) square([4,4]);
+	translate([y,w-3]) square([4,4]);
+      }
+    for(i=[0:2]) {
+      translate([8,5.5+3+10*i]) circle(d=pipe_outer_diameter,$fn=50);
+    }
   }
 }
 
@@ -158,11 +181,23 @@ module reader_base_2d() {
 
 module reader_pusher_2d() {
   difference() {
-    square([32,32]);
+    translate([-10,0]) square([42,32]);
     for(c=[0:2]) {
-      translate([25,5.5+c*10]) circle(d=7);
-      translate([25,5.5+c*10-3.5]) square([10,7]);
+      translate([23,5.5+c*10]) circle(d=7, $fn=20);
+      translate([23,5.5+c*10-3.5]) square([10,7]);
+      translate([18,7+c*10-3.5]) square([20,4]);
     }
+    translate([0,15]) cable_clamp_cutout_2d();
+    translate([-15,15+0.5]) square([20,bowden_cable_inner_diameter]);
+  }
+}
+
+module reader_end_2d() {
+  difference() {
+    square([38,20]);
+    translate([-1,5]) square([4,10]);
+    translate([35,5]) square([4,10]);
+    translate([18+0.5+bowden_cable_inner_diameter/2,4]) circle(d=bowden_cable_outer_diameter,$fn=20);
   }
 }
 
@@ -171,8 +206,11 @@ module reader_assembly() {
     color([0.1,0.5,0.5]) translate([0,y,0]) rotate([90,0,0]) linear_extrude(height=3) reader_support_2d();
   }
   translate([0,-3,-3]) rotate([0,0,0]) linear_extrude(height=3) reader_base_2d();
-  translate([0,0,2]) rotate([0,0,0]) linear_extrude(height=3) reader_pusher_2d();
-  translate([30,5.5,3]) sphere(d=ball_bearing_diameter, $fn=20);
+  translate([15,-3,25]) rotate([0,0,0]) linear_extrude(height=3) reader_input_plate_2d();
+  travel = 0;
+  color([0.5,0.1,0.1]) translate([0,0,2]) rotate([0,0,0]) linear_extrude(height=3) reader_pusher_2d();
+  translate([23,5.5,3]) sphere(d=ball_bearing_diameter, $fn=20);
+  translate([-13,-3,0]) rotate([0,0,90]) rotate([90,0,0]) linear_extrude(height=3) reader_end_2d();
 }
 
 
@@ -183,12 +221,7 @@ decoder_origin_z = 40;
 module instruction_decoder() {
  
   translate([decoder_origin_x,decoder_origin_y,decoder_origin_z]) decoder_assembly(3);
-
-  // Example enumerator rods
-
-  for(i=[0:2]) {
-    translate([decoder_origin_x-7,decoder_origin_y+5+10*i,decoder_origin_z+10]) rotate([90,0,0]) linear_extrude(height=3) enumerator_rod(i, 3, 14, 5, 10);
-  }
+  translate([decoder_origin_x,decoder_origin_y,decoder_origin_z]) enumerator_rods(3);
 }
 
 module sequencer_assembly() {
