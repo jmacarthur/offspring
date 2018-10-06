@@ -51,6 +51,15 @@ module cable_clamp_cutout_2d() {
   }
 }
 
+module cable_clamp_cutout_with_cable_2d() {
+  union() {
+    cable_clamp_cutout_2d();
+    translate([-10,0.5]) square([10,bowden_cable_inner_diameter]);
+  }
+}
+
+
+
 module cable_connector_2d()
 {
   union() {
