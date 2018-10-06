@@ -546,6 +546,9 @@ for(x=axle_reinforce_x) {
   translate([x-10,follower_axis_y,44-14+20-15]) axle_reinforcer(render_positions);
 }
 
+// Gives the length of the main box, not including enumerator rods
+function decoder_box_length(render_positions) = pow(2,render_positions)*follower_spacing+17;
+
 reinforcing_strip(render_positions);
 decoder_assembly(render_inputs);
 lever_assembly(render_inputs);
