@@ -23,6 +23,9 @@ use <interconnect.scad>;
 
 
 cam_diameter = 150;
+cam_inner_diameter = 100;
+bolt_circle_diameter = 125;
+
 cam_width=5;
 // Cam spacing: It's easier if we make this match the decoder default spacing. This can be achieved with a 5mm cam and 3x3mm washers in between.
 cam_spacing = 14;
@@ -42,11 +45,15 @@ follower_axle_z = cam_diameter/2;
 instruction_axle_y = follower_axle_y+42;
 instruction_axle_z = follower_axle_z+25;
 
+
 // Example cams
 module cam_2d() {
   difference() {
     circle(d=cam_diameter);
-    circle(d=axle_diameter);
+    circle(d=cam_inner_diameter);
+    for(i=[0:7]) {
+      rotate(i*360/8 + (360/16)) translate([0, bolt_circle_diameter/2]) circle(d=6);
+    }
   }
 }
 
@@ -102,6 +109,8 @@ module camshaft() {
     translate([cam_spacing*i+offset, 0,0]) rotate([0,90,0]) linear_extrude(height=cam_width) cam_2d();
     translate([cam_spacing*i+offset, follower_axle_y,follower_axle_z]) rotate([0,90,0]) linear_extrude(height=3) follower_2d();
 
+
+    
     if(i<instruction_positions) {
       translate([cam_spacing*(i-1)+offset, follower_axle_y+21,cam_diameter/2]) rotate([0,90,0]) linear_extrude(height=3) decoder_drop_rod_2d();
       translate([cam_spacing*(i-1)+offset, instruction_axle_y,instruction_axle_z]) rotate([0,90,0]) linear_extrude(height=3) instruction_output_rod_2d();
@@ -111,6 +120,7 @@ module camshaft() {
   translate([cam_spacing*-1, follower_axle_y, cam_diameter/2]) rotate([0,90,0]) linear_extrude(height=3) follower_2d();
   translate([cam_spacing*gap_position,0,0]) rotate([0,90,0]) drive_gear();
 }
+
 
 
 module outer_plate_2d() {
