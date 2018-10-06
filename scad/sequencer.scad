@@ -213,6 +213,28 @@ module reader_assembly() {
   translate([-13,-3,0]) rotate([0,0,90]) rotate([90,0,0]) linear_extrude(height=3) reader_end_2d();
 }
 
+module resetter_drive_plate_2d() {
+  difference() {
+    square([20,40]);
+    translate([15,12]) scale([-1,1]) cable_clamp_cutout_with_cable_2d();
+  }
+}
+
+module resetter_end_plate_2d() {
+  // This bolts to the two holes usually used for the 'sender' on the decoder.
+  difference() {
+    square([60,40]);
+    translate([10,20]) circle(d=4);
+    translate([50,20]) circle(d=4);
+    translate([33.5,13.5]) circle(d=bowden_cable_outer_diameter,$fn=20);
+  }
+}
+
+module resetter_assembly() {
+  translate([47,0,0]) rotate([0,90,0]) linear_extrude(height=3) resetter_end_plate_2d();
+  translate([27,0,-35]) linear_extrude(height=3) resetter_drive_plate_2d();
+}
+
 
 decoder_origin_x = -27;
 decoder_origin_y = 174;
@@ -229,6 +251,7 @@ module sequencer_assembly() {
   camshaft();
   instruction_decoder();
   translate([decoder_origin_x-50,decoder_origin_y-2,decoder_origin_z+10]) reader_assembly();
+  translate([decoder_origin_x+decoder_box_length(3),decoder_origin_y-2,decoder_origin_z+50]) resetter_assembly();
 }
 
 sequencer_assembly();
