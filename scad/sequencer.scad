@@ -43,7 +43,7 @@ follower_axle_y = -cam_diameter/2-15;
 follower_axle_z = cam_diameter/2;
 
 instruction_axle_y = follower_axle_y-42;
-instruction_axle_z = follower_axle_z+25;
+instruction_axle_z = follower_axle_z;
 
 
 module cam_mounting_holes() {
@@ -118,9 +118,13 @@ module decoder_drop_rod_2d() {
 }
 
 module instruction_output_rod_2d() {
-  union() {
-    conrod(cam_diameter/2+15);
-    translate([cam_diameter/2+15,-10]) square([10,20]);
+  difference() {
+    union() {
+      translate([-cam_diameter/2,-5]) square([cam_diameter+1,10]);
+      translate([cam_diameter/2-10,-10]) square([10,20]);
+      circle(d=10);
+    }
+    circle(d=3);
   }
 }
 
