@@ -58,13 +58,13 @@ module cam_2d() {
 }
 
 module drive_gear() {
-  // Modelled on Technobots MOD 2 60 tooth gear
-  outer_diameter = 124;
+  // Modelled on Technobots MOD 2 75 tooth gear
+  outer_diameter = 154;
   tooth_width=20;
   bore=20;
-  lowest_diameter = 116;
-  overall_width=35;
-  boss_diameter=70;
+  lowest_diameter = 146;
+  overall_width=20;
+  boss_diameter=0;
   difference() {
     union() {
       cylinder(h=tooth_width, d=outer_diameter);
