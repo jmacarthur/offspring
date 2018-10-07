@@ -37,12 +37,12 @@ instruction_positions = 5;
 num_cams = 17;
 
 gap_position = 8; // Gap for the drive gear happens after this many cams
-gap_width = 40;
+gap_width = 30;
 
-follower_axle_y = cam_diameter/2+15;
+follower_axle_y = -cam_diameter/2-15;
 follower_axle_z = cam_diameter/2;
 
-instruction_axle_y = follower_axle_y+42;
+instruction_axle_y = follower_axle_y-42;
 instruction_axle_z = follower_axle_z+25;
 
 
@@ -117,20 +117,19 @@ module instruction_output_rod_2d() {
 
 
 module camshaft() {
+  follower_x_offset = 4;
   for(i=[0:num_cams-1]) {
     offset = (i>=gap_position?gap_width:0);
     translate([cam_spacing*i+offset, 0,0]) rotate([0,90,0]) linear_extrude(height=cam_width) cam_2d();
-    translate([cam_spacing*i+offset, follower_axle_y,follower_axle_z]) rotate([0,90,0]) linear_extrude(height=3) follower_2d();
-
-
+    translate([cam_spacing*i+offset+follower_x_offset, follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d();
     
     if(i<instruction_positions) {
-      translate([cam_spacing*(i-1)+offset, follower_axle_y+21,cam_diameter/2]) rotate([0,90,0]) linear_extrude(height=3) decoder_drop_rod_2d();
-      translate([cam_spacing*(i-1)+offset, instruction_axle_y,instruction_axle_z]) rotate([0,90,0]) linear_extrude(height=3) instruction_output_rod_2d();
+      color([0,0.5,0.5]) translate([cam_spacing*(i-1)+offset+follower_x_offset, follower_axle_y-21,cam_diameter/2]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) decoder_drop_rod_2d();
+      translate([cam_spacing*(i-1)+offset+follower_x_offset, instruction_axle_y,instruction_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) instruction_output_rod_2d();
     }
   }
   // Bonus follower which is driven by the first cam, to drive CMP or LDN
-  translate([cam_spacing*-1, follower_axle_y, cam_diameter/2]) rotate([0,90,0]) linear_extrude(height=3) follower_2d();
+  translate([cam_spacing*-1+follower_x_offset, follower_axle_y, cam_diameter/2]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d();
   translate([cam_spacing*gap_position,0,0]) rotate([0,90,0]) drive_gear();
 
   // Two cam mounting brackets
@@ -322,7 +321,7 @@ module resetter_assembly() {
 
 
 decoder_origin_x = 0;
-decoder_origin_y = -20;
+decoder_origin_y = -45;
 decoder_origin_z = 120;
 
 module instruction_decoder() {
