@@ -172,27 +172,27 @@ module outer_plate_2d() {
 }
 
 module input_support_plate_2d() {
-  sideplate_holes = [ [decoder_origin_y+18.5, decoder_origin_z, 4],
-		      [decoder_origin_y+18.5, decoder_origin_z+40, 4]];
-  instruction_holder_slots = [decoder_origin_y-5, decoder_origin_y+30];
+  sideplate_holes = [ [18.5, 0, 4],
+		      [18.5, -40, 4]];
+  instruction_holder_slots = [-5, 30];
   difference() {
     hull() {
       for(hole=sideplate_holes) {
-	translate([-hole[1],hole[0]]) circle(d=hole[2]+10);
+	translate([hole[1],hole[0]]) circle(d=hole[2]+10);
       }
       offset(5) {
 	for(slot=instruction_holder_slots)
-	  translate([-decoder_origin_z-30, slot]) square([20,3]);
+	  translate([-30, slot]) square([20,3]);
       }
     }
     for(hole=sideplate_holes) {
-      translate([-hole[1],hole[0]]) circle(d=hole[2], $fn=20);
+      translate([hole[1],hole[0]]) circle(d=hole[2], $fn=20);
     }
     for(slot=instruction_holder_slots)
-       #translate([-decoder_origin_z-30, slot]) square([20,3]);
+       #translate([-30, slot]) square([20,3]);
 
     // Cutout for enumerator rods.
-    translate([-decoder_origin_z-35,decoder_origin_y+1]) square([30,25]);
+    translate([-35,1]) square([30,25]);
   }
   
 }
@@ -326,18 +326,17 @@ decoder_origin_y = 174;
 decoder_origin_z = 40;
 
 module instruction_decoder() {
- 
   translate([decoder_origin_x,decoder_origin_y,decoder_origin_z]) decoder_assembly(3);
   translate([decoder_origin_x,decoder_origin_y,decoder_origin_z]) enumerator_rods(3);
+  translate([decoder_origin_x-50,decoder_origin_y-2,decoder_origin_z+10]) reader_assembly();
+  translate([decoder_origin_x+decoder_box_length(3),decoder_origin_y-3,decoder_origin_z+50]) resetter_assembly();
+  color([0.7,0.7,0]) translate([decoder_origin_x-3,decoder_origin_y,decoder_origin_z]) rotate([0,90,0]) linear_extrude(height=3) input_support_plate_2d();
 }
 
 module sequencer_assembly() {
   //color([0.7,0.7,0]) translate([-30,0,0]) rotate([0,90,0]) linear_extrude(height=3) outer_plate_2d();
-  color([0.7,0.7,0]) translate([-30,0,0]) rotate([0,90,0]) linear_extrude(height=3) input_support_plate_2d();
   camshaft();
-  instruction_decoder();
-  translate([decoder_origin_x-50,decoder_origin_y-2,decoder_origin_z+10]) reader_assembly();
-  translate([decoder_origin_x+decoder_box_length(3),decoder_origin_y-3,decoder_origin_z+50]) resetter_assembly();
+  rotate([0,0,180]) instruction_decoder();
 }
 
 sequencer_assembly();
