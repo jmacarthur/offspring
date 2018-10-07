@@ -61,26 +61,35 @@ module cam_2d() {
   }
 }
 
-module drive_gear() {
-  // Modelled on Technobots MOD 2 75 tooth gear
-  outer_diameter = 154;
-  tooth_width=20;
-  bore=20;
-  lowest_diameter = 146;
-  overall_width=20;
-  boss_diameter=0;
+module gear(tooth_width, bore, n_teeth, boss_diameter, overall_width) {
+  // Illustrative gear - teeth are not the right shape.
+  modulus = 2.0;
+  pitch_diameter = n_teeth*modulus;
+  outer_diameter = pitch_diameter+4;
+  lowest_diameter = pitch_diameter-4;
   difference() {
     union() {
       cylinder(h=tooth_width, d=outer_diameter);
       cylinder(h=overall_width, d=boss_diameter);
     }
     
-    for(i=[0:60]) {
-      rotate(i*360/60) translate([-1.5, lowest_diameter/2, -1]) cube([3,10,tooth_width+2]);
+    for(i=[0:n_teeth]) {
+      rotate(i*360/n_teeth) translate([-1.5, lowest_diameter/2, -1]) cube([4,10,tooth_width+2]);
     }
     translate([0,0,-1]) cylinder(h=overall_width+2, d=bore);
   }
 }
+
+module drive_gear() {
+  // Modelled on Technobots MOD 2 75 tooth gear
+  gear(20, 20, 75, 0, 20);
+}
+
+module input_gear() {
+  // Modelled on Technobots MOD 2 25 tooth gear
+  gear(20, 12, 25, 35, 35);
+}
+
 
 module axle_holder_spacer_2d() {
   // This is a 3mm spacer between cams which also has a hub to centre it on the axle.
@@ -131,6 +140,7 @@ module camshaft() {
   // Bonus follower which is driven by the first cam, to drive CMP or LDN
   translate([cam_spacing*-1+follower_x_offset, follower_axle_y, cam_diameter/2]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d();
   translate([cam_spacing*gap_position,0,0]) rotate([0,90,0]) drive_gear();
+  translate([cam_spacing*gap_position,25+75,0]) rotate([0,90,0]) input_gear();
 
   // Two cam mounting brackets
   for(x=[5, cam_spacing*15+gap_width+5]) {
