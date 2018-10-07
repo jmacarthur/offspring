@@ -46,14 +46,18 @@ instruction_axle_y = follower_axle_y+42;
 instruction_axle_z = follower_axle_z+25;
 
 
+module cam_mounting_holes() {
+  for(i=[0:7]) {
+    rotate(i*360/8 + (360/16)) translate([0, bolt_circle_diameter/2]) circle(d=6);
+  }
+}
+
 // Example cams
 module cam_2d() {
   difference() {
     circle(d=cam_diameter);
     circle(d=cam_inner_diameter);
-    for(i=[0:7]) {
-      rotate(i*360/8 + (360/16)) translate([0, bolt_circle_diameter/2]) circle(d=6);
-    }
+    cam_mounting_holes();
   }
 }
 
@@ -75,6 +79,15 @@ module drive_gear() {
       rotate(i*360/60) translate([-1.5, lowest_diameter/2, -1]) cube([3,10,tooth_width+2]);
     }
     translate([0,0,-1]) cylinder(h=overall_width+2, d=bore);
+  }
+}
+
+module axle_holder_spacer_2d() {
+  // This is a 3mm spacer between cams which also has a hub to centre it on the axle.
+  difference() {
+    circle(d=150);
+    cam_mounting_holes();
+    circle(d=20);
   }
 }
 
@@ -119,11 +132,17 @@ module camshaft() {
   // Bonus follower which is driven by the first cam, to drive CMP or LDN
   translate([cam_spacing*-1, follower_axle_y, cam_diameter/2]) rotate([0,90,0]) linear_extrude(height=3) follower_2d();
   translate([cam_spacing*gap_position,0,0]) rotate([0,90,0]) drive_gear();
+
+  // Two cam mounting brackets
+  for(x=[5, cam_spacing*15+gap_width+5]) {
+    color([0.3,0.3,0.3]) translate([x, 0,0]) rotate([0,90,0]) linear_extrude(height=3) axle_holder_spacer_2d();
+  }
 }
 
 
 
 module outer_plate_2d() {
+  // Deprecated. Was used to connect the camshaft to the decoder.
   sideplate_holes = [ [0,0,bearing_outer_diameter],
 		      [follower_axle_y, follower_axle_z, 3],
   		      [instruction_axle_y, instruction_axle_z, 3],
@@ -151,6 +170,34 @@ module outer_plate_2d() {
   }
   
 }
+
+module input_support_plate_2d() {
+  sideplate_holes = [ [decoder_origin_y+18.5, decoder_origin_z, 4],
+		      [decoder_origin_y+18.5, decoder_origin_z+40, 4]];
+  instruction_holder_slots = [decoder_origin_y-5, decoder_origin_y+30];
+  difference() {
+    hull() {
+      for(hole=sideplate_holes) {
+	translate([-hole[1],hole[0]]) circle(d=hole[2]+10);
+      }
+      offset(5) {
+	for(slot=instruction_holder_slots)
+	  translate([-decoder_origin_z-30, slot]) square([20,3]);
+      }
+    }
+    for(hole=sideplate_holes) {
+      translate([-hole[1],hole[0]]) circle(d=hole[2], $fn=20);
+    }
+    for(slot=instruction_holder_slots)
+       #translate([-decoder_origin_z-30, slot]) square([20,3]);
+
+    // Cutout for enumerator rods.
+    translate([-decoder_origin_z-35,decoder_origin_y+1]) square([30,25]);
+  }
+  
+}
+
+
 
 module reader_support_2d() {
   union() {
@@ -204,10 +251,15 @@ module reader_pusher_2d() {
 
 module reader_end_2d() {
   difference() {
-    square([38,20]);
+    hull() {
+      square([38,20]);
+      translate([23.5,-10]) circle(d=10);
+    }
     translate([-1,5]) square([4,10]);
     translate([35,5]) square([4,10]);
     translate([18+0.5+bowden_cable_inner_diameter/2,4]) circle(d=bowden_cable_outer_diameter,$fn=20);
+    // Hole to attach to main decoder body
+    translate([23.5,-10]) circle(d=4);
   }
 }
 
@@ -280,7 +332,8 @@ module instruction_decoder() {
 }
 
 module sequencer_assembly() {
-  color([0.7,0.7,0]) translate([-30,0,0]) rotate([0,90,0]) linear_extrude(height=3) outer_plate_2d();
+  //color([0.7,0.7,0]) translate([-30,0,0]) rotate([0,90,0]) linear_extrude(height=3) outer_plate_2d();
+  color([0.7,0.7,0]) translate([-30,0,0]) rotate([0,90,0]) linear_extrude(height=3) input_support_plate_2d();
   camshaft();
   instruction_decoder();
   translate([decoder_origin_x-50,decoder_origin_y-2,decoder_origin_z+10]) reader_assembly();
