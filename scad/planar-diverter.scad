@@ -217,11 +217,8 @@ module side_plate_2d() {
     for(y=diverter_y) {
       translate([10,5+y]) square([3,5]);
     }
-
-    
   }
 }
-
 
 module bowden_plate_2d() {
   difference() {
