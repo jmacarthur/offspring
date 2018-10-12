@@ -14,7 +14,7 @@ diverter_2_y = 75;
 diverter_3_offset = 15;
 diverter_3_y = 120;
 
-diverter_offsets = [0, diverter_2_offset, diverter_3_offset];
+function diverter_offsets() = [0, diverter_2_offset, diverter_3_offset];
 diverter_y = [0, diverter_2_y, diverter_3_y];
 clearance=0.1;
 module diverter_tab_2d(len) {
@@ -53,7 +53,7 @@ module diverter_holes() {
 module base_plate_2d()
 {
   difference() {
-    translate([-10,-10]) square([210,297]);
+    translate([-10,-10]) square([190,270]);
     for(i=[0:8]) {
       // Regen axle holes
       translate([60,14+pitch+pitch*i]) circle(d=6);
@@ -69,7 +69,7 @@ module base_plate_2d()
 
     // Mounting holes for diverter exit plates
     for(d=[0:2]) {
-      offset = diverter_offsets[d];
+      offset = diverter_offsets()[d];
       offset_y = diverter_y[d];
       for(i=[0:7]) {
 	translate([46+offset_y,offset+12+pitch*i]) square([3,5]);
@@ -197,7 +197,7 @@ module regen_top_plate_2d() {
 module side_plate_2d() {
   difference() {
     union() {
-      translate([0,5]) square([20,190]);
+      translate([0,5]) square([20,170]);
       // Tabs to enter base plate
       for(i=[0:4]) {
 	translate([0,10+i*40]) square([23,5]);
@@ -223,7 +223,7 @@ module side_plate_2d() {
 module bowden_plate_2d() {
   difference() {
     union() {
-      translate([0,5]) square([20,190]);
+      translate([0,5]) square([20,170]);
       // Tabs to enter base plate
       for(i=[0:4]) {
 	translate([0,10+i*40]) square([23,5]);
@@ -256,11 +256,11 @@ module planar_diverter_assembly()
   translate([diverter_3_y,diverter_3_offset]) linear_extrude(height=3) diverter_array_2d();
   color([0.5,0.5,0.5]) translate([-10,-10,-5]) linear_extrude(height=3) base_plate_2d();
   for(i=[0:2]) {
-    color([0.5,0.8,0.5]) translate([diverter_y[i],-10,5]) linear_extrude(height=3) diverter_top_plate_2d(diverter_offsets[i]);
+    color([0.5,0.8,0.5]) translate([diverter_y[i],-10,5]) linear_extrude(height=3) diverter_top_plate_2d(diverter_offsets()[i]);
   }
 
   for(i=[0:2]) {
-    color([0.8,0.3,0.3]) translate([diverter_y[i]-1,-10+10*$t,0]) translate([12,-10,5]) linear_extrude(height=3) diverter_slider_plate_2d(diverter_offsets[i]);
+    color([0.8,0.3,0.3]) translate([diverter_y[i]-1,-10+10*$t,0]) translate([12,-10,5]) linear_extrude(height=3) diverter_slider_plate_2d(diverter_offsets()[i]);
   }
 
   translate([36,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) exit_plate_2d(0);
@@ -282,7 +282,7 @@ module planar_diverter_assembly()
   // Add screws
   for(i=[0:2]) {
     for(j=[0:7]) {
-      translate([diverter_y[i], diverter_offsets[i]+pitch*j,0]) m3_screw(20);
+      translate([diverter_y[i], diverter_offsets()[i]+pitch*j,0]) m3_screw(20);
     }
   }
   
