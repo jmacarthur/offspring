@@ -33,6 +33,9 @@ offset(r=kerf) {
   }
 
   translate([680,10,0]) bowden_plate_2d();
+  for(i=[0:2]) {
+    translate([710,15+i*15,0]) bowden_plate_clip_2d();
+  }
 }
 
 // Example A3 sheet

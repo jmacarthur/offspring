@@ -217,6 +217,10 @@ module side_plate_2d() {
     for(y=diverter_y) {
       translate([10,5+y]) square([3,5]);
     }
+    // Cutout for bowden clip
+    for(y=[10,88,150]) {
+      translate([-1,y]) square([6,3]);
+    }
   }
 }
 
@@ -233,6 +237,19 @@ module bowden_plate_2d() {
       translate([10+1.5,y+36.5]) circle(d=bowden_cable_inner_diameter);
     }
     translate([8,72+1.5]) circle(d=bowden_cable_inner_diameter);
+    for(y=[10,88,150]) {
+      translate([-1,y]) square([6,3]);		
+    }
+
+  }
+}
+
+module bowden_plate_clip_2d() {
+  // This holds the bowden cable plate onto the other side plate.
+  difference() {
+    square([45,10]);
+    translate([5,-1]) square([3,5]);
+    translate([35,-1]) square([3,5]);
   }
 }
 
@@ -277,6 +294,9 @@ module planar_diverter_assembly()
   }
 
   color([0.4,0.4,0.8]) translate([-10,-10+253,18]) rotate([90,90,0]) linear_extrude(height=3) bowden_plate_2d();
+  for(y=[10,88,150]) {
+    color([1.0,0.3,1.0]) translate([y-10,210-5,18]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) bowden_plate_clip_2d();
+  }
 
   
   // Add screws
