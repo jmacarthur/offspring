@@ -17,6 +17,11 @@ diverter_3_y = 120;
 function diverter_offsets() = [0, diverter_2_offset, diverter_3_offset];
 diverter_y = [0, diverter_2_y, diverter_3_y];
 clearance=0.1;
+
+// Animation settings
+regen_pusher_translate = 6*$t;
+regen_crank_rotate = 25*$t;
+
 module diverter_tab_2d(len) {
   // This is a single diverter tab.
   difference() {
@@ -156,7 +161,7 @@ module regen_crank_2d()
   // Regen cranks use the same hexagon rods to transmit force as the subtractor.
   difference() {
     union() {
-      translate([0,-8]) square([20,10]);
+      polygon([[0,-8], [0,8], [10,8], [10,0], [17,0], [19,-1], [19,-7]]);
       circle(d=16);
     }
     hex_bar_2d();
@@ -255,7 +260,7 @@ module bowden_plate_clip_2d() {
 
 module regen_assembly() {
   for(i=[0:7]) {
-    color([0.75,0.5,0.5]) translate([50,pitch+4+i*pitch,0]) linear_extrude(height=3) regen_crank_2d();
+    color([0.75,0.5,0.5]) translate([50,pitch+4+i*pitch,0]) linear_extrude(height=3) rotate(regen_crank_rotate) regen_crank_2d();
   }
 }
 
@@ -310,4 +315,4 @@ module planar_diverter_assembly()
 
 planar_diverter_assembly();
 
-translate([63.5,15,2]) sphere(d=25.4/4, $fn=20);
+translate([63.5,15+regen_pusher_translate,2]) sphere(d=25.4/4, $fn=20);
