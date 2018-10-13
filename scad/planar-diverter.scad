@@ -285,11 +285,11 @@ module planar_diverter_assembly()
     color([0.8,0.3,0.3]) translate([diverter_y[i]-1,-10+10*$t,0]) translate([12,-10,5]) linear_extrude(height=3) diverter_slider_plate_2d(diverter_offsets()[i]);
   }
 
-  translate([36,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) exit_plate_2d(0);
-  translate([diverter_2_y+36,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) exit_plate_2d(diverter_2_offset);
-  translate([diverter_3_y+36,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) exit_plate_2d(diverter_3_offset);
+  for(i=[0:2]) {
+    translate([36+diverter_y[i],-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) exit_plate_2d(diverter_offsets()[i]);
+  }
   translate([66,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) regen_exit_plate_2d();
-  translate([62,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) regen_pusher_bar_2d();
+  color([1.0,1.0,0.0,0.2]) translate([62,-10+regen_pusher_translate,20-2]) rotate([0,90,0]) linear_extrude(height=3) regen_pusher_bar_2d();
   color([0.5,0.5,0.5,0.5]) translate([42,-10,5]) linear_extrude(height=3) regen_top_plate_2d();
   
   regen_assembly();
