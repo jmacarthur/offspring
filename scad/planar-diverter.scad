@@ -145,7 +145,7 @@ module diverter_top_plate_2d(offset) {
 
 module diverter_slider_plate_2d(offset) {
   difference() {
-    square([25,250]);
+    translate([0,-3]) square([25,253]);
     for(i=[0:8]) {
       translate([10,15+pitch*i+offset]) circle(d=3);
       translate([10,13.5+pitch*i+offset]) square([15,3]);
