@@ -22,6 +22,8 @@ clearance=0.1;
 regen_pusher_translate = 6*$t;
 regen_crank_rotate = 25*$t;
 
+hex_axle_hole_diameter = 6;
+
 module diverter_tab_2d(len) {
   // This is a single diverter tab.
   difference() {
@@ -61,14 +63,28 @@ module diverter_holes() {
   output_holes(pipe_inner_diameter);
 }
 
+module diverter_edge_holes() {
+  // Like the diverter holes, but only drill the first and last.
+  // This is for mounting the pipe plate.
+  for(i=[0,8]) {
+
+    translate([10,10+pitch*i]) circle(d=3);
+  }
+  output_holes(pipe_inner_diameter);
+}
+
+module hex_axle_holes() {
+  for(i=[0:7]) {
+    // Regen axle holes
+    translate([60,14+pitch+pitch*i]) circle(d=hex_axle_hole_diameter);
+  }
+}
+
 module base_plate_2d()
 {
   difference() {
     translate([-10,-10]) square([190,270]);
-    for(i=[0:8]) {
-      // Regen axle holes
-      translate([60,14+pitch+pitch*i]) circle(d=6);
-    }
+    hex_axle_holes();
     for(i=[0:2]) {
       translate([diverter_y[i], diverter_offsets()[i]]) diverter_holes();
     }
@@ -106,8 +122,12 @@ module pipe_mounting_plate_2d()
 {
   difference() {
     translate([20,0]) square([160,230]);
+    hex_axle_holes();
     for(i=[0:2]) {
       translate([diverter_y[i], diverter_offsets()[i]]) output_holes(pipe_outer_diameter);
+    }
+    for(i=[0:2]) {
+      translate([diverter_y[i], diverter_offsets()[i]]) diverter_edge_holes();
     }
   }
 }
