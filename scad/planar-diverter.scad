@@ -46,13 +46,19 @@ module diverter_array_2d() {
   }
 }
 
+module output_holes(d) {
+  for(i=[0:8]) {
+    // Output holes
+    translate([42,15+pitch*i]) circle(d=d);
+  }
+}
+
 module diverter_holes() {
   for(i=[0:8]) {
     // Diverter axle
     translate([10,10+pitch*i]) circle(d=3);
-    // Output holes
-    translate([42,15+pitch*i]) circle(d=8);
   }
+  output_holes(pipe_inner_diameter);
 }
 
 module base_plate_2d()
@@ -63,10 +69,9 @@ module base_plate_2d()
       // Regen axle holes
       translate([60,14+pitch+pitch*i]) circle(d=6);
     }
-    diverter_holes();
-    translate([diverter_2_y,diverter_2_offset]) diverter_holes(); 
-    translate([diverter_3_y,diverter_3_offset]) diverter_holes();
-
+    for(i=[0:2]) {
+      translate([diverter_y[i], diverter_offsets()[i]]) diverter_holes();
+    }
     // Mounting holes for openbeam
     translate([0,0]) circle(d=3);
     translate([0,250]) circle(d=3);
@@ -94,6 +99,16 @@ module base_plate_2d()
       }
     }
 
+  }
+}
+
+module pipe_mounting_plate_2d()
+{
+  difference() {
+    translate([20,0]) square([160,230]);
+    for(i=[0:2]) {
+      translate([diverter_y[i], diverter_offsets()[i]]) output_holes(pipe_outer_diameter);
+    }
   }
 }
 
@@ -277,6 +292,7 @@ module planar_diverter_assembly()
   translate([diverter_2_y,diverter_2_offset]) linear_extrude(height=3) diverter_array_2d();
   translate([diverter_3_y,diverter_3_offset]) linear_extrude(height=3) diverter_array_2d();
   color([0.5,0.5,0.5]) translate([-10,-10,-5]) linear_extrude(height=3) base_plate_2d();
+  color([0.5,0.0,0.0,0.5]) translate([-10,-10,-10]) linear_extrude(height=3) pipe_mounting_plate_2d();
   for(i=[0:2]) {
     color([0.5,0.8,0.5]) translate([diverter_y[i],-10,5]) linear_extrude(height=3) diverter_top_plate_2d(diverter_offsets()[i]);
   }
