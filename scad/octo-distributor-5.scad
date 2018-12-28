@@ -408,9 +408,9 @@ module flap_support_2d() {
 
 module output_flap_2d() {
   difference() {
-    square([180,20]);
-    translate([channel_width/2+1.5,5]) square([3,10]);
-    translate([pitch*7+channel_width/2+1.5,5]) square([3,10]);
+    square([180,15]);
+    translate([channel_width/2+1.5,5]) square([3,11]);
+    translate([pitch*7+channel_width/2+1.5,5]) square([3,11]);
   }
 }
 
