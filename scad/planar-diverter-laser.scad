@@ -12,28 +12,28 @@ offset(r=kerf) {
   }
 
   for(i=[0:2]) {
-    translate([270+i*30,10,0]) diverter_slider_plate_2d(diverter_offsets()[i]);
+    translate([270+i*40,10,0]) diverter_slider_plate_2d(diverter_offsets()[i]);
   }
 
   for(i=[0:2]) {
     translate([5+i*30,310,0]) exit_plate_2d(diverter_offsets()[i]);
   }
-  
+
   translate([125,310,0]) regen_exit_plate_2d();
   translate([160,320,0]) regen_pusher_bar_2d();
   translate([185,315,0]) regen_top_plate_2d();
 
-  translate([210,250]) 
+  translate([210,250])
   for(i=[0:1]) {
     translate([0,i*20,0]) regen_crank_2d();
     translate([32,2+i*20,0]) rotate(180) regen_crank_2d();
   }
-  translate([370,190]) 
+  translate([385,190])
   for(i=[0:6]) {
     translate([0,i*15,0]) diverter_tab_2d(30);
   }
   for(i=[0:1]) {
-    translate([360+30*i,0,0]) side_plate_2d();
+    translate([385+30*i,0,0]) side_plate_2d();
   }
 
   translate([95,305,0]) bowden_plate_2d();
