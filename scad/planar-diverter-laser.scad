@@ -45,6 +45,10 @@ offset(r=kerf) {
   for(i=[0:3]) {
     translate([0,i*15,0]) diverter_tab_2d(30);
   }
+  translate([220,300]) 
+  for(i=[0:7]) {
+    translate([0,i*15,0]) rotate(90) regen_output_2d(30);
+  }
 }
 
 // Example A3 sheet
