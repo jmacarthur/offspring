@@ -180,7 +180,10 @@ module diverter_top_plate_2d(offset) {
 
 module diverter_slider_plate_2d(offset) {
   difference() {
-    translate([0,-3]) square([25,253]);
+    union() {
+      translate([0,-8]) square([25,258]);
+      translate([-5,-8]) square([35,5]);
+    }
     for(i=[0:8]) {
       translate([10,15+pitch*i+offset]) circle(d=3);
       translate([10,13.5+pitch*i+offset]) square([15,3]);
@@ -206,7 +209,9 @@ module regen_crank_2d()
 module regen_pusher_bar_2d() {
   difference() {
     union() {
-      translate([-5,-10]) square([19,250]);
+      translate([-5,-15]) square([19,255]);
+      translate([-5,-15]) square([23,5]);
+      translate([-5,223]) square([23,5]);
       for(i=[0:7]) {
 	translate([9,16+pitch*i]) square([6,6+3.5]);
 	translate([9,16+pitch*i]) square([11,6]);
@@ -250,6 +255,11 @@ module side_plate_2d() {
     }
     // Cutout for pusher rod
     translate([0,72-clearance]) square([14+clearance,3+clearance*2]);
+
+    // Holes to attach a clip to keep the regen pusher in place
+    translate([4.5,72+10]) circle(d=3);
+    translate([4.5,72-7]) circle(d=3);
+
     // Cutout for regen top
     translate([10,52]) square([3,5]);
 
