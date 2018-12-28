@@ -167,7 +167,7 @@ module regen_exit_plate_2d()
 module diverter_top_plate_2d(offset) {
   // This is the static plate which holes the top of all the diverters.
   difference() {
-    union() {      
+    union() {
       translate([-5,0]) square([16,220]);
       translate([-5,-3]) square([5,226]);
     }
@@ -307,7 +307,7 @@ module m3_screw(length) {
 }
 
 module planar_diverter_assembly()
-{  
+{
   linear_extrude(height=3) diverter_array_2d();
   translate([diverter_2_y,diverter_2_offset]) linear_extrude(height=3) diverter_array_2d();
   translate([diverter_3_y,diverter_3_offset]) linear_extrude(height=3) diverter_array_2d();
@@ -339,14 +339,13 @@ module planar_diverter_assembly()
     color([1.0,0.3,1.0]) translate([y-10,210-5,18]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) bowden_plate_clip_2d();
   }
 
-  
   // Add screws
   for(i=[0:2]) {
     for(j=[0:7]) {
       translate([diverter_y[i], diverter_offsets()[i]+pitch*j,0]) m3_screw(20);
     }
   }
-  
+
 }
 
 planar_diverter_assembly();
