@@ -208,6 +208,19 @@ module regen_crank_2d()
   }
 }
 
+module regen_output_2d()
+{
+  difference() {
+    union() {
+      circle(d=10);
+      translate([-3,-15]) square([6,15]);
+    }
+    for(i=[0:2]) translate([0,-7-3*i]) circle(d=1.5);
+    hex_bar_2d();
+  }
+}
+
+
 module regen_pusher_bar_2d() {
   difference() {
     union() {
@@ -308,6 +321,7 @@ module bowden_plate_clip_2d() {
 module regen_assembly() {
   for(i=[0:7]) {
     color([0.75,0.5,0.5]) translate([50,pitch+4+i*pitch,0]) linear_extrude(height=3) rotate(regen_crank_rotate) regen_crank_2d();
+    color([0.75,0.5,0.5]) translate([50,pitch+4+i*pitch,-20]) linear_extrude(height=3) rotate(regen_crank_rotate) regen_output_2d();
   }
 }
 
