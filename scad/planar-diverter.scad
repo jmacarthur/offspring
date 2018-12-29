@@ -24,7 +24,8 @@ regen_crank_rotate = 25*$t;
 
 hex_axle_hole_diameter = 6;
 
-bowden_cable_clearance = 0.2;
+bowden_cable_clearance = 0.5;
+bwden_cable_hole_size = bowden_cable_inner_diameter+bowden_cable_clearance;
 
 module diverter_tab_2d(len) {
   // This is a single diverter tab.
@@ -191,7 +192,7 @@ module diverter_slider_plate_2d(offset) {
       translate([10,13.5+pitch*i+offset]) square([15,3]);
     }
     translate([17,230]) rotate(90) cable_clamp_cutout_2d();
-    translate([14.5,230]) square([bowden_cable_inner_diameter+bowden_cable_clearance,30]);
+    translate([14.5,230]) square([bowden_cable_hole_size,30]);
   }
 }
 
@@ -237,7 +238,7 @@ module regen_pusher_bar_2d() {
     }
 
     translate([10,225]) rotate(90) cable_clamp_cutout_2d();
-    translate([7.5,225]) square([bowden_cable_inner_diameter+bowden_cable_clearance, 30]);
+    translate([7.5,225]) square([bowden_cable_hole_size, 30]);
   }
 }
 
@@ -299,9 +300,9 @@ module bowden_plate_2d() {
       }
     }
     for(y=diverter_y) {
-      translate([10+1.5,y+36.5]) circle(d=bowden_cable_inner_diameter+bowden_cable_clearance);
+      translate([10+1.5,y+36.5]) circle(d=bowden_cable_hole_size);
     }
-    translate([8,72+1.5]) circle(d=bowden_cable_inner_diameter+bowden_cable_clearance);
+    translate([8,72+1.5]) circle(d=bowden_cable_hole_size);
     for(y=[10,88,150]) {
       translate([-1,y]) square([6,3]);
     }
