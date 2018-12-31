@@ -135,6 +135,22 @@ module row_interruptor_2d() {
   }
 }
 
+// Row stator fits inbetween moving horizontal bars to stop bearings falling into the middle gap.
+module row_stator_2d() {
+  difference() {
+    union() {
+      translate([13,0]) square([190-3,10+column_width/2]);
+      translate([10,column_width/2]) square([193,10]);
+    }
+    hull() {
+      translate([85,column_width/2+3]) square([25,3]);
+      translate([95,column_width/2+2]) square([5,5]);
+    }
+    for(x=[1:columns]) {
+      translate([x*pitch-column_width/2,0]) circle(d=8);
+    }
+  }
+}
 
 module row_pusher_2d() {
   polygon([[0,4], [-3,4], [0,2], [5,2], [8,4], [5,4], [5,10], [0,12]]);
@@ -151,8 +167,9 @@ module row_comb_2d() {
     }
     for(r=[0:7]) {
       translate([r*cell_height+4,rod_height]) square([3+clearance,10+clearance]);
-      translate([r*cell_height+4,rod_height+2]) square([8,6]);
+      translate([r*cell_height+4,rod_height+2]) square([20,6]);
       translate([r*cell_height+9-clearance,rod_height]) square([3+clearance,10+clearance]);
+      translate([r*cell_height+14-clearance,rod_height]) square([3+clearance,10+clearance]);
     }
     // Tabs for input gate
     translate([8*cell_height+10,10]) square([3+clearance,20]);
@@ -252,6 +269,7 @@ module 3d_assembly() {
   for(y=[0:rows-1]) {
     color([0.5,0.5,0.5]) translate([mover_pos-2,7+3+2+y*cell_height,6]) rotate([90,0,0]) linear_extrude(height=3) row_mover_2d();
     color([0.5,0.5,1.0]) translate([interruptor_pos-2,7+y*cell_height,6]) rotate([90,0,0]) linear_extrude(height=3) row_interruptor_2d();
+    color([0.5,0.5,0.5]) translate([interruptor_pos-2,7+10+y*cell_height,6]) rotate([90,0,0]) linear_extrude(height=3) row_stator_2d();
     color([1.0,0,1.0]) translate([100-3+interruptor_pos-9,y*cell_height,9+column_width/2]) linear_extrude(height=3) row_pusher_2d();
   }
 
