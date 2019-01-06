@@ -100,10 +100,18 @@ module diverted_output_pipeplate_2d() {
   }
 }
 
+module diverted_separator_plate_2d() {
+  union() {
+    square([10,20]);
+    translate([-8,6]) square([22,10]);
+  }
+}
+
 module 3d_diverted_assembly() {
   for(x=diverted_support_slots) {
     translate([x,0,0]) vertical_plate_y() diverted_output_support_2d();
   }
+  for(i=[1:8]) translate([ejector_xpos(i),0,0]) rotate([-10,0,0]) rotate([0,0,20]) translate([0,5,5]) vertical_plate_y() diverted_separator_plate_2d();
   color([0.4,0.4,0.4]) translate([20,20,8]) rotate([170,0,0]) translate([0,-3,0]) horizontal_plate() diverted_output_slope_2d();
 
   translate([20,26,8]) vertical_plate_x() diverted_output_pipeplate_2d();

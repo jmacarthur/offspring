@@ -503,7 +503,6 @@ module 3d_octo5_assembly() {
     color([0.5,0.8,0.6]) translate([0,-26,-70]) rotate([90,0,0]) linear_extrude(height=3) discard_channel_side_2d();
   }
 
-  
   translate([-60,0,-100]) 3d_diverted_assembly();
 }
 
