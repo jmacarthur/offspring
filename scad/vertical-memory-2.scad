@@ -198,7 +198,8 @@ module returner_support_2d() {
   difference() {
     union() {
       translate([0,-3]) square([10,4]);
-      translate([0,0]) square([30,10]);
+      translate([0,0]) square([25,10]);
+      translate([25,5]) circle(d=10);
     }
     translate([25,5]) circle(d=3);
   }
