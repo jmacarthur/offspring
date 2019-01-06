@@ -94,10 +94,14 @@ module input_toggle_2d()
   }
 }
 
-module input_guard_a_2d()
+module input_guard_a_2d(extend)
 {
   difference() {
-    translate([-subtractor_pitch_x + channel_width/2,-2.5]) square([20,40]);
+    if(extend) {
+      translate([-subtractor_pitch_x + channel_width/2-20,-2.5]) square([40,40]);
+    } else {
+      translate([-subtractor_pitch_x + channel_width/2,-2.5]) square([20,40]);
+    }
     circle(r=18, $fn=50);
     // Top input channel
     translate([-channel_width/2,0]) square([channel_width, 100]);
@@ -107,13 +111,17 @@ module input_guard_a_2d()
     // Mounting holes
     input_guard_a_holes();
 
+    // Rail mounting holes (these only show up if extend is True)
+    translate([-35,20]) circle(d=3);
+    translate([-35,30]) circle(d=3);
   }
 }
 
-module input_guard_b_2d()
+module input_guard_b_2d(extend)
 {
   difference() {
-    translate([-20,-20]) square([40,20]);
+    width = extend ? 50: 40;
+    translate([-20,-20]) square([width,20]);
     // Make a cut-out using the input toggle in two positions
     offset(0.5) {
       union() {
@@ -128,7 +136,7 @@ module input_guard_b_2d()
     // Top input channel
     translate([-channel_width/2,0]) square([channel_width, 100]);
     // Right escape channel
-    translate([0,6]) rotate(-90-20) translate([-channel_width/2,0]) square([channel_width, 100]);
+    translate([0,6]) rotate(-90-20) translate([-channel_width/2-10,0]) square([channel_width+10, 100]);
     // Escape channel of the next toggle
     translate([-subtractor_pitch_x, -subtractor_pitch_y+6]) rotate(-90-20) translate([-channel_width/2,0]) square([channel_width, 100]);
     // Top input channel of the next toggle
@@ -138,6 +146,9 @@ module input_guard_b_2d()
 
     // Mounting holes
     input_guard_b_holes();
+
+    // Rail mounting hole (this only appears if 'extend' is True)
+    translate([25,-15]) circle(d=3);
   }
 }
 
@@ -305,8 +316,8 @@ module subtractor_assembly() {
     if(1) {
       translate([-i*subtractor_pitch_x, -i*subtractor_pitch_y,0]) {
 	color([1.0,0,0]) linear_extrude(height=3) rotate(rot) input_toggle_2d();
-	linear_extrude(height=3) input_guard_a_2d();
-	linear_extrude(height=3) input_guard_b_2d();
+        linear_extrude(height=3) input_guard_a_2d(i==7);
+        linear_extrude(height=3) input_guard_b_2d(i==0);
       }
     }
     translate([-i*subtractor_pitch_x, -i*subtractor_pitch_y,-6]) {
