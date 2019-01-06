@@ -40,7 +40,18 @@ module generic_support_plate()
         |_/
        A  F
     */
-    polygon(points = [[left_edge+10, -220+20], [left_edge,-165], [left_edge+215/tan(slope),50], [10,15], [40,0], [40-220/tan(slope)+5,-220+5]]);
+    offset(r=5) hull() {
+      for(i=[0:7]) {
+      translate([-subtractor_pitch_x*i, -subtractor_pitch_y*i]) {
+
+	input_guard_a_holes();
+	input_guard_b_holes();
+
+	// Hole for hex axle
+	translate([0, 0]) circle(r=hex_bar_max_radius+axle_clearance);
+      }
+      }
+    }
 }
 
 // Layer 0 - Top plate
