@@ -9,8 +9,8 @@ offset(r=kerf) {
   translate([0,150]) memory_top_plate_2d();
   for(i=[0:7]) {
     translate([10,300+i*20]) row_mover_2d();
-    translate([10,470+i*20]) row_stator_2d();
-    translate([10,650+i*20]) row_interruptor_2d();
+    translate([10,470+i*25]) row_stator_2d();
+    translate([10,670+i*20]) row_interruptor_2d();
   }
   translate([220,0]) row_comb_2d();
   translate([220,30]) row_comb_2d();

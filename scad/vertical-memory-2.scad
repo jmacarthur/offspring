@@ -67,6 +67,14 @@ module memory_top_plate_2d()
     }
     // Cutout for bowden cable support
     translate([50,60]) square([20,3]);
+
+    // Holes for the stators
+    for(i=[1:8]) {
+      for(x=[30,160]) {
+	translate([x-2,i*cell_height])
+	  square([20,3]);
+      }
+    }
   }
 }
 
@@ -139,8 +147,12 @@ module row_interruptor_2d() {
 module row_stator_2d() {
   difference() {
     union() {
-      translate([13,0]) square([190-3,10+column_width/2]);
-      translate([10,column_width/2]) square([193,10]);
+      translate([13,0]) square([187,17]);
+      // tabs
+      for(x=[30,160]) {
+	translate([x,0]) square([20,20]);
+      }
+
     }
     hull() {
       translate([85,column_width/2+3]) square([25,3]);
@@ -167,12 +179,9 @@ module row_comb_2d() {
     }
     for(r=[0:7]) {
       translate([r*cell_height+4,rod_height]) square([3+clearance,10+clearance]);
-      translate([r*cell_height+4,rod_height+2]) square([12,6]);
+      translate([r*cell_height+4,rod_height+2]) square([8,6]);
       translate([r*cell_height+9-clearance,rod_height]) square([3+clearance,10+clearance]);
-      translate([r*cell_height+14-clearance,rod_height]) square([3+clearance,10+clearance]);
     }
-    // Cut through all cells (otherwise we'll end up with a thin warped line)
-    translate([4,rod_height+2]) square([12+7*cell_height,6]);
     // Tabs for input gate
     translate([8*cell_height+10,10]) square([3+clearance,20]);
   }
