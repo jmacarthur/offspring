@@ -27,6 +27,9 @@ hex_axle_hole_diameter = 6;
 bowden_cable_clearance = 0.5;
 bowden_cable_hole_size = bowden_cable_inner_diameter+bowden_cable_clearance;
 
+bowden_cable_clamp_width = 4;
+bowden_cable_clamp_clearance = 0.5;
+
 module diverter_tab_2d(len) {
   // This is a single diverter tab.
   difference() {
@@ -266,6 +269,7 @@ module side_plate_2d() {
     }
     // Cutout for diverter sliders
     for(y=diverter_y) {
+      translate([10-bowden_cable_clamp_clearance,27+y]) square([bowden_cable_clamp_width+bowden_cable_clamp_clearance*2,15]);
       translate([10-clearance,20+y]) square([3+clearance*2,27]);
       if(y==0) translate([10-clearance,30+y]) square([20,15]);
     }
