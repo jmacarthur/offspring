@@ -167,10 +167,12 @@ module row_comb_2d() {
     }
     for(r=[0:7]) {
       translate([r*cell_height+4,rod_height]) square([3+clearance,10+clearance]);
-      translate([r*cell_height+4,rod_height+2]) square([20,6]);
+      translate([r*cell_height+4,rod_height+2]) square([12,6]);
       translate([r*cell_height+9-clearance,rod_height]) square([3+clearance,10+clearance]);
       translate([r*cell_height+14-clearance,rod_height]) square([3+clearance,10+clearance]);
     }
+    // Cut through all cells (otherwise we'll end up with a thin warped line)
+    translate([4,rod_height+2]) square([12+7*cell_height,6]);
     // Tabs for input gate
     translate([8*cell_height+10,10]) square([3+clearance,20]);
   }
