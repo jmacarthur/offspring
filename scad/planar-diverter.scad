@@ -25,7 +25,7 @@ regen_crank_rotate = 25*$t;
 hex_axle_hole_diameter = 6;
 
 bowden_cable_clearance = 0.5;
-bwden_cable_hole_size = bowden_cable_inner_diameter+bowden_cable_clearance;
+bowden_cable_hole_size = bowden_cable_inner_diameter+bowden_cable_clearance;
 
 module diverter_tab_2d(len) {
   // This is a single diverter tab.
