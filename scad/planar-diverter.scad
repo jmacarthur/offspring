@@ -379,6 +379,28 @@ module planar_diverter_assembly()
 
 }
 
+
+// Angle clips which hold the whole diverter at an angle, to allow easier exit through pipes.
+module angle_clip()
+{
+  slope = 5; // Degrees
+  rotate([0,slope,0])
+    difference() {
+    union() {
+      translate([0,10,0]) rotate([90,0,0]) linear_extrude(height=10) {
+	polygon([[0,0],[20,0], [20,15-5*sin(slope)], [0,15-20*sin(slope)]]);
+      }
+      cube([40,10,3]);
+      translate([20,0,0]) rotate([0,-slope*2,0]) cube([3,10,20]);
+    }
+    translate([30,5,-1]) cylinder(d=3,h=10);
+  }
+}
+
+
 planar_diverter_assembly();
+
+translate([170,-20,-20]) angle_clip();
+translate([170,220,-20]) angle_clip();
 
 translate([63.5,15+regen_pusher_translate,2]) sphere(d=25.4/4, $fn=20);
