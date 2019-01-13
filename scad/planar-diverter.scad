@@ -127,7 +127,7 @@ module base_plate_2d()
 module pipe_mounting_plate_2d()
 {
   difference() {
-    translate([20,0]) square([160,230]);
+    translate([75,10]) square([100,210]);
     hex_axle_holes();
     for(i=[0:2]) {
       translate([diverter_y[i], diverter_offsets()[i]]) output_holes(pipe_outer_diameter);
@@ -358,7 +358,7 @@ module planar_diverter_assembly()
   translate([66,-10,20-2]) rotate([0,90,0]) linear_extrude(height=3) regen_exit_plate_2d();
   color([1.0,1.0,0.0,0.2]) translate([62,-10+regen_pusher_translate,20-2]) rotate([0,90,0]) linear_extrude(height=3) regen_pusher_bar_2d();
   color([0.5,0.5,0.5,0.5]) translate([42,-10,5]) linear_extrude(height=3) regen_top_plate_2d();
-  
+
   regen_assembly();
 
   for(x=[0,223]) {
