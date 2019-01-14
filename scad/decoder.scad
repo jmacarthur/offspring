@@ -327,11 +327,12 @@ module lifter_bar(n_positions)
   }
 }
 
-module triangular_support_plate_2d()
+module triangular_support_plate_2d(side_mount)
 {
+  depth = ( side_mount ? 90 : 60 );
   difference() {
     union() {
-      polygon(points = [[-3,0], [follower_axis_y+15,0], [follower_axis_y+15,0], [follower_axis_y+15,20], [50,50], [10,90], [0, 90], [0,50], [-3,50]]);
+      polygon(points = [[-3,0], [follower_axis_y+15,0], [follower_axis_y+15,0], [follower_axis_y+15,20], [50,50], [10,depth], [0, depth], [0,50], [-3,50]]);
       // Tabs for side plate
       translate([10,-3]) square([10,3+thin]);
       translate([50,-3]) square([10,3+thin]);
@@ -368,9 +369,9 @@ module triangular_support_plate_2d()
   }
 }
 
-module triangular_support_plate()
+module triangular_support_plate(side_mount)
 {
-  translate([0,0,50]) rotate([-90,0,90]) linear_extrude(height=3) triangular_support_plate_2d();
+  translate([0,0,50]) rotate([-90,0,90]) linear_extrude(height=3) triangular_support_plate_2d(side_mount);
 }
 
 module side_plate_2d(n_positions) {
@@ -456,7 +457,7 @@ module decoder_assembly(n_inputs, side_mount) {
   color([0.5,0.5,0.5,0.5]) translate([0,-3,50]) side_plate(n_positions);
 
   for(side=[0:1]) {
-    translate([3+side*(xbar_length(n_positions)-3),0,0]) triangular_support_plate();
+    translate([3+side*(xbar_length(n_positions)-3),0,0]) triangular_support_plate(side_mount);
   }
 
   translate([0,-9,10]) lifter_bar(n_positions);
