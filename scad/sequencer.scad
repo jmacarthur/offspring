@@ -335,7 +335,7 @@ module resetter_assembly() {
 
 decoder_origin_x = 0;
 decoder_origin_y = -45;
-decoder_origin_z = 120;
+decoder_origin_z = 100;
 
 module instruction_decoder() {
   translate([decoder_origin_x,decoder_origin_y,decoder_origin_z]) decoder_assembly(3, false);
