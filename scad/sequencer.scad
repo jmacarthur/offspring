@@ -333,13 +333,12 @@ module resetter_assembly() {
   color([0.1,0.1,0.9]) translate([3,3,-45]) rotate([90,0,0]) linear_extrude(height=3) resetter_side_2d();
 }
 
-
 decoder_origin_x = 0;
 decoder_origin_y = -45;
 decoder_origin_z = 120;
 
 module instruction_decoder() {
-  translate([decoder_origin_x,decoder_origin_y,decoder_origin_z]) decoder_assembly(3);
+  translate([decoder_origin_x,decoder_origin_y,decoder_origin_z]) decoder_assembly(3, false);
   translate([decoder_origin_x,decoder_origin_y,decoder_origin_z]) enumerator_rods(3);
   translate([decoder_origin_x-50,decoder_origin_y-2,decoder_origin_z+10]) reader_assembly();
   translate([decoder_origin_x+decoder_box_length(3),decoder_origin_y-3,decoder_origin_z+50]) resetter_assembly();

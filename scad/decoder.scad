@@ -236,16 +236,17 @@ module xBar_2d(n_positions, slotStart, slotHeight, height) {
   }
 }
 
-module top_plate_2d(n_positions) {
+module top_plate_2d(n_positions, side_mount) {
   slotStart = 5;
   slotHeight = 20;
-  height = 90;
+  height = side_mount ? 90 : 60;
+  base = 40-height;
   difference() {
     union() {
-      translate([0,-50]) square([xbar_length(n_positions),height]);
+      translate([0,base]) square([xbar_length(n_positions),height]);
       // Tabs to connect to side plate
-      translate([20,height-50-thin]) square([10,3+thin]);
-      translate([100,height-50-thin]) square([10,3+thin]);
+      translate([20,base+height-thin]) square([10,3+thin]);
+      translate([100,base+height-thin]) square([10,3+thin]);
     }
     follower_slots(n_positions, slotStart, slotHeight);
     lifter_bar_axles();
@@ -273,12 +274,12 @@ module xBar(n_positions, slotStart, slotHeight, height) {
   }
 }
 
-module topPlate(n_positions) {
+module topPlate(n_positions, side_mount) {
   color([0.5,0.5,0.5]) {
     translate([0,3,0])
     rotate([90,0,0])
     linear_extrude(height=3) {
-      top_plate_2d(n_positions);
+      top_plate_2d(n_positions, side_mount);
     }
   }
 }
@@ -435,7 +436,7 @@ module lever_support() {
 
 lever_rotation = atan2(enumerator_rod_travel, (lever_balance_length/2));
 
-module decoder_assembly(n_inputs) {
+module decoder_assembly(n_inputs, side_mount) {
   n_positions = pow(2,n_inputs);
   color([0.5,0,0]) {
     for(i=[0:n_positions-1]) {
@@ -446,7 +447,7 @@ module decoder_assembly(n_inputs) {
 
   // Three bars which extend in the x dimension
 
-  translate([0,-3,10]) topPlate(n_positions);
+  translate([0,-3,10]) topPlate(n_positions, side_mount);
   translate([0,-3+distance_between_xbars,10]) xBar(n_positions, 5,20,50); // Middle
 
   for(x=enumerator_support_positions(n_inputs))
@@ -550,7 +551,7 @@ for(x=axle_reinforce_x) {
 function decoder_box_length(render_positions) = pow(2,render_positions)*follower_spacing+17;
 
 reinforcing_strip(render_positions);
-decoder_assembly(render_inputs);
+decoder_assembly(render_inputs, true);
 lever_assembly(render_inputs);
 enumerator_rods(render_inputs);
 support_drift(render_positions);
