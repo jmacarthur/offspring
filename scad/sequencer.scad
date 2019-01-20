@@ -112,8 +112,8 @@ module follower_2d() {
 
 module decoder_drop_rod_2d() {
   union() {
-    conrod(cam_diameter/2-25);
-    translate([cam_diameter/2-25,-10]) square([10,20]);
+    conrod(cam_diameter/2+70);
+    translate([cam_diameter/2+70,-10]) square([10,20]);
   }
 }
 
@@ -135,9 +135,9 @@ module camshaft() {
     offset = (i>=gap_position?gap_width:0);
     translate([cam_spacing*i+offset, 0,0]) rotate([0,90,0]) linear_extrude(height=cam_width) cam_2d();
     translate([cam_spacing*i+offset+follower_x_offset, follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d();
-    
+
     if(i<instruction_positions) {
-      color([0,0.5,0.5]) translate([cam_spacing*(i-1)+offset+follower_x_offset, follower_axle_y-21,cam_diameter/2]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) decoder_drop_rod_2d();
+      color([0,0.5,0.5]) translate([cam_spacing*(i-1)+offset+follower_x_offset, follower_axle_y-21,cam_diameter/2+80]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) decoder_drop_rod_2d();
       translate([cam_spacing*(i-1)+offset+follower_x_offset, instruction_axle_y,instruction_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) instruction_output_rod_2d();
     }
   }
@@ -181,7 +181,7 @@ module outer_plate_2d() {
     // Cutout for enumerator rods.
     translate([-decoder_origin_z-35,decoder_origin_y+1]) square([30,25]);
   }
-  
+
 }
 
 module input_support_plate_2d() {
