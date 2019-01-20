@@ -31,7 +31,7 @@ cam_width=5;
 cam_spacing = 14;
 
 axle_diameter = 20;
-bearing_outer_diameter=28; // Fairly typical needle roller bearing 
+bearing_outer_diameter=28; // Fairly typical needle roller bearing
 instruction_positions = 5;
 
 num_cams = 17;
@@ -352,3 +352,43 @@ module sequencer_assembly() {
 }
 
 sequencer_assembly();
+
+module camshaft_bearing() {
+  difference() {
+    translate([-43,-43,0]) cube([86,86,33.3]);
+    translate([0,0,-1]) cylinder(d=15,h=40);
+    for(x=[-32,32]) {
+      for(y=[-32,32]) {
+	translate([x,y,-1]) cylinder(d=10,h=40);
+      }
+    }
+  }
+}
+
+case_thickness = 6;
+sequencer_z = -100;
+sequencer_y = -150;
+sequencer_x = -40;
+
+case_width = 340;
+case_height = 198;
+case_depth = 300;
+module sequencer_case() {
+  translate([sequencer_x+case_width-33,0,0]) rotate([0,90,0]) camshaft_bearing();
+  translate([sequencer_x,0,0]) rotate([0,90,0]) camshaft_bearing();
+  color([0.5,0.5,0.5,0.3]) {
+    translate([sequencer_x,sequencer_y,sequencer_z]) {
+      for(x=[-case_thickness,case_width]) {
+	translate([x,0,0]) cube([case_thickness,case_depth, case_height+case_thickness*2]);
+      }
+      for(y=[0,case_depth-case_thickness]) {
+	translate([0,y,case_thickness]) cube([case_width,case_thickness, case_height]);
+      }
+      for(z=[0,case_height+case_thickness]) {
+	translate([0,0,z]) cube([case_width, case_depth, case_thickness]);
+      }
+    }
+  }
+}
+
+sequencer_case();
