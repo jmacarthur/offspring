@@ -99,11 +99,14 @@ module input_gear() {
 }
 
 
-module follower_2d() {
+module follower_2d(long=false) {
   union() {
-    conrod(cam_diameter/2);
+    conrod(long ? cam_diameter : cam_diameter/2);
     // Output blob
-    translate([cam_diameter/2-10,4]) square([10,6]);
+    hull() {
+      translate([5,0]) square([cam_diameter-10,5]);
+      translate([cam_diameter/2-10,4]) square([10,6]);
+    }
     // Follower blob
     translate([cam_diameter/2,-5]) circle(d=20);
   }
@@ -111,15 +114,18 @@ module follower_2d() {
 
 module decoder_drop_rod_2d() {
   union() {
-    conrod(cam_diameter/2+70);
-    translate([cam_diameter/2+70,-10]) square([10,20]);
+    conrod(cam_diameter/2+58);
+    translate([cam_diameter/2+58,-10]) square([10,20]);
   }
 }
 
 module instruction_output_rod_2d() {
   difference() {
     union() {
-      translate([-cam_diameter/2,-5]) square([cam_diameter+1,10]);
+      hull() {
+	translate([0,-5]) square([cam_diameter,10]);
+	translate([cam_diameter/2-10,0]) square([10,10]);
+      }
       translate([cam_diameter/2-10,-10]) square([10,20]);
       circle(d=10);
     }
@@ -141,7 +147,7 @@ module camshaft() {
   }
   translate([cam_spacing*4+fixed_cam_spacing*5,0,0]) {
     translate([0,0,0]) rotate([0,90,0]) drive_gear();
-    translate([0,25+75,0]) rotate([0,90,0]) input_gear();
+    rotate([30,0,0]) translate([0,25+75,0]) rotate([0,90,0]) input_gear();
   }
 }
 
@@ -155,14 +161,14 @@ module followers() {
   follower_x_offset = -3;
 
   for(i=[0:7]) {
-    translate([follower_spacing*i+follower_x_offset, follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d();
+    translate([follower_spacing*i+follower_x_offset, follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d(false);
     color([0,0.5,0.5]) translate([follower_spacing*i+follower_x_offset, follower_axle_y-21,cam_diameter/2+80]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) decoder_drop_rod_2d();
     translate([follower_spacing*i+follower_x_offset, instruction_axle_y,instruction_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) instruction_output_rod_2d();
   }
   translate([follower_spacing*8+3,0,0]) {
     for(i=[0:4]) {
-      translate([fixed_cam_spacing*i+follower_x_offset, follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d();
-      translate([fixed_cam_spacing*i+follower_x_offset+cam_support_width+cam_width, follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d();
+      translate([fixed_cam_spacing*i+follower_x_offset, follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d(true);
+      translate([fixed_cam_spacing*i+follower_x_offset+cam_support_width+cam_width, follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d(true);
 
     }
   }
@@ -381,7 +387,7 @@ module camshaft_bearing() {
 
 case_thickness = 6;
 sequencer_z = -100;
-sequencer_y = -150;
+sequencer_y = -170;
 sequencer_x = -40;
 
 case_width = 320;
