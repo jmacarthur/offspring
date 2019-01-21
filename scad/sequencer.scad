@@ -18,17 +18,26 @@ use <interconnect.scad>;
 // 1 0 0  SUB
 // 1 0 1  Second store, not used
 // 1 1 0  CMP
+// 1 1 1  HLT
 
-// We will need a decoder with custom enumerator rods to engage only on the first five positions (this could also enable the second store decode).
-
+// All the instructions trigger one unique action within the machine,
+// except that both JRP and JMP need to trigger the diverter to the
+// instruction counter. Hence, the diverter connection is connected to
+// JRP, and JMP has a bar attached to the arm which will trigger both
+// JRP and JMP when it is engaged. JRP will still function on its own
+// without JMP.
 
 cam_diameter = 150;
-cam_inner_diameter = 100;
+cam_inner_diameter = 15;
 bolt_circle_diameter = 125;
 
-cam_width=5;
-// Cam spacing: It's easier if we make this match the decoder default spacing. This can be achieved with a 5mm cam and 3x3mm washers in between.
-cam_spacing = 14;
+cam_support_width = 5;
+cam_width = 3;
+
+follower_spacing = 14;
+cam_spacing = 2*follower_spacing;
+fixed_follower_spacing=9;
+fixed_cam_spacing = 2*fixed_follower_spacing;
 
 axle_diameter = 20;
 bearing_outer_diameter=28; // Fairly typical needle roller bearing
@@ -36,7 +45,6 @@ instruction_positions = 5;
 
 num_cams = 17;
 
-gap_position = 8; // Gap for the drive gear happens after this many cams
 gap_width = 30;
 
 follower_axle_y = -cam_diameter/2-15;
@@ -72,7 +80,7 @@ module gear(tooth_width, bore, n_teeth, boss_diameter, overall_width) {
       cylinder(h=tooth_width, d=outer_diameter);
       cylinder(h=overall_width, d=boss_diameter);
     }
-    
+
     for(i=[0:n_teeth]) {
       rotate(i*360/n_teeth) translate([-1.5, lowest_diameter/2, -1]) cube([4,10,tooth_width+2]);
     }
@@ -90,15 +98,6 @@ module input_gear() {
   gear(20, 12, 25, 35, 35);
 }
 
-
-module axle_holder_spacer_2d() {
-  // This is a 3mm spacer between cams which also has a hub to centre it on the axle.
-  difference() {
-    circle(d=150);
-    cam_mounting_holes();
-    circle(d=20);
-  }
-}
 
 module follower_2d() {
   union() {
@@ -130,28 +129,44 @@ module instruction_output_rod_2d() {
 
 
 module camshaft() {
-  follower_x_offset = 4;
-  for(i=[0:num_cams-1]) {
-    offset = (i>=gap_position?gap_width:0);
-    translate([cam_spacing*i+offset, 0,0]) rotate([0,90,0]) linear_extrude(height=cam_width) cam_2d();
-    translate([cam_spacing*i+offset+follower_x_offset, follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d();
-
-    if(i<instruction_positions) {
-      color([0,0.5,0.5]) translate([cam_spacing*(i-1)+offset+follower_x_offset, follower_axle_y-21,cam_diameter/2+80]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) decoder_drop_rod_2d();
-      translate([cam_spacing*(i-1)+offset+follower_x_offset, instruction_axle_y,instruction_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) instruction_output_rod_2d();
-    }
+  // The first four cam holders hold eight cams which are selectable
+  // by instruction.  The next five run ten fixed functions. These can
+  // be closer together, as we're not bound by the follower spacing
+  // set by the sequencer.
+  for(i=[0:3]) {
+    translate([cam_spacing*i, 0,0]) rotate([0,90,0]) linear_extrude(height=cam_support_width) cam_2d();
   }
-  // Bonus follower which is driven by the first cam, to drive CMP or LDN
-  translate([cam_spacing*-1+follower_x_offset, follower_axle_y, cam_diameter/2]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d();
-  translate([cam_spacing*gap_position,0,0]) rotate([0,90,0]) drive_gear();
-  translate([cam_spacing*gap_position,25+75,0]) rotate([0,90,0]) input_gear();
-
-  // Two cam mounting brackets
-  for(x=[5, cam_spacing*15+gap_width+5]) {
-    color([0.3,0.3,0.3]) translate([x, 0,0]) rotate([0,90,0]) linear_extrude(height=3) axle_holder_spacer_2d();
+  for(i=[0:4]) {
+    translate([cam_spacing*4+fixed_cam_spacing*i, 0,0]) rotate([0,90,0]) linear_extrude(height=cam_support_width) cam_2d();
+  }
+  translate([cam_spacing*4+fixed_cam_spacing*5,0,0]) {
+    translate([0,0,0]) rotate([0,90,0]) drive_gear();
+    translate([0,25+75,0]) rotate([0,90,0]) input_gear();
   }
 }
 
+module cam_clipons() {
+  for(i=[0:3]) {
+    translate([cam_spacing*i, 0,0]) rotate([0,90,0]) linear_extrude(height=cam_width) cam_2d();
+  }
+}
+
+module followers() {
+  follower_x_offset = -3;
+
+  for(i=[0:7]) {
+    translate([follower_spacing*i+follower_x_offset, follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d();
+    color([0,0.5,0.5]) translate([follower_spacing*i+follower_x_offset, follower_axle_y-21,cam_diameter/2+80]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) decoder_drop_rod_2d();
+    translate([follower_spacing*i+follower_x_offset, instruction_axle_y,instruction_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) instruction_output_rod_2d();
+  }
+  translate([follower_spacing*8+3,0,0]) {
+    for(i=[0:4]) {
+      translate([fixed_cam_spacing*i+follower_x_offset, follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d();
+      translate([fixed_cam_spacing*i+follower_x_offset+cam_support_width+cam_width, follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d();
+
+    }
+  }
+}
 
 
 module outer_plate_2d() {
@@ -207,7 +222,6 @@ module input_support_plate_2d() {
     // Cutout for enumerator rods.
     translate([-35,1]) square([30,25]);
   }
-  
 }
 
 
@@ -310,7 +324,6 @@ module resetter_end_plate_2d() {
     translate([10,0]) square([5,3]);
     translate([40,-1]) square([5,4]);
 
-    
     // Hole for bowden cable
     translate([10,-8]) circle(d=bowden_cable_inner_diameter);
   }
@@ -333,7 +346,7 @@ module resetter_assembly() {
   color([0.1,0.1,0.9]) translate([3,3,-45]) rotate([90,0,0]) linear_extrude(height=3) resetter_side_2d();
 }
 
-decoder_origin_x = 0;
+decoder_origin_x = -13;
 decoder_origin_y = -45;
 decoder_origin_z = 120;
 
@@ -348,6 +361,7 @@ module instruction_decoder() {
 module sequencer_assembly() {
   //color([0.7,0.7,0]) translate([-30,0,0]) rotate([0,90,0]) linear_extrude(height=3) outer_plate_2d();
   camshaft();
+  followers();
   instruction_decoder();
 }
 
@@ -370,7 +384,7 @@ sequencer_z = -100;
 sequencer_y = -150;
 sequencer_x = -40;
 
-case_width = 340;
+case_width = 320;
 case_height = 198;
 case_depth = 300;
 module sequencer_case() {
@@ -392,3 +406,5 @@ module sequencer_case() {
 }
 
 sequencer_case();
+
+translate([-47,0,0]) rotate([0,90,0]) cylinder(d=15,h=333);
