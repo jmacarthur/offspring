@@ -100,28 +100,43 @@ module input_gear() {
 
 
 module follower_2d(long=false) {
-  union() {
-    conrod(long ? cam_diameter : cam_diameter/2);
-    // Output blob
-    hull() {
-      translate([5,0]) square([cam_diameter-10,5]);
+  len = long ? cam_diameter : cam_diameter/2;
+  difference() {
+    union() {
+      conrod(len);
+      // Output blob
+      hull() {
+	translate([5,0]) square([len-10,5]);
+	if(long) translate([cam_diameter/2-10,4]) square([10,6]);
+      }
       translate([cam_diameter/2-10,4]) square([10,6]);
+      // Follower blob
+      translate([cam_diameter/2,-5]) circle(d=20);
     }
-    // Follower blob
-    translate([cam_diameter/2,-5]) circle(d=20);
+    if(!long) {
+      // Hole to mount a small bearing. TODO: size and position have not been checked.
+      translate([len,-7.5]) circle(d=3);
+    }
   }
 }
 
 module decoder_drop_rod_2d() {
+  len = 38;
+  $fn=20;
   union() {
-    conrod(cam_diameter/2+58);
-    translate([cam_diameter/2+58,-10]) square([10,20]);
+    conrod(cam_diameter/2+len+5);
+    hull() {
+      translate([cam_diameter/2+len,-10]) square([5,20]);
+      translate([cam_diameter/2+len+10,-10+1.5]) circle(d=3);
+      translate([cam_diameter/2+len+10,10-1.5]) circle(d=3);
+    }
   }
 }
 
 module instruction_output_rod_2d() {
   difference() {
     union() {
+      conrod(cam_diameter);
       hull() {
 	translate([0,-5]) square([cam_diameter,10]);
 	translate([cam_diameter/2-10,0]) square([10,10]);
@@ -162,7 +177,7 @@ module followers() {
 
   for(i=[0:7]) {
     translate([follower_spacing*i+follower_x_offset, follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d(false);
-    color([0,0.5,0.5]) translate([follower_spacing*i+follower_x_offset, follower_axle_y-21,cam_diameter/2+80]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) decoder_drop_rod_2d();
+    color([0,0.5,0.5]) translate([follower_spacing*i+follower_x_offset, follower_axle_y-21,cam_diameter/2+60]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) decoder_drop_rod_2d();
     translate([follower_spacing*i+follower_x_offset, instruction_axle_y,instruction_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) instruction_output_rod_2d();
   }
   translate([follower_spacing*8+3,0,0]) {
