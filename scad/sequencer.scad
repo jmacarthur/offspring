@@ -346,6 +346,23 @@ module resetter_side_2d() {
   }
 }
 
+module decoder_mounting_plate_2d() {
+  difference() {
+    translate([10,0]) square([110,100]);
+    for(y=[20,75]) {
+      for(x=[20,100]) {
+	translate([x,y]) square([10,3]);
+      }
+    }
+    for(y=[10,85]) {
+      for(x=[40,90]) {
+	translate([x,y]) circle(d=4);
+      }
+    }
+
+  }
+}
+
 module resetter_assembly() {
   translate([47,0,0]) rotate([0,90,0]) linear_extrude(height=3) resetter_end_plate_2d();
   translate([27,0,-35]) linear_extrude(height=3) resetter_drive_plate_2d();
@@ -365,10 +382,10 @@ module instruction_decoder() {
 }
 
 module sequencer_assembly() {
-  //color([0.7,0.7,0]) translate([-30,0,0]) rotate([0,90,0]) linear_extrude(height=3) outer_plate_2d();
   camshaft();
   followers();
   instruction_decoder();
+  translate([decoder_origin_x,decoder_origin_y-3-20,decoder_origin_z-13]) linear_extrude(height=3) decoder_mounting_plate_2d();
 }
 
 sequencer_assembly();
@@ -386,7 +403,7 @@ module camshaft_bearing() {
 }
 
 case_thickness = 6;
-sequencer_z = -125;
+sequencer_z = -123;
 sequencer_y = -170;
 sequencer_x = -40;
 
