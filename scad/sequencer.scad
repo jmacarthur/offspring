@@ -386,7 +386,7 @@ module camshaft_bearing() {
 }
 
 case_thickness = 6;
-sequencer_z = -100;
+sequencer_z = -125;
 sequencer_y = -170;
 sequencer_x = -40;
 
@@ -398,7 +398,7 @@ case_explode = 0; // Helps with visualization
 module sequencer_case() {
   translate([sequencer_x+case_width-33,0,0]) rotate([0,90,0]) camshaft_bearing();
   translate([sequencer_x,0,0]) rotate([0,90,0]) camshaft_bearing();
-  color([0.5,0.5,0.5,0.9]) {
+  color([0.5,0.5,0.5,0.2]) {
     translate([sequencer_x,sequencer_y,sequencer_z]) {
       for(x=[-case_thickness-case_explode,case_width+case_explode]) {
 	translate([x,0,0]) cube([case_thickness,case_depth, case_height+case_thickness*2]);

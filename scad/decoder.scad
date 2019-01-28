@@ -216,9 +216,13 @@ module enumerator_support_slots(num_inputs)
 // An xBar is one of the 'input combs' which accomodate the followers.
 
 module xBar_2d(n_positions, slotStart, slotHeight, height) {
+  base=-20;
   difference() {
     union() {
       translate([0,-20]) square([xbar_length(n_positions),height+10]);
+      translate([20,base-3]) square([10,3+thin]);
+      translate([100,base-3]) square([10,3+thin]);
+
       // Tabs to connect to side plate
       translate([20,height-10-thin]) square([10,3+thin]);
       translate([100,height-10-thin]) square([10,3+thin]);
@@ -244,6 +248,11 @@ module top_plate_2d(n_positions, side_mount) {
   difference() {
     union() {
       translate([0,base]) square([xbar_length(n_positions),height]);
+      // Tabs to connect for top mounting option.
+      if(!side_mount) {
+	translate([20,base-3]) square([10,3+thin]);
+	translate([100,base-3]) square([10,3+thin]);
+      }
       // Tabs to connect to side plate
       translate([20,base+height-thin]) square([10,3+thin]);
       translate([100,base+height-thin]) square([10,3+thin]);
