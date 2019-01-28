@@ -19,7 +19,7 @@ toggle_axis_offset = 2;
 // -22 engaged, 5 idle
 toggle_rotation = -22;
 
-module intake_grid_2d() {  
+module intake_grid_2d() {
   adjust = 0.5;
   hole_diameter = pipe_outer_diameter+adjust;
   difference() {
@@ -34,7 +34,6 @@ module intake_grid_2d() {
     for(i=[0:5]) {
       translate([separator_centre_ypos(i)-1.5,5]) square([3,5]);
     }
-    
   }
 }
 
@@ -87,6 +86,7 @@ module sender_toggle_2d() {
     }
     circle(d=3);
     translate([-10,10]) circle(d=15);
+    translate([5,22]) circle(d=7);
   }
 }
 
@@ -118,8 +118,7 @@ module sender_lower_output_comb_2d()
       square([20,70]);
       translate([10+20,channel_centre_ypos(1.5)]) circle(d=12);
     }
-	  
-    offset(clearance) for(i=[0:4]) translate([8, channel_centre_ypos(i)-1.5]) square([7,3]); 
+    offset(clearance) for(i=[0:4]) translate([8, channel_centre_ypos(i)-1.5]) square([7,3]);
     for(i=[0:5]) translate([5, separator_centre_ypos(i)-1.5]) square([10,3]);
     translate([10+20,channel_centre_ypos(1.5)]) circle(d=4);
   }
@@ -155,8 +154,7 @@ module 3d_sender_assembly() {
     for(i=[0:4]) color([1.0,0,1.0]) translate([40,channel_centre_ypos(i)-1.5+3,-25]) vertical_plate_x() sender_rod_2d();
     translate([35,0,-13]) horizontal_plate() sender_lower_output_comb_2d();
     translate([0,0,40]) color([0.5,0.5,1.0]) horizontal_plate() sender_top_plate_2d();
-    for(i=[-1,5]) color([1.0,1.0,0]) translate([25+toggle_axis_offset,channel_centre_ypos(i),-5]) vertical_plate_x() rotate(90-40) sender_reset_arm_2d();
-    
+    for(i=[-1,5]) color([1.0,1.0,0]) translate([25+toggle_axis_offset,channel_centre_ypos(i),-5]) vertical_plate_x() rotate(90-30) sender_reset_arm_2d();
   }
 }
 
