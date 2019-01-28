@@ -393,15 +393,17 @@ sequencer_x = -40;
 case_width = 320;
 case_height = 198;
 case_depth = 300;
+
+case_explode = 0; // Helps with visualization
 module sequencer_case() {
   translate([sequencer_x+case_width-33,0,0]) rotate([0,90,0]) camshaft_bearing();
   translate([sequencer_x,0,0]) rotate([0,90,0]) camshaft_bearing();
-  color([0.5,0.5,0.5,0.3]) {
+  color([0.5,0.5,0.5,0.9]) {
     translate([sequencer_x,sequencer_y,sequencer_z]) {
-      for(x=[-case_thickness,case_width]) {
+      for(x=[-case_thickness-case_explode,case_width+case_explode]) {
 	translate([x,0,0]) cube([case_thickness,case_depth, case_height+case_thickness*2]);
       }
-      for(y=[0,case_depth-case_thickness]) {
+      for(y=[-case_explode,case_depth-case_thickness+case_explode]) {
 	translate([0,y,case_thickness]) cube([case_width,case_thickness, case_height]);
       }
       for(z=[0,case_height+case_thickness]) {
