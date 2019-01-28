@@ -56,7 +56,7 @@ instruction_axle_z = follower_axle_z;
 
 module cam_mounting_holes() {
   for(i=[0:7]) {
-    rotate(i*360/8 + (360/16)) translate([0, bolt_circle_diameter/2]) circle(d=6);
+    rotate(i*360/8 + (360/16)) translate([0, bolt_circle_diameter/2]) circle(d=8);
   }
 }
 
