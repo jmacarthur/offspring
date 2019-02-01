@@ -56,7 +56,7 @@ instruction_axle_z = follower_axle_z;
 
 module cam_mounting_holes() {
   for(i=[0:7]) {
-    rotate(i*360/8 + (360/16)) translate([0, bolt_circle_diameter/2]) circle(d=6);
+    rotate(i*360/8 + (360/16)) translate([0, bolt_circle_diameter/2]) circle(d=8);
   }
 }
 
@@ -100,28 +100,43 @@ module input_gear() {
 
 
 module follower_2d(long=false) {
-  union() {
-    conrod(long ? cam_diameter : cam_diameter/2);
-    // Output blob
-    hull() {
-      translate([5,0]) square([cam_diameter-10,5]);
+  len = long ? cam_diameter : cam_diameter/2;
+  difference() {
+    union() {
+      conrod(len);
+      // Output blob
+      hull() {
+	translate([5,0]) square([len-10,5]);
+	if(long) translate([cam_diameter/2-10,4]) square([10,6]);
+      }
       translate([cam_diameter/2-10,4]) square([10,6]);
+      // Follower blob
+      translate([cam_diameter/2,-5]) circle(d=20);
     }
-    // Follower blob
-    translate([cam_diameter/2,-5]) circle(d=20);
+    if(!long) {
+      // Hole to mount a small bearing. TODO: size and position have not been checked.
+      translate([len,-7.5]) circle(d=3);
+    }
   }
 }
 
 module decoder_drop_rod_2d() {
+  len = 38;
+  $fn=20;
   union() {
-    conrod(cam_diameter/2+58);
-    translate([cam_diameter/2+58,-10]) square([10,20]);
+    conrod(cam_diameter/2+len+5);
+    hull() {
+      translate([cam_diameter/2+len,-10]) square([5,20]);
+      translate([cam_diameter/2+len+10,-10+1.5]) circle(d=3);
+      translate([cam_diameter/2+len+10,10-1.5]) circle(d=3);
+    }
   }
 }
 
 module instruction_output_rod_2d() {
   difference() {
     union() {
+      conrod(cam_diameter);
       hull() {
 	translate([0,-5]) square([cam_diameter,10]);
 	translate([cam_diameter/2-10,0]) square([10,10]);
@@ -162,7 +177,7 @@ module followers() {
 
   for(i=[0:7]) {
     translate([follower_spacing*i+follower_x_offset, follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d(false);
-    color([0,0.5,0.5]) translate([follower_spacing*i+follower_x_offset, follower_axle_y-21,cam_diameter/2+80]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) decoder_drop_rod_2d();
+    color([0,0.5,0.5]) translate([follower_spacing*i+follower_x_offset, follower_axle_y-21,cam_diameter/2+60]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) decoder_drop_rod_2d();
     translate([follower_spacing*i+follower_x_offset, instruction_axle_y,instruction_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) instruction_output_rod_2d();
   }
   translate([follower_spacing*8+3,0,0]) {
@@ -346,6 +361,23 @@ module resetter_side_2d() {
   }
 }
 
+module decoder_mounting_plate_2d() {
+  difference() {
+    translate([10,0]) square([110,100]);
+    for(y=[20,75]) {
+      for(x=[20,100]) {
+	translate([x,y]) square([10,3]);
+      }
+    }
+    for(y=[10,85]) {
+      for(x=[40,90]) {
+	translate([x,y]) circle(d=4);
+      }
+    }
+
+  }
+}
+
 module resetter_assembly() {
   translate([47,0,0]) rotate([0,90,0]) linear_extrude(height=3) resetter_end_plate_2d();
   translate([27,0,-35]) linear_extrude(height=3) resetter_drive_plate_2d();
@@ -354,7 +386,7 @@ module resetter_assembly() {
 
 decoder_origin_x = -13;
 decoder_origin_y = -45;
-decoder_origin_z = 120;
+decoder_origin_z = 100;
 
 module instruction_decoder() {
   translate([decoder_origin_x,decoder_origin_y,decoder_origin_z]) decoder_assembly(3, false);
@@ -365,10 +397,10 @@ module instruction_decoder() {
 }
 
 module sequencer_assembly() {
-  //color([0.7,0.7,0]) translate([-30,0,0]) rotate([0,90,0]) linear_extrude(height=3) outer_plate_2d();
   camshaft();
   followers();
   instruction_decoder();
+  translate([decoder_origin_x,decoder_origin_y-3-20,decoder_origin_z-13]) linear_extrude(height=3) decoder_mounting_plate_2d();
 }
 
 sequencer_assembly();
@@ -386,22 +418,24 @@ module camshaft_bearing() {
 }
 
 case_thickness = 6;
-sequencer_z = -100;
+sequencer_z = -123;
 sequencer_y = -170;
 sequencer_x = -40;
 
 case_width = 320;
 case_height = 198;
 case_depth = 300;
+
+case_explode = 0; // Helps with visualization
 module sequencer_case() {
   translate([sequencer_x+case_width-33,0,0]) rotate([0,90,0]) camshaft_bearing();
   translate([sequencer_x,0,0]) rotate([0,90,0]) camshaft_bearing();
-  color([0.5,0.5,0.5,0.3]) {
+  color([0.5,0.5,0.5,0.2]) {
     translate([sequencer_x,sequencer_y,sequencer_z]) {
-      for(x=[-case_thickness,case_width]) {
+      for(x=[-case_thickness-case_explode,case_width+case_explode]) {
 	translate([x,0,0]) cube([case_thickness,case_depth, case_height+case_thickness*2]);
       }
-      for(y=[0,case_depth-case_thickness]) {
+      for(y=[-case_explode,case_depth-case_thickness+case_explode]) {
 	translate([0,y,case_thickness]) cube([case_width,case_thickness, case_height]);
       }
       for(z=[0,case_height+case_thickness]) {
