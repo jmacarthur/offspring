@@ -4,7 +4,8 @@ use <decoder.scad>;
 follower_spacing = 14; // Spacing between each input follower
 // Enumeration rods
 
-n_inputs = 4;
+n_inputs = 3;
+n_positions = 8;
 
 kerf = 0.1;
 
@@ -33,5 +34,5 @@ offset(r=kerf) {
   translate([5,270]) axle_reinforcing_strip_2d();
 }
 
-//  translate([0,0,-3]) color([0.5,0.5,0.5,0.5]) cube([420,297,3]);
+translate([0,0,-3]) color([0.5,0.5,0.5,0.5]) cube([420,297,3]);
 

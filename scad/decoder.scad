@@ -111,7 +111,7 @@ module enumerator_rod(value, n_inputs, follower_spacing, travel, rise_height)
 }
 
 // Place enumeration rods on 3D diagram
-module enumerator_rods(n_inputs) {  
+module enumerator_rods(n_inputs) {
   for(s=[0:n_inputs-1]) {
     translate([-12+1.5-enumerator_rod_travel/2+input_data[s]*enumerator_rod_travel,5+10*s,10])
       rotate([90,0,0]) linear_extrude(height=3) {
