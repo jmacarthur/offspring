@@ -378,6 +378,28 @@ module decoder_mounting_plate_2d() {
   }
 }
 
+module big_follower_support_2d() {
+  difference() {
+    union() {
+      translate([-follower_axle_y-5,0]) square([55,25]);
+      translate([-follower_axle_y-10,17]) square([65,10]);
+    }
+    translate([-follower_axle_y,   5]) circle(d=3);
+    translate([-instruction_axle_y,5]) circle(d=3, $fn=20);
+  }
+}
+
+module small_follower_support_2d() {
+  difference() {
+    union() {
+      translate([-follower_axle_y-5,0]) square([15,25]);
+      translate([-follower_axle_y-10,17]) square([25,10]);
+    }
+    translate([-follower_axle_y,   5]) circle(d=3);
+  }
+}
+
+
 module resetter_assembly() {
   translate([47,0,0]) rotate([0,90,0]) linear_extrude(height=3) resetter_end_plate_2d();
   translate([27,0,-35]) linear_extrude(height=3) resetter_drive_plate_2d();
@@ -401,6 +423,12 @@ module sequencer_assembly() {
   followers();
   instruction_decoder();
   translate([decoder_origin_x,decoder_origin_y-3-20,decoder_origin_z-13]) linear_extrude(height=3) decoder_mounting_plate_2d();
+  for(x=[0, 90]) {
+    translate([x,0,70]) rotate([90,0,-90]) linear_extrude(height=3) big_follower_support_2d();
+  }
+  for(x=[142, 180]) {
+    translate([x,0,70]) rotate([90,0,-90]) linear_extrude(height=3) small_follower_support_2d();
+  }
 }
 
 sequencer_assembly();
@@ -427,6 +455,20 @@ case_height = 198;
 case_depth = 300;
 
 case_explode = 0; // Helps with visualization
+
+module case_base() {
+  cube([case_width, case_depth, case_thickness]);
+}
+
+module case_top() {
+  difference() {
+    cube([case_width, case_depth, case_thickness]);
+    translate([30,30,-1]) cube([110,55,case_thickness+2]);
+    translate([145,70,-1]) cube([110,15,case_thickness+2]);
+  }
+}
+
+
 module sequencer_case() {
   translate([sequencer_x+case_width-33,0,0]) rotate([0,90,0]) camshaft_bearing();
   translate([sequencer_x,0,0]) rotate([0,90,0]) camshaft_bearing();
@@ -438,9 +480,8 @@ module sequencer_case() {
       for(y=[-case_explode,case_depth-case_thickness+case_explode]) {
 	translate([0,y,case_thickness]) cube([case_width,case_thickness, case_height]);
       }
-      for(z=[0,case_height+case_thickness]) {
-	translate([0,0,z]) cube([case_width, case_depth, case_thickness]);
-      }
+      translate([0,0,0]) case_base();
+      translate([0,0,case_height+case_thickness]) case_top();
     }
   }
 }
