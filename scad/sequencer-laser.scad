@@ -25,6 +25,14 @@ offset(r=kerf) {
   translate([250,400]) resetter_end_plate_2d();
   translate([300,200]) resetter_drive_plate_2d();
   translate([350,400]) resetter_side_2d();
+
+  // 8 of this group
+  for(y=[0:7]) {
+    translate([400,150+30*y]) follower_2d(false);
+    translate([550,150+30*y]) decoder_drop_rod_2d();
+    translate([700,150+30*y]) instruction_output_rod_2d();
+    translate([900,150+30*y]) follower_2d(true);
+  }
 }
 
 

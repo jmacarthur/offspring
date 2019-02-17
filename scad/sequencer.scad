@@ -238,7 +238,7 @@ module input_support_plate_2d() {
       translate([hole[1],hole[0]]) circle(d=hole[2], $fn=20);
     }
     for(slot=instruction_holder_slots)
-       #translate([-30, slot]) square([20,3]);
+      translate([-30, slot]) square([20,3]);
 
     // Cutout for enumerator rods.
     translate([-35,1]) square([30,25]);
