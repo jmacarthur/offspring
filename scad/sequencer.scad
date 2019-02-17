@@ -62,9 +62,10 @@ module cam_mounting_holes() {
 
 // Example cams
 module cam_2d() {
+  cam_axle_clearance = 0.2;
   difference() {
     circle(d=cam_diameter);
-    circle(d=cam_inner_diameter);
+    circle(d=cam_inner_diameter+cam_axle_clearance);
     cam_mounting_holes();
   }
 }

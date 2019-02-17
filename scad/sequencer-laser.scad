@@ -6,6 +6,7 @@
 include <globs.scad>;
 use <sequencer.scad>;
 
+$fn=20;
 
 kerf = 0.1;
 offset(r=kerf) {
