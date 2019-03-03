@@ -447,7 +447,7 @@ module camshaft_bearing() {
 }
 
 case_thickness = 6;
-sequencer_z = -123;
+sequencer_z = -113;
 sequencer_y = -170;
 sequencer_x = -40;
 
