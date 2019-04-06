@@ -27,7 +27,7 @@ use <interconnect.scad>;
 // JRP and JMP when it is engaged. JRP will still function on its own
 // without JMP.
 
-cam_diameter = 150;
+cam_diameter = 170; // This includes the cam ridge modules
 cam_inner_diameter = 15;
 bolt_circle_diameter = 125;
 
@@ -36,7 +36,7 @@ cam_width = 3;
 
 follower_spacing = 14;
 cam_spacing = 2*follower_spacing;
-fixed_follower_spacing=9;
+fixed_follower_spacing=11.5;
 fixed_cam_spacing = 2*fixed_follower_spacing;
 
 axle_diameter = 20;
@@ -79,19 +79,19 @@ module gear(tooth_width, bore, n_teeth, boss_diameter, overall_width) {
   difference() {
     union() {
       cylinder(h=tooth_width, d=outer_diameter);
-      cylinder(h=overall_width, d=boss_diameter);
+      translate([0,0,tooth_width-overall_width]) cylinder(h=overall_width, d=boss_diameter);
     }
 
     for(i=[0:n_teeth]) {
       rotate(i*360/n_teeth) translate([-1.5, lowest_diameter/2, -1]) cube([4,10,tooth_width+2]);
     }
-    translate([0,0,-1]) cylinder(h=overall_width+2, d=bore);
+    translate([0,0,tooth_width-overall_width-1]) cylinder(h=overall_width+2, d=bore);
   }
 }
 
 module drive_gear() {
   // Modelled on Technobots MOD 2 75 tooth gear
-  gear(20, 20, 75, 0, 20);
+  gear(20, 20, 75, 80, 42);
 }
 
 module input_gear() {
@@ -158,8 +158,8 @@ module camshaft() {
   for(i=[0:3]) {
     translate([cam_spacing*i, 0,0]) rotate([0,90,0]) linear_extrude(height=cam_support_width) cam_2d();
   }
-  for(i=[0:4]) {
-    translate([cam_spacing*4+fixed_cam_spacing*i, 0,0]) rotate([0,90,0]) linear_extrude(height=cam_support_width) cam_2d();
+  for(i=[1:5]) {
+    translate([cam_spacing*3+fixed_cam_spacing*i, 0,0]) rotate([0,90,0]) linear_extrude(height=cam_support_width) cam_2d();
   }
   translate([cam_spacing*4+fixed_cam_spacing*5,0,0]) {
     translate([0,0,0]) rotate([0,90,0]) drive_gear();
