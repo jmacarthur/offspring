@@ -214,12 +214,15 @@ module regen_crank_2d()
 
 module regen_output_2d()
 {
+  l1 = 30;
   difference() {
     union() {
       circle(d=10);
-      translate([-3,-15]) square([6,15]);
+      rotate(45) translate([-3,-l1]) square([6,l1]);
+      rotate(45) translate([0,-l1]) circle(d=6);
+      rotate(45) translate([0,-l1]) rotate(-45) translate([-3,-15]) square([6,15]);
     }
-    for(i=[0:2]) translate([0,-7-3*i]) circle(d=1.5);
+    for(i=[0,2]) rotate(45) translate([0,-l1]) rotate(-45) translate([0,-5-3*i]) circle(d=2);
     hex_bar_2d();
   }
 }
@@ -326,7 +329,7 @@ module bowden_plate_clip_2d() {
 module regen_assembly() {
   for(i=[0:7]) {
     color([0.75,0.5,0.5]) translate([50,pitch+4+i*pitch,0]) linear_extrude(height=3) rotate(regen_crank_rotate) regen_crank_2d();
-    color([0.75,0.5,0.5]) translate([50,pitch+4+i*pitch,-20]) linear_extrude(height=3) rotate(regen_crank_rotate) regen_output_2d();
+    color([0.75,0.5,0.5]) translate([50,pitch+4+i*pitch,-15-5*(i%4)]) linear_extrude(height=3) rotate(regen_crank_rotate) regen_output_2d();
   }
 }
 
@@ -334,6 +337,48 @@ module m3_screw(length) {
   color([0.5,0.5,0.5]) {
     cylinder(d=3, h=length);
     translate([0,0,length-2]) cylinder(d=6,h=2);
+  }
+}
+
+module regen_support_2d() {
+  difference() {
+    square([20,8*pitch+20]);
+    translate([5,-1]) square([10,4]);
+    translate([-50,-20]) hex_axle_holes();
+    translate([5,8*pitch+20-3]) square([10,4]);
+  }
+}
+
+module regen_clip_2d() {
+  clearance = 0.5;
+  difference() {
+    hull() {
+      translate([13,4.5]) circle(d=8);
+      translate([30,4.5]) circle(d=8);
+      translate([21.5,16]) circle(d=8);
+    }
+    translate([20-clearance,-1]) square([3+clearance*2,16]);
+    translate([13,4.5]) circle(d=3);
+    translate([30,4.5]) circle(d=3);
+  }
+}
+
+module regen_riser_2d() {
+  difference() {
+    union() {
+      square([20,27]);
+      translate([5,27-1]) square([10,4]);
+    }
+    translate([5,-1]) square([10,4]);
+
+  }
+}
+
+module regen_bracket_assembly() {
+  translate([40,10,0]) {
+    translate([0,0,-35]) linear_extrude(height=3) regen_support_2d();
+    color([1,0,0]) translate([0,0,-5]) rotate([-90,0,0]) linear_extrude(height=3) regen_riser_2d();
+    color([1,0,0]) translate([0,8*pitch+20-3,-5]) rotate([-90,0,0]) linear_extrude(height=3) regen_riser_2d();
   }
 }
 
@@ -359,6 +404,9 @@ module planar_diverter_assembly()
   color([1.0,1.0,0.0,0.2]) translate([62,-10+regen_pusher_translate,20-2]) rotate([0,90,0]) linear_extrude(height=3) regen_pusher_bar_2d();
   color([0.5,0.5,0.5,0.5]) translate([42,-10,5]) linear_extrude(height=3) regen_top_plate_2d();
 
+  translate([42,-13,9]) rotate([90,0,0]) linear_extrude(height=3) regen_clip_2d();
+  translate([42,210,9]) rotate([90,0,0]) linear_extrude(height=3) regen_clip_2d();
+
   regen_assembly();
 
   for(x=[0,223]) {
@@ -377,6 +425,8 @@ module planar_diverter_assembly()
     }
   }
 
+  // Regen back bracket
+  regen_bracket_assembly();
 }
 
 
