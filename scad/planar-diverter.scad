@@ -104,7 +104,7 @@ module base_plate_2d()
       offset = diverter_offsets()[d];
       offset_y = diverter_y[d];
       for(i=[0:7]) {
-	translate([46+offset_y,offset+12+pitch*i]) square([3,5]);
+	translate([46+offset_y-2,offset+12+pitch*i]) square([5,5]);
       }
     }
 
@@ -121,6 +121,11 @@ module base_plate_2d()
       }
     }
 
+    // Mounting holes for rear regen axle support
+    translate([50,20]) square([5,3]);
+    translate([65,20]) square([5,3]);
+    translate([50,210]) square([5,3]);
+    translate([65,210]) square([5,3]);
   }
 }
 
@@ -342,10 +347,10 @@ module m3_screw(length) {
 
 module regen_support_2d() {
   difference() {
-    square([20,8*pitch+20]);
+    square([20,8*pitch+9]);
     translate([5,-1]) square([10,4]);
     translate([-50,-20]) hex_axle_holes();
-    translate([5,8*pitch+20-3]) square([10,4]);
+    translate([5,8*pitch+9-3]) square([10,4]);
   }
 }
 
@@ -366,19 +371,18 @@ module regen_clip_2d() {
 module regen_riser_2d() {
   difference() {
     union() {
-      square([20,27]);
-      translate([5,27-1]) square([10,4]);
+      square([20,30]);
+      translate([5,30-1]) square([10,4]);
     }
     translate([5,-1]) square([10,4]);
-
   }
 }
 
 module regen_bracket_assembly() {
   translate([40,10,0]) {
     translate([0,0,-35]) linear_extrude(height=3) regen_support_2d();
-    color([1,0,0]) translate([0,0,-5]) rotate([-90,0,0]) linear_extrude(height=3) regen_riser_2d();
-    color([1,0,0]) translate([0,8*pitch+20-3,-5]) rotate([-90,0,0]) linear_extrude(height=3) regen_riser_2d();
+    color([1,0,0]) translate([0,0,-2]) rotate([-90,0,0]) linear_extrude(height=3) regen_riser_2d();
+    color([1,0,0]) translate([0,8*pitch+9-3,-2]) rotate([-90,0,0]) linear_extrude(height=3) regen_riser_2d();
   }
 }
 
