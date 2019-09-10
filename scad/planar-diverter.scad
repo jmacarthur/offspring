@@ -232,6 +232,15 @@ module regen_output_2d()
   }
 }
 
+module hex_stopper_2d()
+{
+  difference() {
+    circle(d=10);
+    hex_bar_2d();
+  }
+}
+
+
 
 module regen_pusher_bar_2d() {
   difference() {
