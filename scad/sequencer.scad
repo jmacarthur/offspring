@@ -47,7 +47,7 @@ num_cams = 17;
 
 gap_width = 30;
 
-follower_axle_y = -cam_diameter/2-15;
+follower_axle_y = -cam_diameter/2-5;
 follower_axle_z = cam_diameter/2;
 
 instruction_axle_y = follower_axle_y-42;
@@ -425,10 +425,10 @@ module sequencer_assembly() {
   instruction_decoder();
   translate([decoder_origin_x,decoder_origin_y-3-20,decoder_origin_z-13]) linear_extrude(height=3) decoder_mounting_plate_2d();
   for(x=[0, 90]) {
-    translate([x,0,70]) rotate([90,0,-90]) linear_extrude(height=3) big_follower_support_2d();
+    translate([x,0,80]) rotate([90,0,-90]) linear_extrude(height=3) big_follower_support_2d();
   }
   for(x=[142, 180]) {
-    translate([x,0,70]) rotate([90,0,-90]) linear_extrude(height=3) small_follower_support_2d();
+    translate([x,0,80]) rotate([90,0,-90]) linear_extrude(height=3) small_follower_support_2d();
   }
 }
 
@@ -473,13 +473,13 @@ module case_top() {
 module sequencer_case() {
   translate([sequencer_x+case_width-33,0,0]) rotate([0,90,0]) camshaft_bearing();
   translate([sequencer_x,0,0]) rotate([0,90,0]) camshaft_bearing();
-  color([0.5,0.5,0.5,0.2]) {
+  color([0.5,0.5,0.5,0.9]) {
     translate([sequencer_x,sequencer_y,sequencer_z]) {
       for(x=[-case_thickness-case_explode,case_width+case_explode]) {
-	translate([x,0,0]) cube([case_thickness,case_depth, case_height+case_thickness*2]);
+	//translate([x,0,0]) cube([case_thickness,case_depth, case_height+case_thickness*2]);
       }
       for(y=[-case_explode,case_depth-case_thickness+case_explode]) {
-	translate([0,y,case_thickness]) cube([case_width,case_thickness, case_height]);
+	//translate([0,y,case_thickness]) cube([case_width,case_thickness, case_height]);
       }
       translate([0,0,0]) case_base();
       translate([0,0,case_height+case_thickness]) case_top();
