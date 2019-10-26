@@ -382,8 +382,8 @@ module decoder_mounting_plate_2d() {
 module big_follower_support_2d() {
   difference() {
     union() {
-      translate([-follower_axle_y-5,0]) square([55,25]);
-      translate([-follower_axle_y-10,17]) square([65,10]);
+      translate([-follower_axle_y-5,0]) square([65,25]);
+      translate([-follower_axle_y-10,17]) square([75,10]);
     }
     translate([-follower_axle_y,   5]) circle(d=3);
     translate([-instruction_axle_y,5]) circle(d=3, $fn=20);
@@ -393,8 +393,8 @@ module big_follower_support_2d() {
 module small_follower_support_2d() {
   difference() {
     union() {
-      translate([-follower_axle_y-5,0]) square([15,25]);
-      translate([-follower_axle_y-10,17]) square([25,10]);
+      translate([-follower_axle_y-5,0]) square([25,25]);
+      translate([-follower_axle_y-10,17]) square([35,10]);
     }
     translate([-follower_axle_y,   5]) circle(d=3);
   }
