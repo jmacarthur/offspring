@@ -58,7 +58,7 @@ module front_plate_2d() {
 module ejector_plate_2d() {
   union() {
     difference() {
-      translate([10,0]) square([20,60]);
+      translate([6,0]) square([24,60]);
       offset(clearance) {
 	for(i=[0:4]) {
 	  translate([30+bump,memory_rod_spacing*i+10]) {
@@ -67,7 +67,7 @@ module ejector_plate_2d() {
 	}
 	translate([30+bump, 10-ball_bearing_radius]) square([20,memory_rod_spacing*4+ball_bearing_diameter]);
       }
-      translate([12,25]) cable_clamp_cutout_with_cable_2d();
+      translate([10,25]) cable_clamp_cutout_with_cable_2d();
     }
     translate([-20,10]) square([35,10]);
     translate([-20,40]) square([35,10]);
@@ -140,7 +140,7 @@ module lower_layer_2d() {
 
 color([0.5,0.5,0.5]) rotate([0,90,0]) linear_extrude(height=3) sender_centre_plate_2d();
 color([0.8,0.5,0.5]) translate([-5,0,0]) rotate([0,90,0]) linear_extrude(height=3) front_plate_2d();
-translate([5,0,0]) rotate([0,90,0]) linear_extrude(height=3) ejector_plate_2d();
+translate([5,0,6]) rotate([0,90,0]) linear_extrude(height=3) ejector_plate_2d();
 
 
 translate([-30,0,0]) linear_extrude(height=3) top_plate_2d();
