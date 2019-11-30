@@ -6,17 +6,20 @@ include <globs.scad>;
 rib_offset = 5;
 
 module rib_2d() {
-  union() {
-    square([9,9]);
-    translate([3,0]) square([6,9+11+6]);
-    translate([3,9]) square([10,11+6]);
-    translate([3,9]) square([13,10]);
+  difference() {
+    union() {
+      square([9,9]);
+      translate([3,0]) square([6,9+11+6]);
+      translate([3,9]) square([10,11+6]);
+      translate([3,9]) square([13,10]);
+    }
+    translate([2,9+11+3]) square([4,4]);
   }
 }
 
 module connecting_plate_2d() {
   difference() {
-    translate([-rib_offset, 0]) square([8*pitch, 20]);
+    translate([0, 0]) square([7*pitch+6+7, 20]);
       for(i=[0:7]) {
 	translate([i*pitch, 5]) {
 	  square([3,10]);
