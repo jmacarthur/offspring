@@ -10,7 +10,7 @@ channel_width = 6.5;
 
 axle_clearance = 0.1;
 
-rot = 20;
+rot = -20;
 
 // The position of mounting holes is put in modules so they can be
 // edited in one place.
@@ -29,6 +29,22 @@ module input_guard_b_holes()
   translate([0,-12.5]) circle(d=3);
 }
 
+module intake_holes()
+{
+  // Holes for plastic pipe to supply data in
+  translate([-3, 55]) circle(d=pipe_outer_diameter);
+}
+
+module intake_holes_slot()
+{
+  // Holes for plastic pipe to supply data in
+  translate([-3, 55]) {
+    circle(d=pipe_outer_diameter);
+    translate([-pipe_outer_diameter/2, 0]) square([pipe_outer_diameter, 30]);
+  }
+}
+
+
 module generic_support_plate()
 {
     left_edge = -8*subtractor_pitch_x;
@@ -46,7 +62,7 @@ module generic_support_plate()
 
 	input_guard_a_holes();
 	input_guard_b_holes();
-
+	intake_holes();
 	// Hole for hex axle
 	translate([0, 0]) circle(r=hex_bar_max_radius+axle_clearance);
       }
@@ -67,6 +83,8 @@ module top_layer_2d() {
 
 	// Hole for hex axle
 	translate([0, 0]) circle(r=hex_bar_max_radius+axle_clearance);
+	intake_holes_slot();
+
       }
     }
   }
@@ -97,10 +115,12 @@ module input_toggle_2d()
 module input_guard_a_2d(extend)
 {
   difference() {
-    if(extend) {
-      translate([-subtractor_pitch_x + channel_width/2-20,-2.5]) square([40,40]);
-    } else {
+    hull() {
       translate([-subtractor_pitch_x + channel_width/2,-2.5]) square([20,40]);
+      translate([-subtractor_pitch_x + channel_width/2+5,55]) circle(d=6);
+      if(extend) {
+        translate([-subtractor_pitch_x + channel_width/2-20,-2.5]) square([40,40]);
+      }
     }
     circle(r=18, $fn=50);
     // Top input channel
@@ -196,7 +216,11 @@ module output_toggle_2d() {
 module output_guard_a_2d()
 {
   difference() {
-    translate([-subtractor_pitch_x + channel_width/2,-20]) square([subtractor_pitch_x-channel_width/2,60]);
+    hull() {
+      translate([-subtractor_pitch_x + channel_width/2,-20]) square([subtractor_pitch_x-channel_width/2,60]);
+      translate([-15,50]) circle(r=3);
+    }
+
     translate([-channel_width/2,10]) circle(r=8.25, $fn=50);
     translate([channel_width/2,10]) circle(r=8.25, $fn=50);
     translate([0,0]) circle(r=6, $fn=50);
@@ -235,9 +259,13 @@ module back_layer_2d() {
       translate([-subtractor_pitch_x*i, -subtractor_pitch_y*i]) {
 	input_guard_a_holes();
 	input_guard_b_holes();
+	intake_holes_slot();
 
 	// Drain hole for output
-	translate([-channel_width/2-5, 0]) circle(d=channel_width+1);
+	hull() {
+	  translate([-channel_width/2-5, 0]) circle(d=channel_width+1);
+	  translate([-channel_width/2-5, -5]) circle(d=channel_width+1);
+	}
 
 	// Hole for hex axle
 	translate([0, 0]) circle(r=hex_bar_max_radius+axle_clearance);
@@ -300,7 +328,7 @@ module reset_bar_2d() {
 module subtractor_assembly() {
 
   translate([0,0,5]) {
-    color([0.5,0.5,0.5]) linear_extrude(height=3) top_layer_2d();
+    #linear_extrude(height=3) top_layer_2d();
   }
 
   translate([0,0,-5]) {
@@ -308,7 +336,7 @@ module subtractor_assembly() {
   }
 
   translate([0,0,-15]) {
-    color([0.5,0.5,0.5]) linear_extrude(height=3) back_layer_2d();
+    #color([0.5,0.5,0.5]) linear_extrude(height=3) back_layer_2d();
   }
 
   for(i=[0:7]) {
@@ -324,7 +352,7 @@ module subtractor_assembly() {
       color([0,1,0]) linear_extrude(height=3) rotate(rot) output_toggle_2d();
       linear_extrude(height=3) output_guard_a_2d();
     }
-    translate([-i*subtractor_pitch_x, -i*subtractor_pitch_y,-15]) {
+    translate([-i*subtractor_pitch_x, -i*subtractor_pitch_y,-21]) {
       color([0.5,0.5,0.5]) linear_extrude(height=3) rotate(rot) reset_toggle_2d();
       if(i % 4 == 0) translate([0,0,-3]) color([1.0,1.0,0.5]) linear_extrude(height=3) reset_lever_2d(); // Reset lever is already rotated, as it's offset
     }
