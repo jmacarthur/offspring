@@ -66,6 +66,10 @@ module generic_support_plate()
 	// Hole for hex axle
 	translate([0, 0]) circle(r=hex_bar_max_radius+axle_clearance);
       }
+      translate([-subtractor_pitch_x*-1, -subtractor_pitch_y*-1]) {
+	input_guard_a_holes();
+      }
+
       }
     }
 }
@@ -87,6 +91,10 @@ module top_layer_2d() {
 
       }
     }
+    translate([-subtractor_pitch_x*-1, -subtractor_pitch_y*-1]) {
+      input_guard_a_holes();
+    }
+
   }
 }
 
@@ -136,6 +144,25 @@ module input_guard_a_2d(extend)
     translate([-35,30]) circle(d=3);
   }
 }
+
+module input_guard_top_2d()
+{
+  // A special input guard for the rightmost part of the subtractor.
+  difference() {
+    hull() {
+      translate([-subtractor_pitch_x + channel_width/2,-2.5]) square([25,40]);
+      translate([-subtractor_pitch_x + channel_width/2+5,55]) circle(d=6);
+    }
+
+    // Mounting holes
+    input_guard_a_holes();
+
+    // Mounting holes to connect to the rail
+    translate([-subtractor_pitch_x + channel_width/2+20, 10]) circle(d=3);
+    translate([-subtractor_pitch_x + channel_width/2+20, 30]) circle(d=3);
+  }
+}
+
 
 module input_guard_b_2d(extend)
 {
@@ -187,6 +214,10 @@ module io_support_layer_2d() {
 	translate([0, 0]) circle(r=hex_bar_max_radius+axle_clearance);
       }
     }
+    translate([-subtractor_pitch_x*-1, -subtractor_pitch_y*-1]) {
+      input_guard_a_holes();
+    }
+
   }
 }
 
@@ -271,6 +302,10 @@ module back_layer_2d() {
 	translate([0, 0]) circle(r=hex_bar_max_radius+axle_clearance);
       }
     }
+    translate([-subtractor_pitch_x*-1, -subtractor_pitch_y*-1]) {
+      input_guard_a_holes();
+    }
+
   }
 }
 
@@ -357,14 +392,18 @@ module subtractor_assembly() {
       if(i % 4 == 0) translate([0,0,-3]) color([1.0,1.0,0.5]) linear_extrude(height=3) reset_lever_2d(); // Reset lever is already rotated, as it's offset
     }
   }
+  translate([1*subtractor_pitch_x, 1*subtractor_pitch_y,0]) {
+    linear_extrude(height=3) input_guard_top_2d();
+  }
+  translate([1*subtractor_pitch_x, 1*subtractor_pitch_y,-10]) {
+    linear_extrude(height=3) input_guard_top_2d();
+  }
 
   translate([0,0,-21]) color([1.0,1.0,0.5]) linear_extrude(height=3) reset_bar_2d(); // Reset lever is already rotated, as it's offset
 }
 
-
 subtractor_assembly();
-translate([-8*pitch,-8*subtractor_pitch_y]) subtractor_assembly();
-
+//translate([-8*pitch,-8*subtractor_pitch_y]) subtractor_assembly();
 
 color([1.0,0,0]) translate([0,0,0]) cylinder(d=3,h=100);
 color([1.0,0,0]) translate([-23*5,-130,0]) cylinder(d=3,h=100);
