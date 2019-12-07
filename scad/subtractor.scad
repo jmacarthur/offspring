@@ -346,33 +346,3 @@ rotate([90,0,0]) translate([-220,0,-500]) {
   cube([15,15,1000]);
   translate([support_rail_separation,0,0]) cube([15,15,1000]);
 }
-
-
-// Input funnels for 3d printing
-
-module funnel()
-{
-  thin = 0.1;
-  difference() {
-    union() {
-      for(y=[0:1]) {
-	for(x=[1:1]) {
-	  translate([x*10,x*10+10,y*-5]) cube([3,30,2]);
-	}
-      }
-      translate([0,21,-13]) linear_extrude(height=23) {
-	polygon([[0,-3], [13,12], [13,23], [0,23]]);
-      }
-      translate([-2,42,-15]) cube([17,10,27]);
-      translate([-5,50,-18]) cube([23,2,33]);
-    }
-    for(y=[0:1]) {
-      translate([3+3.5,21,2+1.5-9.5*y]) rotate([-90,0,0]) cylinder(d1=7,h=14+thin,d2=8);
-      translate([3+3.5,33,2+1.5-9.5*y]) rotate([-90,0,0]) cylinder(d1=7,h=19+thin,d2=13);
-    }
-    translate([10,0,2]) cube([4,38,3]);
-    translate([10,0,-8]) cube([4,40,3]);
-  }
-}
-
-translate([-29.5,0,-2]) color([0,1.0,0]) funnel();
