@@ -7,7 +7,7 @@ use <subtractor.scad>;
 
 //color([0.1,0.1,0.1]) translate([0,0,-5]) square([420,297]);
 
-kerf = 0.1;
+kerf = 0.08;
 
 offset(delta = kerf, chamfer = true) {
 
@@ -35,17 +35,18 @@ offset(delta = kerf, chamfer = true) {
   }
 
   for(i=[0:3]) {
-    translate([380,31+40*i]) rotate(90) output_guard_a_2d();
-    translate([350,30+40*i]) rotate(270) output_guard_a_2d();
+    translate([390,31+45*i]) rotate(90) output_guard_a_2d();
+    translate([360,35+45*i]) rotate(270) output_guard_a_2d();
   }
 
-  for(i=[0:1]) {
-    translate([70+70*i, 370]) rotate(90) input_guard_top_2d();
+  {
+    translate([70, 370]) rotate(90) input_guard_top_2d();
+    translate([70+80, 370]) rotate(90) output_guard_top_2d();
   }
-  
-  for(i=[0:1]) translate([330+20*i,180]) rotate(-50) reset_lever_2d();
 
-  translate([390,30]) rotate(-51-90) reset_bar_2d();
+  for(i=[0:1]) translate([350+20*i,180]) rotate(-50) reset_lever_2d();
+
+  translate([420,30]) rotate(-51-90) reset_bar_2d();
 }
 
 

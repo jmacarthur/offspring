@@ -150,9 +150,10 @@ module input_guard_top_2d()
   // A special input guard for the rightmost part of the subtractor.
   difference() {
     hull() {
-      translate([-subtractor_pitch_x + channel_width/2,-2.5]) square([25,40]);
+      translate([-subtractor_pitch_x + channel_width/2,-22]) square([25,55]);
       translate([-subtractor_pitch_x + channel_width/2+5,55]) circle(d=6);
     }
+    translate([-subtractor_pitch_x, -subtractor_pitch_y]) circle(r=18, $fn=50);
 
     // Mounting holes
     input_guard_a_holes();
@@ -248,8 +249,9 @@ module output_guard_a_2d()
 {
   difference() {
     hull() {
-      translate([-subtractor_pitch_x + channel_width/2,-20]) square([subtractor_pitch_x-channel_width/2,60]);
+      translate([-subtractor_pitch_x + channel_width/2,-20]) square([subtractor_pitch_x-channel_width/2+3,60]);
       translate([-15,50]) circle(r=3);
+      translate([-10,-30]) circle(r=3);
     }
 
     translate([-channel_width/2,10]) circle(r=8.25, $fn=50);
@@ -261,8 +263,8 @@ module output_guard_a_2d()
     translate([-channel_width/2-5, 0]) circle(d=channel_width);
 
     // '1'-output channel
-    translate([5, -5]) square([channel_width, 15]);
-    translate([channel_width/2+5, -5]) circle(d=channel_width);
+    translate([5, -15]) square([channel_width, 25]);
+
 
     // Top input channel
     translate([-channel_width/2,0]) square([channel_width, 100]);
@@ -271,7 +273,7 @@ module output_guard_a_2d()
     // Cutout of the next toggle
     translate([-subtractor_pitch_x+channel_width/2, -subtractor_pitch_y+10]) circle(r=8.25, $fn=50);
     // '1'-output channel of the next toggle
-    translate([5-subtractor_pitch_x, -5-subtractor_pitch_y]) square([channel_width, 15]);
+    translate([5-subtractor_pitch_x, -15-subtractor_pitch_y]) square([channel_width, 25]);
 
     // Mounting holes
     input_guard_a_holes();
@@ -280,6 +282,31 @@ module output_guard_a_2d()
     translate([0,-12.5]) circle(d=3);
   }
 }
+
+module output_guard_top_2d()
+{
+  // A special input guard for the rightmost part of the subtractor.
+  difference() {
+    hull() {
+      translate([-subtractor_pitch_x + channel_width/2,-37]) square([25,70]);
+      translate([-subtractor_pitch_x + channel_width/2+5,55]) circle(d=6);
+    }
+
+    translate([-subtractor_pitch_x+channel_width/2, -subtractor_pitch_y+10]) circle(r=8.25, $fn=50);
+
+    // Mounting holes
+    input_guard_a_holes();
+
+    // '1'-output channel of the next toggle
+    translate([5-subtractor_pitch_x-5, -15-subtractor_pitch_y]) square([channel_width+5, 25]);
+
+    // Mounting holes to connect to the rail
+    translate([-subtractor_pitch_x + channel_width/2+20, 10]) circle(d=3);
+    translate([-subtractor_pitch_x + channel_width/2+20, 30]) circle(d=3);
+  }
+}
+
+
 
 // Layer 4 - Rear support plate
 module back_layer_2d() {
@@ -371,7 +398,7 @@ module subtractor_assembly() {
   }
 
   translate([0,0,-15]) {
-    #color([0.5,0.5,0.5]) linear_extrude(height=3) back_layer_2d();
+    color([0.5,0.5,0.5]) linear_extrude(height=3) back_layer_2d();
   }
 
   for(i=[0:7]) {
@@ -388,7 +415,7 @@ module subtractor_assembly() {
       linear_extrude(height=3) output_guard_a_2d();
     }
     translate([-i*subtractor_pitch_x, -i*subtractor_pitch_y,-21]) {
-      color([0.5,0.5,0.5]) linear_extrude(height=3) rotate(rot) reset_toggle_2d();
+      color([0.5,0.5,0.8]) linear_extrude(height=3) rotate(rot) reset_toggle_2d();
       if(i % 4 == 0) translate([0,0,-3]) color([1.0,1.0,0.5]) linear_extrude(height=3) reset_lever_2d(); // Reset lever is already rotated, as it's offset
     }
   }
@@ -396,7 +423,7 @@ module subtractor_assembly() {
     linear_extrude(height=3) input_guard_top_2d();
   }
   translate([1*subtractor_pitch_x, 1*subtractor_pitch_y,-10]) {
-    linear_extrude(height=3) input_guard_top_2d();
+    linear_extrude(height=3) output_guard_top_2d();
   }
 
   translate([0,0,-21]) color([1.0,1.0,0.5]) linear_extrude(height=3) reset_bar_2d(); // Reset lever is already rotated, as it's offset
