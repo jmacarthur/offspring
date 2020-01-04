@@ -288,7 +288,7 @@ module output_guard_top_2d()
   // A special input guard for the rightmost part of the subtractor.
   difference() {
     hull() {
-      translate([-subtractor_pitch_x + channel_width/2,-37]) square([25,70]);
+      translate([-subtractor_pitch_x + channel_width/2,-37]) square([15,70]);
       translate([-subtractor_pitch_x + channel_width/2+5,55]) circle(d=6);
     }
 
