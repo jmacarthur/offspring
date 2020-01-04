@@ -29,10 +29,18 @@ module input_guard_b_holes()
   translate([0,-12.5]) circle(d=3);
 }
 
-module intake_holes()
+module intake_hole()
 {
   // Holes for plastic pipe to supply data in
   translate([-3, 55]) circle(d=pipe_outer_diameter);
+}
+
+module intake_holes() {
+  for(i=[0:7]) {
+    translate([-subtractor_pitch_x*i, -subtractor_pitch_y*i]) {
+      intake_hole();
+    }
+  }
 }
 
 module intake_holes_slot()
@@ -62,10 +70,10 @@ module generic_support_plate()
 
 	input_guard_a_holes();
 	input_guard_b_holes();
-	intake_holes();
 	// Hole for hex axle
 	translate([0, 0]) circle(r=hex_bar_max_radius+axle_clearance);
       }
+      intake_holes();
       translate([-subtractor_pitch_x*-1, -subtractor_pitch_y*-1]) {
 	input_guard_a_holes();
       }
@@ -440,3 +448,23 @@ rotate([90,0,0]) translate([-220,0,-500]) {
   cube([15,15,1000]);
   translate([support_rail_separation,0,0]) cube([15,15,1000]);
 }
+
+
+// Pipe connector
+
+
+module pipe_connector() {
+  difference() {
+    union() {
+      offset(r=3) {
+	intake_holes();
+      }
+      translate([-3,0])
+	hull() { intake_holes(); }
+    }
+    intake_holes();
+  }
+}
+
+
+translate([0,0,-18]) linear_extrude(height=3) pipe_connector();
