@@ -78,6 +78,9 @@ module diverted_output_slope_2d() {
     union() {
       square([210,20]);
       translate([20,0]) square([168,25]);
+      for(i=[0:7]) {
+      translate([ejector_xpos(i)-14,-20]) square([10,30]);
+      }
     }
     for(x=diverted_support_slots) {
       translate([x-20,13]) square([3,10]);
