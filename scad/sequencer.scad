@@ -64,8 +64,16 @@ module cam_mounting_holes() {
 module cam_2d() {
   cam_axle_clearance = 0.2;
   difference() {
-    circle(d=cam_diameter);
+    circle(d=cam_diameter-30);
     circle(d=cam_inner_diameter+cam_axle_clearance);
+    cam_mounting_holes();
+  }
+}
+
+module cam_ring_2d() {
+  difference() {
+    circle(d=cam_diameter-20);
+    circle(d=cam_diameter-45);
     cam_mounting_holes();
   }
 }
@@ -156,10 +164,18 @@ module camshaft() {
   // be closer together, as we're not bound by the follower spacing
   // set by the sequencer.
   for(i=[0:3]) {
-    translate([cam_spacing*i, 0,0]) rotate([0,90,0]) linear_extrude(height=cam_support_width) cam_2d();
+    translate([cam_spacing*i, 0,0]) rotate([0,90,0]) {
+      color([0.4,0.4,0.4]) linear_extrude(height=cam_support_width) cam_2d();
+      translate([0,0,-3]) linear_extrude(height=3) cam_ring_2d();
+      translate([0,0,5]) linear_extrude(height=3) cam_ring_2d();
+    }
   }
   for(i=[1:5]) {
-    translate([cam_spacing*3+fixed_cam_spacing*i, 0,0]) rotate([0,90,0]) linear_extrude(height=cam_support_width) cam_2d();
+    translate([cam_spacing*3+fixed_cam_spacing*i, 0,0]) rotate([0,90,0])  {
+      color([0.4,0.4,0.4]) linear_extrude(height=cam_support_width) cam_2d();
+      translate([0,0,-3]) linear_extrude(height=3) cam_ring_2d();
+      translate([0,0,5]) linear_extrude(height=3) cam_ring_2d();
+    }
   }
   translate([cam_spacing*4+fixed_cam_spacing*5,0,0]) {
     translate([0,0,0]) rotate([0,90,0]) drive_gear();
@@ -181,7 +197,7 @@ module followers() {
     color([0,0.5,0.5]) translate([follower_spacing*i+follower_x_offset, follower_axle_y-21,cam_diameter/2+60]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) decoder_drop_rod_2d();
     translate([follower_spacing*i+follower_x_offset, instruction_axle_y,instruction_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) instruction_output_rod_2d();
   }
-  translate([follower_spacing*8+3,0,0]) {
+  translate([follower_spacing*8-2,0,0]) {
     for(i=[0:4]) {
       translate([fixed_cam_spacing*i+follower_x_offset, follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d(true);
       translate([fixed_cam_spacing*i+follower_x_offset+cam_support_width+cam_width, follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d(true);
