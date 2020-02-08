@@ -11,9 +11,9 @@ $fn=20;
 kerf = 0.1;
 offset(r=kerf) {
   decoder_mounting_plate_2d();
-  for(i=[0:1]) translate([90+i*100,0]) big_follower_support_2d();
-  for(i=[0:1]) translate([90+i*100,50]) small_follower_support_2d();
-
+  for(i=[0:1]) translate([90+i*100,50]) big_follower_support_2d();
+  for(i=[0:1]) translate([90+i*100,120]) small_follower_support_2d();
+  translate([400,0]) top_comb_2d();
   for(y=[0,35]) {
     translate([10,400+y]) reader_support_2d();
   }

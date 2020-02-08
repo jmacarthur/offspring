@@ -189,20 +189,20 @@ module cam_clipons() {
   }
 }
 
+follower_x_offset = -3;
+function instruction_follower_x(x) = follower_spacing*x+follower_x_offset;
+function fixed_follower_x(x) = fixed_cam_spacing*x+follower_x_offset+follower_spacing*8-2;
+
 module followers() {
-  follower_x_offset = -3;
 
   for(i=[0:7]) {
-    translate([follower_spacing*i+follower_x_offset, follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d(false);
-    color([0,0.5,0.5]) translate([follower_spacing*i+follower_x_offset, follower_axle_y-21,cam_diameter/2+60]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) decoder_drop_rod_2d();
-    translate([follower_spacing*i+follower_x_offset, instruction_axle_y,instruction_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) instruction_output_rod_2d();
+    translate([instruction_follower_x(i), follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d(false);
+    color([0,0.5,0.5]) translate([instruction_follower_x(i), follower_axle_y-21,cam_diameter/2+60]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) decoder_drop_rod_2d();
+    translate([instruction_follower_x(i), instruction_axle_y,instruction_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) instruction_output_rod_2d();
   }
-  translate([follower_spacing*8-2,0,0]) {
-    for(i=[0:4]) {
-      translate([fixed_cam_spacing*i+follower_x_offset, follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d(true);
-      translate([fixed_cam_spacing*i+follower_x_offset+cam_support_width+cam_width, follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d(true);
-
-    }
+  for(i=[0:4]) {
+    translate([fixed_follower_x(i), follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d(true);
+    translate([fixed_follower_x(i)+cam_support_width+cam_width, follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d(true);
   }
 }
 
@@ -378,9 +378,21 @@ module resetter_side_2d() {
   }
 }
 
+module follower_cutout_2d() {
+  translate([5,-100+28]) square([105,55]);
+  translate([115,-100+68]) square([110,15]);
+}
+
 module decoder_mounting_plate_2d() {
   difference() {
-    translate([10,0]) square([110,100]);
+    union() {
+      translate([10,0]) square([110,100]);
+      offset(r=10) hull() { follower_cutout_2d();
+	translate([10,-40]) square([110,30]); }
+    }
+
+    follower_cutout_2d();
+
     for(y=[20,75]) {
       for(x=[20,100]) {
 	translate([x,y]) square([10,3]);
@@ -392,27 +404,36 @@ module decoder_mounting_plate_2d() {
       }
     }
 
+    // cutouts for dropper alignment
+    for(x=[15,98]) {
+      translate([x,-100+28-5]) square([3,65]);
+    }
+    for(x=[133,200]) {
+      translate([x,-100+68-5]) square([3,25]);
+    }
   }
 }
 
 module big_follower_support_2d() {
   difference() {
     union() {
-      translate([-follower_axle_y-5,0]) square([65,25]);
-      translate([-follower_axle_y-10,17]) square([75,10]);
+      translate([-follower_axle_y-5,-33]) square([55,55]);
+      translate([-follower_axle_y-10,14]) square([65,10]);
+      translate([-follower_axle_y-10,-33]) square([65,3]);
     }
-    translate([-follower_axle_y,   5]) circle(d=3);
-    translate([-instruction_axle_y,5]) circle(d=3, $fn=20);
+    translate([-follower_axle_y,   2]) circle(d=3);
+    translate([-instruction_axle_y,2]) circle(d=3, $fn=20);
   }
 }
 
 module small_follower_support_2d() {
   difference() {
     union() {
-      translate([-follower_axle_y-5,0]) square([25,25]);
-      translate([-follower_axle_y-10,17]) square([35,10]);
+      translate([-follower_axle_y-5,-33]) square([15,55]);
+      translate([-follower_axle_y-10,14]) square([25,10]);
+      translate([-follower_axle_y-5,-33]) square([25,3]);
     }
-    translate([-follower_axle_y,   5]) circle(d=3);
+    translate([-follower_axle_y,   2]) circle(d=3);
   }
 }
 
@@ -435,17 +456,36 @@ module instruction_decoder() {
   color([0.7,0.7,0]) translate([decoder_origin_x-3,decoder_origin_y,decoder_origin_z]) rotate([0,90,0]) linear_extrude(height=3) input_support_plate_2d();
 }
 
+module top_comb_2d() {
+  clearance = 0.2;
+  difference() {
+    square([230,80]);
+    for(i=[0:7]) translate([instruction_follower_x(i)+14, 10]) square([3+clearance*2, 80]);
+    for(i=[0:4]) {
+      translate([fixed_follower_x(i)+14, 45]) square([3+clearance*2, 80]);
+      translate([fixed_follower_x(i)+22, 45]) square([3+clearance*2, 80]);
+    }
+    // Mounting holes
+    translate([19,20]) square([3, 80]);
+    translate([102,20]) square([3, 80]);
+
+    translate([137,60]) square([3, 80]);
+    translate([204,60]) square([3, 80]);
+  }
+}
+
 module sequencer_assembly() {
   camshaft();
   followers();
   instruction_decoder();
   translate([decoder_origin_x,decoder_origin_y-3-20,decoder_origin_z-13]) linear_extrude(height=3) decoder_mounting_plate_2d();
-  for(x=[0, 90]) {
-    translate([x,0,80]) rotate([90,0,-90]) linear_extrude(height=3) big_follower_support_2d();
+  for(x=[5, 88]) {
+    translate([x,0,83]) rotate([90,0,-90]) linear_extrude(height=3) big_follower_support_2d();
   }
-  for(x=[142, 180]) {
-    translate([x,0,80]) rotate([90,0,-90]) linear_extrude(height=3) small_follower_support_2d();
+  for(x=[123, 190]) {
+    translate([x,0,83]) rotate([90,0,-90]) linear_extrude(height=3) small_follower_support_2d();
   }
+  color([0.5,0.5,0]) translate([-17,-160,53]) linear_extrude(height=3) top_comb_2d();
 }
 
 sequencer_assembly();
