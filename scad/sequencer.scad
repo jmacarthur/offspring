@@ -4,6 +4,7 @@ include <globs.scad>;
 use <generic_conrods.scad>;
 use <decoder.scad>;
 use <interconnect.scad>;
+use <sequencer_globs.scad>;
 
 // At the moment, there are 17 cams. 4 of these are selective and only drive if certain instructions are in use. The rest are always in use.
 // The instructions which need a gate are LDN, STO, JRP, JMP and CMP. LDN and CMP have the same cam pattern so share one (although they must have independent outputs). SUB is the default instruction so does not need a gate; HLT is unimplemented.
@@ -33,11 +34,6 @@ bolt_circle_diameter = 125;
 
 cam_support_width = 5;
 cam_width = 3;
-
-follower_spacing = 14;
-cam_spacing = 2*follower_spacing;
-fixed_follower_spacing=11.5;
-fixed_cam_spacing = 2*fixed_follower_spacing;
 
 axle_diameter = 20;
 bearing_outer_diameter=28; // Fairly typical needle roller bearing
