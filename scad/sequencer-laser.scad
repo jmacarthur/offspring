@@ -8,7 +8,7 @@ use <sequencer.scad>;
 
 $fn=20;
 
-kerf = 0.1;
+kerf = 0.08;
 offset(r=kerf) {
   decoder_mounting_plate_2d();
   for(i=[0:1]) translate([90+i*100,50]) big_follower_support_2d();

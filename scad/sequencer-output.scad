@@ -2,6 +2,7 @@
 
 include <globs.scad>;
 include <sequencer_globs.scad>;
+include <interconnect.scad>;
 
 $fn=20;
 
@@ -108,7 +109,36 @@ module front_plate_2d() {
       x1 = follower_position(i);
       translate([x1,7]) circle(d=5, $fn=20);
     }
-  }  
+  }
+}
+
+
+module horizontal_rod_2d() {
+  len = 150;
+  difference() {
+    union() {
+      hull() {
+	translate([0,-10]) square([20,30]);
+	translate([10,-20]) circle(d=10);
+      }
+      translate([5,-len]) square([10,len+1]);
+      translate([10,-len]) circle(d=10);
+    }
+    translate([10-0.5-bowden_cable_inner_diameter/2-1.5,11]) rotate(-90) cable_clamp_cutout_with_cable_2d();
+    translate([10,-len]) circle(d=3);
+  }
+}
+
+explode = 0;
+
+module base_comb_2d() {
+  clearance = 0.5;
+  difference() {
+    translate([-20,0]) square([250,100]);
+    for(i=[0:17]) {
+      translate([follower_position(i)+1.5-clearance,-1]) square([3 + clearance*2,(i<8? 50:80)]);
+    }
+  }
 }
 
 module input_assembly() {
@@ -116,13 +146,19 @@ module input_assembly() {
 
     for(i=[-1:17]) {
       x1 = notch_position(i);
-      translate([x1-1.5,-15+2-10,-10+1.5]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) input_support_2d();
+      translate([x1-1.5,-15+2-explode,-10+1.5]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) input_support_2d();
     }
     translate([0,0,-8.5]) linear_extrude(height=3) base_bar_2d();
     translate([0,0,8.5]) linear_extrude(height=3) top_bar_2d();
     color([1,0,0]) translate([0,20,-5.5]) rotate([90,0,0]) linear_extrude(height=3) front_plate_2d();
+    for(i=[0:17]) {
+      translate([follower_position(i)-1.5,-50,10]) rotate([0,90,0]) linear_extrude(height=3) horizontal_rod_2d();
+    }
+    translate([-0.5, -250,20]) linear_extrude(height=3) base_comb_2d();
 }
 
-translate([0,90,0]) input_assembly();
 
-  
+
+
+
+translate([0,90,0]) input_assembly();

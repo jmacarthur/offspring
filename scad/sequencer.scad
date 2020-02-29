@@ -4,8 +4,8 @@ include <globs.scad>;
 use <generic_conrods.scad>;
 use <decoder.scad>;
 use <interconnect.scad>;
-use <sequencer_globs.scad>;
-
+include <sequencer_globs.scad>;
+use <sequencer-output.scad>;
 // At the moment, there are 17 cams. 4 of these are selective and only drive if certain instructions are in use. The rest are always in use.
 // The instructions which need a gate are LDN, STO, JRP, JMP and CMP. LDN and CMP have the same cam pattern so share one (although they must have independent outputs). SUB is the default instruction so does not need a gate; HLT is unimplemented.
 
@@ -542,3 +542,5 @@ module sequencer_case() {
 sequencer_case();
 
 translate([-47,0,0]) rotate([0,90,0]) cylinder(d=15,h=333);
+
+translate([0,90,-90]) input_assembly();
