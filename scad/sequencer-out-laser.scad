@@ -18,4 +18,14 @@ offset(r=kerf) {
   translate([50,140]) base_comb_support_2d();
   translate([0,230]) base_comb_support_side_2d();
   translate([50,230]) base_comb_support_side_2d();
+
+  translate([0,260]) input_bar_2d();
+  for(i=[0:19]) {
+    translate([i*30,290]) input_support_2d();
+  }
+
+  translate([0,330]) base_bar_2d();
+  translate([0,370]) top_bar_2d();
+  translate([0,400]) front_plate_2d();
+
 }

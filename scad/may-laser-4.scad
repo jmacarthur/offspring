@@ -1,5 +1,6 @@
 include <globs.scad>;
 use <vertical-memory-2.scad>;
+use <diverter-parts.scad>;
 use <octo-distributor-5.scad>;
 
 kerf = 0.1;
@@ -28,9 +29,9 @@ offset(delta = kerf, chamfer = true) {
   // Memory diverted output components
   translate([0,345])  {
     translate([0,0]) diverted_output_pipeplate_2d();
-    translate([0,25]) diverted_output_slope_2d();
-    translate([3,60]) diverted_output_support_2d();
-    translate([60,80]) rotate(180) diverted_output_support_2d();
+    translate([0,45]) diverted_output_slope_2d();
+    translate([3,80]) diverted_output_support_2d();
+    translate([60,100]) rotate(180) diverted_output_support_2d();
   }
   
   // All injector arms
