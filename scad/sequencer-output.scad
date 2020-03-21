@@ -138,8 +138,34 @@ module base_comb_2d() {
     for(i=[0:17]) {
       translate([follower_position(i)+1.5-clearance,-1]) square([3 + clearance*2,(i<8? 50:80)]);
     }
+
+    // Mounting holes
+    translate([-15,20]) square([3,10]);
+    translate([220,20]) square([3,10]);
+    translate([-15,70]) square([3,10]);
+    translate([220,70]) square([3,10]);
   }
 }
+
+// Base comb supports
+module base_comb_support_2d() {
+  difference() {
+    union() {
+      square([37,80]);
+      translate([36,10]) square([4,10]);
+      translate([36,60]) square([4,10]);
+    }
+    translate([20,40]) square([10,3]);
+  }
+}
+module base_comb_support_side_2d() {
+  union() {
+    square([37,10]);
+    translate([20,-3]) square([10,13]);
+    translate([0,7]) square([40,5]);
+  }
+}
+
 
 module input_assembly() {
   linear_extrude(height=3) input_bar_2d();
@@ -155,6 +181,10 @@ module input_assembly() {
       translate([follower_position(i)-1.5,-50,10]) rotate([0,90,0]) linear_extrude(height=3) horizontal_rod_2d();
     }
     translate([-0.5, -250,20]) linear_extrude(height=3) base_comb_2d();
+    color([0.9,0.2,0.0]) translate([-0.5-12, -240,-17]) rotate([0,-90,0]) linear_extrude(height=3) base_comb_support_2d();
+    color([0.9,0.5,0.0]) translate([-0.5-15, -240+3+40,-17]) rotate([90,-90,0]) linear_extrude(height=3) base_comb_support_side_2d();
+    color([0.9,0.2,0.0]) translate([-0.5+223, -240,-17]) rotate([0,-90,0]) linear_extrude(height=3) base_comb_support_2d();
+    color([0.9,0.5,0.0]) translate([-0.5+223, -240+40,-17]) rotate([-90,-90,0]) linear_extrude(height=3) base_comb_support_side_2d();
 }
 
 
