@@ -270,7 +270,7 @@ mover_pos = 9;
 
 
 
-module 3d_assembly() {
+module memory_assembly() {
   linear_extrude(height=3) memory_base_plate_2d();
   translate([0,0,23]) linear_extrude(height=3) memory_top_plate_2d();
 
@@ -308,7 +308,7 @@ module 3d_assembly() {
 }
 
 
-3d_assembly();
+memory_assembly();
 
 
 // Bearing in storage
