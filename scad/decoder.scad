@@ -560,9 +560,13 @@ for(x=axle_reinforce_x) {
 // Gives the length of the main box, not including enumerator rods
 function decoder_box_length(render_positions) = pow(2,render_positions)*follower_spacing+17;
 
-reinforcing_strip(render_positions);
-decoder_assembly(render_inputs, true);
-lever_assembly(render_inputs);
-enumerator_rods(render_inputs);
-support_drift(render_positions);
-false_raised_plate(render_positions);
+module address_decoder() {
+  reinforcing_strip(render_positions);
+  decoder_assembly(render_inputs, true);
+  lever_assembly(render_inputs);
+  enumerator_rods(render_inputs);
+  support_drift(render_positions);
+  false_raised_plate(render_positions);
+}
+
+address_decoder();
