@@ -7,6 +7,7 @@
 * decoder.scad - 16 word memory address decoder, placed alongside the memory.
 * planar-diverter.scad - for diverting memory output to accumulator, PC and instruction decoder, and also the first regenerator
 * subtractor.scad - subtractor/accumulator unit, used for both the main accumulator and PC
+* memory-sender-3.scad - transmits memory addresses back up to the decoder.
 * base-regenerator.scad - the regenerator below the accumulator
 * sequencer.scad - Main timing cam and instruction decoder.
 
