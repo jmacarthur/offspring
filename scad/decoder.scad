@@ -481,17 +481,6 @@ module lever_assembly(n_inputs) {
   }
 }
 
-// False raised plate - to account for the mismatched output height to memory
-
-module false_raised_plate(n_positions) {
-  color([0.5,0.3,0]) translate([0,-50,-200]) difference() {
-    cube([300,18,200]);
-    for(x=mounting_holes_x(n_positions)) {
-      translate([x,-50,200-25]) rotate([-90,0,0]) cylinder(d=mounting_screw_diameter,h=100);
-    }
-  }
-}
-
 // Drift attached behind plate to extend the height
 module support_drift(n_positions) {
   color([0.5,0.35,0]) translate([0,-32,-50]) difference() {
@@ -566,7 +555,6 @@ module address_decoder() {
   lever_assembly(render_inputs);
   enumerator_rods(render_inputs);
   support_drift(render_positions);
-  false_raised_plate(render_positions);
 }
 
 address_decoder();
