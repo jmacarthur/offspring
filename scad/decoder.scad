@@ -258,7 +258,7 @@ module top_plate_2d(n_positions, side_mount) {
       translate([100,base+height-thin]) square([10,3+thin]);
     }
     follower_slots(n_positions, slotStart, slotHeight);
-    lifter_bar_axles();
+    lifter_bar_axles(n_positions);
     enumerator_support_slots();
 
     // Tabs to connect to the triangular plate
