@@ -5,7 +5,7 @@ include <globs.scad>;
 pipe_diameter = 8;
 
 module mounting_holes() {
-  for(x=[1,7]) translate([pitch*x-pitch/2, 15, -1]) cylinder(d=3, h=30);
+  for(x=[1,7]) translate([pitch*x-pitch/2, 15, -10]) cylinder(d=3, h=40);
 }
 
 module horizontal_mounting_holes() {
@@ -136,10 +136,27 @@ module block_3() {
 module returning_block() {
   // Move ball bearings back towards the base plate, to line up with memory
   difference() {
-    translate([-pitch/2, 0, 0]) cube([pitch*8, 30, 15]);
+    union() {
+      translate([-pitch/2, 0, 0]) cube([pitch*8, 30, 15]);
+      for(x=[0:7]) translate([pitch*x, 21.5, -9]) {
+	  cylinder(d=10,h=11);
+	}
+      translate([-pitch/2, 10, -3]) cube([pitch*8, 10, 5]);
+    }
     for(x=[0:7]) translate([pitch*x, 21.5, -1]) {
 	feed_channel();
       }
+
+    for(x=[0:7]) translate([pitch*x, 21.5, -11]) {
+	cylinder(d=7, h=11);
+      }
+
+    // Cutout for the back plate of the memory
+    translate([-pitch/2-1, 28, -1]) cube([pitch*8+2, 4, 18]);
+
+    // Cut out some more bits to suit memory
+    translate([-pitch/2-1, 9, -10]) rotate([45,0,0]) cube([pitch*8+2, 10, 25]);
+    translate([-pitch/2-1, -1, -10]) cube([6, 35, 25]);
     mounting_holes();
   }
 }
