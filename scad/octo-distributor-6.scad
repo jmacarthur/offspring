@@ -2,7 +2,10 @@
 
 include <globs.scad>;
 
-pipe_diameter = 8;
+// Generally, use small_pipe_diameter when location is important, otherwise large_pipe_diameter
+large_pipe_diameter = 8;
+small_pipe_diameter = 7;
+pipe_diameter = large_pipe_diameter;
 
 module mounting_holes() {
   for(x=[1,7]) translate([pitch*x-pitch/2, 15, -10]) cylinder(d=3, h=40);
@@ -73,10 +76,9 @@ module injector() {
   union() {
     difference() {
       translate([-pitch/2, 0, -1]) cube([pitch*8, 30, 13]);
-      for(x=[0:7]) translate([pitch*x, 25, 5]) cylinder(d=pipe_diameter, h=20);
-      for(x=[0:7]) translate([pitch*x, 11, -5]) cylinder(d=pipe_diameter, h=20);
+      for(x=[0:7]) translate([pitch*x, 25, 5]) cylinder(d=small_pipe_diameter, h=20);
+      for(x=[0:7]) translate([pitch*x, 11, -5]) cylinder(d=small_pipe_diameter, h=20);
       for(x=[0:7]) translate([pitch*x, 25, 5]) upward_curved_pipe();
-      translate([0,25,12]) feed_channel();
       mounting_holes();
       translate([0,0,5]) horizontal_mounting_holes();
     }
@@ -123,13 +125,15 @@ module block_2b() {
 module block_3() {
   difference() {
     union() {
-      translate([-pitch/2, 8, 5]) rotate([-90,0,0]) linear_extrude(height=pipe_diameter+6) polygon([[0,0], [pitch*8, -15], [pitch*8, 5], [0,5]]);
+      translate([-pitch/2+4, 8, 5]) rotate([-90,0,0]) linear_extrude(height=small_pipe_diameter+6) polygon([[0,0], [pitch*8, -15], [pitch*8, 5], [0,5]]);
       translate([-pitch/2+4, 8, 0]) cube([pitch*8-4, 3, 30]);
-            translate([-pitch/2+4, 8+pipe_diameter+3, 0]) cube([pitch*8-4, 3, 30]);
+            translate([-pitch/2+4, 8+small_pipe_diameter+3.5, 0]) cube([pitch*8-4, 3, 30]);
             translate([-pitch/2+4, 8, 0]) cube([3, 12, 30]);
     }
-    for(x=[0:7]) translate([pitch*x, 15, -1]) cylinder(d=pipe_diameter, h=30);
-    for(x=[0:7]) translate([pitch*x, 15, -1]) cylinder(d=pipe_diameter+5.5, h=2);
+    for(x=[0:7]) translate([pitch*x, 15, -1]) cylinder(d=small_pipe_diameter, h=30);
+
+    // I wanted to put a recess here to clip onto block_2b, but it becomes difficult to print.
+    // for(x=[0:7]) translate([pitch*x, 15, -1]) cylinder(d=pipe_diameter+5.5, h=2);
   }
 }
 
@@ -156,8 +160,11 @@ module returning_block() {
 
     // Cut out some more bits to suit memory
     translate([-pitch/2-1, 9, -10]) rotate([45,0,0]) cube([pitch*8+2, 10, 25]);
-    translate([-pitch/2-1, -1, -10]) cube([6, 35, 25]);
+    translate([-pitch/2-1, -1, -10]) cube([6, 35, 28]);
     mounting_holes();
+
+    for(x=[1,7]) translate([pitch*x-pitch/2, 15, -11]) cylinder(d=8, h=11);
+
   }
 }
 
