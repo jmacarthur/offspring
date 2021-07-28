@@ -182,7 +182,7 @@ module mounting_plate_2d() {
     }
     for(x=[0:7]) {
       offset(r=2) translate([x*pitch+data7_x-8, 24]) square([16,16]);
-      translate([x*pitch+data7_x-5, 10]) square([10,31]);
+      offset(r=2) translate([x*pitch+data7_x-3, 12]) square([6,25]);
     }
     for(x=[2,6]) {
       translate([x*pitch-pitch/2+data7_x, 15]) circle(d=3);
