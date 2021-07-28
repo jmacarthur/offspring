@@ -128,3 +128,6 @@ module hex_bar_2d() {
 		       [ r * cos(300), r * sin(300) ] ]);
 }
 
+
+// X coordinate of data channel 7 entering memory, relative to the left edge of the left openbeam
+data7_x = 40.5
