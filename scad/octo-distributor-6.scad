@@ -148,8 +148,8 @@ module mounting_plate_2d() {
   difference() {
     translate([-30,0]) square([300,50]);
     for(y=[10,40])  {
-      translate([0,y]) circle(d=3);
-      translate([250,y]) circle(d=3);
+      translate([7.5,y]) circle(d=3);
+      translate([250+7.5,y]) circle(d=3);
     }
     for(x=[0:7]) {
       offset(r=2) translate([x*pitch+data7_x-8, 24]) square([16,16]);
@@ -162,17 +162,22 @@ module mounting_plate_2d() {
 }
 
 
-color([0,1,0]) translate([0,0,-10]) rotate([90,0,0]) linear_extrude(height=3) mounting_plate_2d();
+module distributor() {
 
-translate([data7_x,-33, 0]) {
-  injector();
-  translate([0,25,25]) rotate([-25,0,0]) injector_arm_2();
+  color([0,1,0]) translate([0,0,-10]) rotate([90,0,0]) linear_extrude(height=3) mounting_plate_2d();
 
-  color([1,0,0]) translate([0,0,12]) block_2b();
-  translate([0,10,12+13+15]) block_3();
-
-  translate([0,0,-30]) returning_block();
+  translate([data7_x,-33, 0]) {
+    injector();
+    translate([0,25,25]) rotate([-25,0,0]) injector_arm_2();
+    
+    color([1,0,0]) translate([0,0,12]) block_2b();
+    translate([0,10,12+13+15]) block_3();
+    
+    color([1,0,0]) translate([0,0,-16]) returning_block();
+  }
 }
+
+distributor();
 
 // Indicate where memory input is
 
