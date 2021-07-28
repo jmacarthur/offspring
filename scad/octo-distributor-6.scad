@@ -53,11 +53,16 @@ module injector_arm_2() {
       translate([-8,20,-2.5]) cube([16,5,5]);
       for(x=[-8, 8]) {
 	translate([x-1.5,0,-2.5]) cube([3,25,5]);
-	translate([x-1.5,0,0]) rotate([0,90,0]) cylinder(d=10, h=3);
-	translate([x-1.5+(x>0?-3:0),0,0]) rotate([0,90,0]) cylinder(d=3, h=6);
+	translate([x-1.5,0,0]) rotate([0,90,0]) cylinder(d=5, h=3);
+	translate([x-3+(x>0?0:3),0,0]) rotate([0,90,0]) cylinder(d=3, h=3);
+	translate([x-1.5+(x>0?-2:3),18,-2.5]) cube([2,3,5]);
       }
 
     }
+    for(x=[-4.5,4.5]) {
+      translate([x,20-2,-5]) cylinder(r=2, h=10);
+    }
+    
   }
 }
 
