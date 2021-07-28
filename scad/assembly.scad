@@ -1,6 +1,7 @@
 use <vertical-memory-2.scad>;
+use <octo-distributor-6.scad>;
 use <decoder.scad>;
-
+include <globs.scad>;
 slot_spacing = 50;
 slot_diameter = 6;
 slot_height = 28;
@@ -66,3 +67,9 @@ openbeam();
 translate([angle_iron_internal_spacing-15, 0 ,0]) openbeam();
 
 color([0,0,0.9,0.5]) translate([-100+7.5,-5,memory_mount_z]) memory_mounting_plate();
+
+translate([0,0,810]) distributor();
+
+
+// Indicate where memory input is
+color([0,1,1]) translate([data7_x, -11.5, 780]) cylinder(d=ball_bearing_diameter, h=50);
