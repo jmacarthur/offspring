@@ -66,14 +66,16 @@ module injector_housing_base() {
 module injector_housing_top() {
   clearance = 0.25;
   difference() {
-    translate([-pitch/2,0,0]) cube([pitch*8, 24,3]);
+    translate([-pitch/2,0,3]) union() {
+      rotate([0,90,0]) linear_extrude(height=pitch*8) polygon([[-6,0], [3,0], [3,24], [0,24], [-6,24], [0, 11]]);
+      for(x=[0,pitch*8-3]) translate([x,0,0]) cube([3,24.5,8]);
+      
+    }
     for(x=[0:7]) {
       translate([pitch*x, 11, -1]) cylinder(d=small_pipe_diameter, h=10);
     }
     mounting_holes();
-
-  }
-  
+  }  
 }
 
 module mounting_plate_2d() {
@@ -119,7 +121,13 @@ module crank_arm_2d() {
 }
 
 module crank_arm() {
-  rotate([0,90,0]) linear_extrude(height=3) crank_arm_2d();
+  rotate([0,90,0]) difference() {
+    union() {
+      linear_extrude(height=3) crank_arm_2d();
+      cylinder(d=10,h=10);
+    }
+    translate([0,0,-1]) cylinder(d=3.2,h=12);
+  }
 }
 
 module injector_assembly() {
@@ -133,6 +141,25 @@ module injector_assembly() {
 }
 
 
+module lever_bracket_2d() {
+  difference() {
+    hull() {
+      translate([5,5]) circle(d=10);
+      translate([5,25]) circle(d=10);
+      translate([27,10]) circle(d=10);
+    }
+
+    translate([7,-1]) square([3,21]);
+    translate([27,10]) circle(d=3);
+  }
+
+}
+
+
+module lever_bracket() {
+  rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=5) lever_bracket_2d();
+}
+
 
 
 // Illustrate input channel into memory
@@ -144,3 +171,4 @@ injector_assembly();
 color([0,1,0]) backplate();
 
 translate([memory_x_7-1.5,17,40]) crank_arm();
+translate([30,-10,30]) lever_bracket();
