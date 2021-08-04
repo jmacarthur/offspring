@@ -3,7 +3,7 @@
 include <globs.scad>;
 
 // Generally, use small_pipe_diameter when location is important, otherwise large_pipe_diameter
-large_pipe_diameter = 8;
+large_pipe_diameter = 7;
 small_pipe_diameter = 7;
 pipe_diameter = large_pipe_diameter;
 
