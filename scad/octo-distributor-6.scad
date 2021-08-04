@@ -2,6 +2,8 @@
 
 include <globs.scad>;
 
+use <vertical-memory-2.scad>;
+
 // Generally, use small_pipe_diameter when location is important, otherwise large_pipe_diameter
 large_pipe_diameter = 7;
 small_pipe_diameter = 7;
@@ -161,10 +163,26 @@ module lever_bracket() {
 }
 
 
+module coupler() {
+  difference() {
+    union() {
+      translate([0,-5,14]) cube([pitch*7,10,10]);
+      for(x=[0:7]) {
+	translate([pitch*x, 0, 0]) cylinder(d=12, h=24);
+      }
+    }
+    for(x=[0:7]) {
+      translate([pitch*x, 0, -1]) cylinder(d=7, h=30);
+    }
+    translate([-pitch,2.5,-1]) cube([pitch*10, 10, 5]);
+    translate([0,memory_y_7-4.5]) mounting_holes();
+  }
+}
+
 
 // Illustrate input channel into memory
 for(x=[0:7]) {
-  color([1,0,0,0.3]) translate([memory_x_7+pitch*x, memory_y_7, -50]) cylinder(d=7, h=50);
+  color([1,0,0,0.3]) translate([memory_x_7+pitch*x, memory_y_7, -30]) cylinder(d=7, h=50);
 }
 
 injector_assembly();
@@ -172,3 +190,6 @@ color([0,1,0]) backplate();
 
 translate([memory_x_7-1.5,17,40]) crank_arm();
 translate([30,-10,30]) lever_bracket();
+translate([memory_x_7, memory_y_7, -14]) coupler();
+
+translate([22.5,-5,-130-11]) rotate([90,0,0]) memory_assembly();
