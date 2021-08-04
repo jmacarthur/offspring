@@ -58,6 +58,7 @@ module injector_housing_base() {
 	rotate([-90,0,0]) cylinder(d=3, h=50);
       }
     }
+    mounting_holes();
   }
   
 }
@@ -65,21 +66,14 @@ module injector_housing_base() {
 module injector_housing_top() {
   clearance = 0.25;
   difference() {
-    cube([pitch*8, 30,3]);
+    translate([-pitch/2,0,0]) cube([pitch*8, 24,3]);
     for(x=[0:7]) {
-      translate([pitch*x+pitch/2, 11, -1]) cylinder(d=small_pipe_diameter, h=10);
+      translate([pitch*x, 11, -1]) cylinder(d=small_pipe_diameter, h=10);
     }
+    mounting_holes();
+
   }
   
-}
-
-
-translate([memory_x_7, memory_y_7-11-travel, 10]) {
-  injector_housing_base();
-  //color([1,1,0]) translate([0,0,10]) injector_housing_top();
-  for(x=[0:7]) {
-    color([1,0,0]) translate([pitch*x, 16,3]) injector();
-  }
 }
 
 module mounting_plate_2d() {
@@ -128,12 +122,25 @@ module crank_arm() {
   rotate([0,90,0]) linear_extrude(height=3) crank_arm_2d();
 }
 
+module injector_assembly() {
+  translate([memory_x_7, memory_y_7-11-travel, 10]) {
+    injector_housing_base();
+    color([1,1,0]) translate([0,0,10+0.2]) injector_housing_top();
+    for(x=[0:7]) {
+      color([1,0,0]) translate([pitch*x, 16,3]) injector();
+    }
+  }
+}
+
+
+
 
 // Illustrate input channel into memory
 for(x=[0:7]) {
   color([1,0,0,0.3]) translate([memory_x_7+pitch*x, memory_y_7, -50]) cylinder(d=7, h=50);
 }
 
+injector_assembly();
 color([0,1,0]) backplate();
 
 translate([memory_x_7-1.5,17,40]) crank_arm();
