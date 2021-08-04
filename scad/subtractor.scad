@@ -77,6 +77,8 @@ module generic_support_plate()
       translate([-subtractor_pitch_x*-1, -subtractor_pitch_y*-1]) {
 	input_guard_a_holes();
       }
+      // Extend to top-left corner
+      translate([-subtractor_pitch_x*7,50]) circle(r=10);
 
       }
     }
