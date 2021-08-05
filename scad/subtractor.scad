@@ -52,7 +52,6 @@ module intake_holes_slot()
   }
 }
 
-
 module generic_support_plate()
 {
     left_edge = -8*subtractor_pitch_x;

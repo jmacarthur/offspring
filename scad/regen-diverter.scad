@@ -13,6 +13,7 @@ module pyramid(width, depth, apex_height) {
 }
 
 module flap() {
+  translate([-pitch/2-4.5,0,0])
   difference() {
     union() {
       rotate([0,90,0])cylinder(d=6, h=pitch*8+3);
@@ -27,11 +28,11 @@ module flap() {
     translate([pitch*8+3-5,0,0]) rotate([0,90,0])cylinder(d=3, h=6);
 
     translate([-1,-22,-2]) rotate([45,0,0]) cube([pitch*8+10, 3, 5]);
-    
   }
 }
 
 module housing1() {
+  translate([-pitch/2-4.5,0,0])
   difference() {
     cube([pitch*8+9, 30, 30]);
     translate([3,3,-1]) cube([pitch*8+3,30,32]);
@@ -43,16 +44,16 @@ module housing1() {
 module hopper1() {
   difference() {
     union() {
-      cube([pitch*8+9, 31,20]);
-      translate([10,28,19]) cube([pitch*8+9-20, 3, 20]);
+      translate([-pitch/2-4.5,0,0]) cube([pitch*8+9, 31,20]);
+      translate([10-pitch/2-4.5,28,19]) cube([pitch*8-10, 3, 20]);
     }
     for(x=[0:7]) {
-      translate([pitch*x+pitch/2+4.5, 10, 21])
+      translate([pitch*x, 10, 21])
 		   rotate([0,180,0]) pyramid(pitch, 20, 25);
-      translate([pitch*x+pitch/2+4.5, 10, -1]) cylinder(d=7, h=32);
+      translate([pitch*x, 10, -1]) cylinder(d=7, h=32);
     }
     // Runoff channel
-    translate([2,21,15]) rotate([0,3,0]) cube([pitch*8+10, 7, 25]);
+    translate([2+4.5-pitch/2,21,15]) rotate([0,3,0]) cube([pitch*8+10, 7, 25]);
   }
 }
 
@@ -73,6 +74,7 @@ module regen_intake_pipe(outset) {
 module regen_pull_bar() {
   arm_length = 40;
   axle_position = 35;
+  translate([-pitch/2-4.5,0,0])
   difference() {
     union() {
       translate([-4,-25,35]) cube([pitch*8+16, 10,10]);
@@ -88,7 +90,8 @@ module regen_pull_bar() {
 }
 
 module regen_body() {
-    difference() {
+  translate([-pitch/2-4.5,0,0])
+  difference() {
     translate([0, 0, 0]) cube([pitch*8+9, 31,20]);
     for(x=[0:7]) {
       translate([pitch*x+pitch/2+4.5,0,0]) {
@@ -112,15 +115,45 @@ module regen() {
   regen_body();
   for(x=[0:7]) {
     union() {
-      translate([pitch*x+pitch/2+4.5,0,0]) {
+      translate([pitch*x,0,0]) {
 	translate([0,14,10]) rotate([-90,0,0]) cylinder(d=6, h=3);
 	translate([0,14,10]) rotate([-90,0,0]) cylinder(d=3, h=30);
 	translate([0,31,10]) rotate([-90,0,0]) cylinder(d=6, h=3);
       }
     }
-    translate([pitch*x+pitch/2+4.5+debug1,0,10]) regen_intake_pipe(0);
+    translate([pitch*x+debug1,0,10]) regen_intake_pipe(0);
   }
   translate([0,0,0]) regen_pull_bar();
+}
+
+module output_lever_2d() {
+  l1 = 50;
+  l2 = 30;
+  clearance = 0.5;
+  difference() {
+    union() {
+      translate([-5,0]) square([10,l1]);
+      translate([0,-5]) square([l2,10]);
+      circle(d=10);
+    }
+    circle(d=3);
+
+    // Ridges
+    for(x=[0:7]) {
+      translate([-5,10+x*5]) circle(d=2);
+      translate([5,10+x*5]) circle(d=2);
+    }
+  }
+}
+
+module output_lever() {
+  rotate([0,90,0]) difference() {
+    union() {
+      rotate([0,180,0]) linear_extrude(height=3) output_lever_2d();
+      cylinder(d=10,h=10);
+    }
+    translate([0,0,-1]) cylinder(d=3.2,h=12);
+  }
 }
 
 
@@ -139,6 +172,8 @@ module regen_diverter() {
   color([0,1,0]) translate([0,0,-20]) hopper1();
 
   translate([0,0,-40]) regen();
+
+  translate([1.5,50,-50]) output_lever();
 }
 
 regen_diverter();
