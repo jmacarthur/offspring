@@ -25,12 +25,13 @@ memory_x_7 = 40.5;
 memory_y_7 = -11.5;
 
 module injector() {
+  h=6.5;
   difference() {
     union() {
       translate([1.5,-20,0]) rotate([0,-90,0]) linear_extrude(height=3) {
-	polygon([[0,0], [7,0], [7,40], [3,43], [0,43]]);
+	polygon([[0,0], [h,0], [h,40], [3,43], [0,43]]);
       }
-      translate([-6, -6, 0]) cube([12,12,7]);
+      translate([-6, -6, 0]) cube([12,12,h]);
       translate([-6,20,0]) cube([12,10,3]);
     }
     translate([0,0,-1]) cylinder(d=small_pipe_diameter,h=12);
@@ -70,7 +71,7 @@ module injector_housing_top() {
   difference() {
     translate([-pitch/2,0,3]) union() {
       rotate([0,90,0]) linear_extrude(height=pitch*8) polygon([[-6,0], [3,0], [3,24], [0,24], [-6,24], [0, 11]]);
-      for(x=[0,pitch*8-3]) translate([x,0,0]) cube([3,24.5,8]);
+      for(x=[0,pitch*8-3]) translate([x,0,0]) cube([3,24,8]);
       
     }
     for(x=[0:7]) {
