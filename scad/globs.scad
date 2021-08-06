@@ -130,4 +130,5 @@ module hex_bar_2d() {
 
 
 // X coordinate of data channel 7 entering memory, relative to the left edge of the left openbeam
-data7_x = 40.5
+data7_x = 40.5;
+data7_y = -11.5;

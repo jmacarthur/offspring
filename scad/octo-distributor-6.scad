@@ -21,8 +21,8 @@ module horizontal_mounting_holes() {
 travel = 5;
 
 // Where memory takes its input
-memory_x_7 = 40.5;
-memory_y_7 = -11.5;
+memory_x_7 = data7_x;
+memory_y_7 = data7_y;
 
 module injector() {
   h=6.5;
