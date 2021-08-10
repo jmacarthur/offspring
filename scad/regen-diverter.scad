@@ -34,7 +34,7 @@ module flap() {
 module housing1() {
   translate([-pitch/2-4.5,0,0])
   difference() {
-    cube([pitch*8+9, 30, 30]);
+    cube([pitch*8+9, 31, 30]);
     translate([3,3,-1]) cube([pitch*8+3,30,32]);
     // Hole for the regen axle
     translate([-1,10,2]) rotate([0,90,0]) cylinder(d=3, h=300);
@@ -45,7 +45,6 @@ module hopper1() {
   difference() {
     union() {
       translate([-pitch/2-4.5,0,0]) cube([pitch*8+9, 31,20]);
-      translate([10-pitch/2-4.5,28,19]) cube([pitch*8-10, 3, 20]);
     }
     for(x=[0:7]) {
       translate([pitch*x, 10, 21])
@@ -53,7 +52,10 @@ module hopper1() {
       translate([pitch*x, 10, -1]) cylinder(d=7, h=32);
     }
     // Runoff channel
-    translate([2+4.5-pitch/2,21,15]) rotate([0,3,0]) cube([pitch*8+10, 7, 25]);
+    translate([2+4.5-pitch/2,21,15]) rotate([0,3,0]) cube([pitch*8+10, 15, 25]);
+    // Mounting holes
+
+    for(x=[0,pitch*6]) translate([x+pitch/2,20,4]) rotate([-90,0,0]) cylinder(d=3,h=30);
   }
 }
 
@@ -164,6 +166,24 @@ module upward_curved_pipe() {
   }
 }
 
+
+module backing_plate_2d() {
+  difference() {
+    square([250+15,50]);
+    for(y=[10,30]) {
+      for(x=[7.5,7.5+250]) {
+	translate([x,y]) circle(d=3);
+	translate([x,y]) circle(d=3);
+      }
+    }
+    for(x=[25,210]) translate([x,10]) square([10,30]);
+  }
+}
+
+module backing_plate() {
+  color([0.5,0.5,0.5,0.5]) rotate([90,0,0]) linear_extrude(height=3) backing_plate_2d();
+}
+
 $fn=20;
 module regen_diverter() {
   translate([3,18,3]) rotate([flap_rotate,0,0]) flap();
@@ -176,4 +196,16 @@ module regen_diverter() {
   translate([1.5,50,-50]) output_lever();
 }
 
-regen_diverter();
+ 
+translate([data7_x,-16,20]) regen_diverter();
+translate([0,15+3,0]) backing_plate();
+
+translate([0,0,0]) cube([15,15,50]);
+translate([250,0,0]) cube([15,15,50]);
+
+// Illustrate data coming from memory
+
+for(i=[0:7]) {
+  translate([pitch*i+data7_x, data7_y,50]) cylinder(d=7, h=50);
+ }
+
