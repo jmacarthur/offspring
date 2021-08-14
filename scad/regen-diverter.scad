@@ -15,7 +15,7 @@ module pyramid(width, depth, apex_height) {
  );
 }
 
-module flap() {
+module discard_flap() {
   translate([-pitch/2-3,0,0])
   difference() {
     union() {
@@ -244,7 +244,7 @@ module regen_diverter() {
   color([1,0,0]) translate([1.5,50,-10]) output_lever();
 
   translate([0,0,15]) color([0,1,0]) hopper();
-  //translate([3,20,25]) rotate([-55,0,0]) flap();
+  translate([3,20,25]) rotate([-55,0,0]) discard_flap();
 }
 
  
