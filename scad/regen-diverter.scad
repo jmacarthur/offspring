@@ -9,6 +9,7 @@ subtractor_flap_width = 15;
 diverter_slope = 10;
 collector_width = pitch*8+9;
 flap_box_x = 30;
+flap_rotate = 0;
 module pyramid(width, depth, apex_height) {
   polyhedron(
   points=[ [width/2,depth/2,0],[width/2,-depth/2,0],[-width/2,-depth/2,0],[-width/2,depth/2,0], // the four points at base
@@ -259,10 +260,20 @@ module subtractor_flap() {
       rotate([0,90,0])cylinder(d=6, h=pitch*8-1);
       translate([0,-width,0]) cube([pitch*8-1, width, 3]);
     }
-    translate([-1,0,0]) rotate([0,90,0])cylinder(d=3, h=6);
-    translate([pitch*8-4,0,0]) rotate([0,90,0])cylinder(d=3, h=6);
+
+    // Holes in each end to place axles in
+    translate([-1,0,0]) rotate([0,90,0]) cylinder(d=3, h=11);
+    translate([pitch*8-4,0,0]) rotate([0,90,0])cylinder(d=3, h=11);
+
 
     translate([-1,-width,0]) rotate([0,90,0])cylinder(d=6.5, h=pitch*8+2);
+  }
+}
+
+module subtractor_flap_pulley() {
+  rotate([0,90,0]) union() {
+    for(z=[0,4]) translate([0,0,z]) cylinder(d=10,h=1);
+    cylinder(d=8,h=5);
   }
 }
 
@@ -342,7 +353,9 @@ module collector() {
 module flap_assembly() {
   translate([pitch*8-9,-10,-30]) rotate([diverter_slope,0,0]) {
     for(i=[0:3]) {
-      color([1,i%2,0]) translate([0,-subtractor_flap_width*i, 0]) rotate([0,0,180]) subtractor_flap();
+      color([1,i%2,0]) translate([0,-subtractor_flap_width*i, 0]) rotate([0,0,180]) rotate([flap_rotate,0,0]) subtractor_flap();
+      color([0.5,0,0]) translate([0,-subtractor_flap_width*i, 0]) rotate([0,90,0]) cylinder(d=3,h=30);
+      if(i%2==0) color([0.5,0,0]) translate([25,-subtractor_flap_width*i, 0]) subtractor_flap_pulley();
     }
   }
 
