@@ -355,11 +355,38 @@ module flap_assembly() {
 }
 
 
+// Passive module which moves bearings toward the back of the machine
+module returner() {
+  intake_y = 5;
+  output_y = 30;
+  h1 = 10;
+  h2 = 5;
+  difference() {
+    translate([-pitch/2,0,0]) cube([pitch*8, 35, 15]);
+
+    // Intake holes
+    for(i=[0:7]) {
+      translate([pitch*i, intake_y, h1]) cylinder(d=7, h=10);
+      hull() {
+	translate([pitch*i, intake_y, h1]) sphere(d=7);
+	translate([pitch*i, output_y, h2]) sphere(d=7);
+      }
+      translate([pitch*i, output_y, -1]) cylinder(d=7, h=h2+1);
+      
+    }
+    // Vertical mounting holes
+    for(x=[1,7]) translate([pitch*x-pitch/2,18,-1]) cylinder(d=3,h=30);
+
+  }
+}
+
+
 
 translate([data7_x,-16-18,0]) regen_diverter();
 translate([0,0,0]) backing_plate();
 translate([flap_box_x,0,0]) flap_assembly();  
 translate([0,0,-66]) diverter_support_plate();
+color([0,1,0]) translate([data7_x,-34,-15]) returner();
 
 
 // Simulate rack rails
