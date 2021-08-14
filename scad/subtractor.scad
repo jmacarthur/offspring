@@ -45,11 +45,17 @@ module intake_holes() {
 
 module intake_holes_slot()
 {
-  // Holes for plastic pipe to supply data in
-  translate([-3, 55]) {
-    circle(d=pipe_outer_diameter);
-    translate([-pipe_outer_diameter/2, 0]) square([pipe_outer_diameter, 30]);
+  // Holes for a guide to keep bearings in line
+  translate([-15, 60]) {
+    translate([-1.5, 0]) square([3, 20]);
   }
+}
+
+module rail_mounting_holes() {
+  x = -195.5;
+  translate([x,60]) circle(d=3);
+  translate([x+250,60]) circle(d=3);
+  translate([x,-70]) circle(d=3);
 }
 
 module generic_support_plate()
@@ -76,8 +82,8 @@ module generic_support_plate()
       translate([-subtractor_pitch_x*-1, -subtractor_pitch_y*-1]) {
 	input_guard_a_holes();
       }
-      // Extend to top-left corner
-      translate([-subtractor_pitch_x*7,50]) circle(r=10);
+      // Extend top corners corner
+      rail_mounting_holes();
 
       }
     }
@@ -97,19 +103,19 @@ module top_layer_2d() {
 	// Hole for hex axle
 	translate([0, 0]) circle(r=hex_bar_max_radius+axle_clearance);
 	intake_holes_slot();
-
+      }
+      translate([-subtractor_pitch_x*i, 0]) {
+	intake_holes_slot();
       }
     }
     translate([-subtractor_pitch_x*-1, -subtractor_pitch_y*-1]) {
       input_guard_a_holes();
     }
-
+    rail_mounting_holes();
   }
 }
 
-
 // Layer 1 - the input layer
-
 module input_toggle_2d()
 {
   difference() {
@@ -126,6 +132,8 @@ module input_toggle_2d()
 
     // Cutout for hexagon bar
     hex_bar_2d();
+    rail_mounting_holes();
+
   }
 }
 
@@ -227,6 +235,7 @@ module io_support_layer_2d() {
     translate([-subtractor_pitch_x*-1, -subtractor_pitch_y*-1]) {
       input_guard_a_holes();
     }
+    rail_mounting_holes();
 
   }
 }
@@ -337,10 +346,15 @@ module back_layer_2d() {
 	// Hole for hex axle
 	translate([0, 0]) circle(r=hex_bar_max_radius+axle_clearance);
       }
+      translate([-subtractor_pitch_x*i, 0]) {
+	intake_holes_slot();
+      }
+
     }
     translate([-subtractor_pitch_x*-1, -subtractor_pitch_y*-1]) {
       input_guard_a_holes();
     }
+    rail_mounting_holes();
 
   }
 }
