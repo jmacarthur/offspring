@@ -7,6 +7,7 @@ pipe_diameter = 7;
 arc_radius = 31;
 subtractor_flap_width = 15;
 diverter_slope = 10;
+collector_width = pitch*8+9;
 
 module pyramid(width, depth, apex_height) {
   polyhedron(
@@ -52,7 +53,7 @@ module hopper1() {
   difference() {
     union() {
       translate([-pitch/2-4.5,0,0]) cube([pitch*8+9, 31,7]);
-      for(x=[0, pitch*8+6]) translate([-pitch/2-4.5+x, 15,0]) cube([3,10,15]);
+      for(x=[0, pitch*8+6]) translate([-pitch/2-4.5+x, 15,0]) cube([3,9,15]);
     }
     for(x=[0:7]) {
       translate([pitch*x, 10, 8])
@@ -60,7 +61,7 @@ module hopper1() {
       translate([pitch*x, 10, -1]) cylinder(d=7, h=32);
     }
     // Runoff channel
-    translate([2+4.5-pitch/2,21,7]) rotate([0,2,0]) cube([pitch*8+10, 15, 7]);
+    translate([2+4.5-pitch/2,24,7]) rotate([0,2,0]) cube([pitch*8+10, 15, 7]);
 
     // Holes to mount diverter
     translate([-20,20,10]) rotate([0,90,0]) cylinder(d=3,h=300);
@@ -74,7 +75,8 @@ module hopper2() {
       for(x=[0:8]) translate([pitch*x+1.5-pitch/2,0,0]) rotate([0,-90,0]) linear_extrude(height=3) polygon([[0,0], [15,0], [0,17]]);
       translate([-pitch/2,-2,-5]) cube([pitch*8,6,30]);
     }
-    translate([-pitch/2-1,1,22]) rotate([0,90,0]) cylinder(d=3,h=pitch*8+2);
+    translate([-pitch/2-1,1,22]) rotate([0,90,0]) cylinder(d=3,h=10);
+    translate([-pitch/2-1+pitch*8-8,1,22]) rotate([0,90,0]) cylinder(d=3,h=10);
   }
 }
 
@@ -254,13 +256,23 @@ module subtractor_flap() {
   translate([-pitch/2-3,0,0])
   difference() {
     union() {
-      rotate([0,90,0])cylinder(d=6, h=pitch*8+1);
+      rotate([0,90,0])cylinder(d=6, h=pitch*8-1);
       translate([0,-width,0]) cube([pitch*8-1, width, 3]);
     }
     translate([-1,0,0]) rotate([0,90,0])cylinder(d=3, h=6);
-    translate([pitch*8+3-5,0,0]) rotate([0,90,0])cylinder(d=3, h=6);
+    translate([pitch*8-4,0,0]) rotate([0,90,0])cylinder(d=3, h=6);
 
     translate([-1,-width,0]) rotate([0,90,0])cylinder(d=6, h=pitch*8+2);
+  }
+}
+
+module subtractor_flap_frame() {
+  difference() {
+    translate([0,-4,-3]) cube([3,64,6]);
+
+    for(i=[0:3]) {
+      translate([-1,i*subtractor_flap_width, 0]) rotate([0,90,0]) cylinder(d=3, h=10);
+    }
   }
 }
 
@@ -269,42 +281,70 @@ module subtractor_collector(height) {
   input_spacing = subtractor_flap_width*cos(diverter_slope);
   output_spacing = 10;
   offset = 5;
+  width = collector_width;
   union() {
-    for(i=[0:2]) translate([0,i*-output_spacing,0]) cube([pitch*8, 3, 10]);
-    for(i=[0:2]) translate([0,i*-input_spacing+offset,20]) cube([pitch*8, 3, height]);
+    for(i=[0:2]) translate([0,i*-output_spacing,0]) cube([width, 3, 10]);
+    for(i=[0:2]) translate([0,i*-input_spacing+offset,20]) cube([width, 3, height-i*2]);
     for(i=[0:2]) hull() {
-	translate([0,i*-output_spacing+1.5,10]) rotate([0,90,0]) cylinder(d=3, h=pitch*8);
-	translate([0,i*-input_spacing+1.5+offset,20]) rotate([0,90,0]) cylinder(d=3, h=pitch*8);
+	translate([0,i*-output_spacing+1.5,10]) rotate([0,90,0]) cylinder(d=3, h=width);
+	translate([0,i*-input_spacing+1.5+offset,20]) rotate([0,90,0]) cylinder(d=3, h=width);
       }
   }
 }
 
-translate([data7_x,-16-18,0]) regen_diverter();
-translate([0,0,0]) backing_plate();
 
-translate([pitch*8,-10,-30]) rotate([diverter_slope,0,0]) {
-  for(i=[0:3]) {
-    color([1,i%2,0]) translate([0,-subtractor_flap_width*i, 0]) rotate([0,0,180]) subtractor_flap();
+
+module collector() {
+  translate([0,-3,-66]) {
+    union() {
+      
+      subtractor_collector(13);
+      translate([0,-29.5,0])  subtractor_collector(7);
+      
+      translate([0,-55,0]) {
+	for(x=[0,collector_width-3]) {
+	  translate([x,0,0]) difference() {
+	    cube([3,63,40]);
+	    translate([-1,0,25]) rotate([diverter_slope, 0,0]) cube([5,80,20]);
+	  }
+	}
+      }
+      
+    }
+  }
+}
+
+module flap_assembly() {
+  translate([pitch*8-9,-10,-30]) rotate([diverter_slope,0,0]) {
+    for(i=[0:3]) {
+      color([1,i%2,0]) translate([0,-subtractor_flap_width*i, 0]) rotate([0,0,180]) subtractor_flap();
+    }
+  }
+
+  union() {
+    for(x=[0, pitch*8+6]) {
+      translate([x,-10-3*subtractor_flap_width*cos(diverter_slope),-30-3*subtractor_flap_width*sin(diverter_slope)]) rotate([diverter_slope,0,0]) subtractor_flap_frame();
+    }
+    collector();
   }
 }
 
 
-translate([0,-3,-66]) {
-  subtractor_collector(10);
-  translate([0,-29.5,0])  subtractor_collector(4);
-}
+
+translate([data7_x,-16-18,0]) regen_diverter();
+translate([0,0,0]) backing_plate();
+translate([30,0,0]) flap_assembly();  
 
 
 // Simulate rack rails
 if(1) {
   color([0.5,0.5,0.5]) {
-    translate([0,0,0]) cube([15,15,50]);
-    translate([250,0,0]) cube([15,15,50]);
+    translate([0,0,-100]) cube([15,15,150]);
+    translate([250,0,-100]) cube([15,15,150]);
   }
 }
 
 // Illustrate data coming from memory
 for(i=[0:7]) {
   translate([pitch*i+data7_x, data7_y,50]) cylinder(d=7, h=50);
- }
-
+}
