@@ -5,6 +5,8 @@ flap_rotate=-90;
 pipe_diameter = 7;
 
 arc_radius = 31;
+subtractor_flap_width = 15;
+diverter_slope = 10;
 
 module pyramid(width, depth, apex_height) {
   polyhedron(
@@ -247,9 +249,51 @@ module regen_diverter() {
   translate([3,20,25]) rotate([-55,0,0]) discard_flap();
 }
 
- 
+module subtractor_flap() {
+  width = subtractor_flap_width;
+  translate([-pitch/2-3,0,0])
+  difference() {
+    union() {
+      rotate([0,90,0])cylinder(d=6, h=pitch*8+1);
+      translate([0,-width,0]) cube([pitch*8-1, width, 3]);
+    }
+    translate([-1,0,0]) rotate([0,90,0])cylinder(d=3, h=6);
+    translate([pitch*8+3-5,0,0]) rotate([0,90,0])cylinder(d=3, h=6);
+
+    translate([-1,-width,0]) rotate([0,90,0])cylinder(d=6, h=pitch*8+2);
+  }
+}
+
+
+module subtractor_collector(height) {
+  input_spacing = subtractor_flap_width*cos(diverter_slope);
+  output_spacing = 10;
+  offset = 5;
+  union() {
+    for(i=[0:2]) translate([0,i*-output_spacing,0]) cube([pitch*8, 3, 10]);
+    for(i=[0:2]) translate([0,i*-input_spacing+offset,20]) cube([pitch*8, 3, height]);
+    for(i=[0:2]) hull() {
+	translate([0,i*-output_spacing+1.5,10]) rotate([0,90,0]) cylinder(d=3, h=pitch*8);
+	translate([0,i*-input_spacing+1.5+offset,20]) rotate([0,90,0]) cylinder(d=3, h=pitch*8);
+      }
+  }
+}
+
 translate([data7_x,-16-18,0]) regen_diverter();
 translate([0,0,0]) backing_plate();
+
+translate([pitch*8,-10,-30]) rotate([diverter_slope,0,0]) {
+  for(i=[0:3]) {
+    color([1,i%2,0]) translate([0,-subtractor_flap_width*i, 0]) rotate([0,0,180]) subtractor_flap();
+  }
+}
+
+
+translate([0,-3,-66]) {
+  subtractor_collector(10);
+  translate([0,-29.5,0])  subtractor_collector(4);
+}
+
 
 // Simulate rack rails
 if(1) {
