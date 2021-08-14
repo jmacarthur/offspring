@@ -3,6 +3,9 @@ include <globs.scad>;
 
 flap_rotate=-90;
 pipe_diameter = 7;
+
+arc_radius = 31;
+
 module pyramid(width, depth, apex_height) {
   polyhedron(
   points=[ [width/2,depth/2,0],[width/2,-depth/2,0],[-width/2,-depth/2,0],[-width/2,depth/2,0], // the four points at base
@@ -13,21 +16,23 @@ module pyramid(width, depth, apex_height) {
 }
 
 module flap() {
-  translate([-pitch/2-4.5,0,0])
+  translate([-pitch/2-3,0,0])
   difference() {
     union() {
-      rotate([0,90,0])cylinder(d=6, h=pitch*8+3);
-      translate([0,-23,0]) cube([pitch*8+3, 23, 3]);
-      for(i=[0:8]) {
-	translate([i*pitch,0,0]) rotate([-90,0,0]) rotate([0,90,0]) linear_extrude(height=3) polygon([[0,0], [20,0], [15,5], [5,5]]);
+      rotate([0,90,0])cylinder(d=6, h=pitch*8+1);
+      translate([0,-23,0]) cube([pitch*8-1, 23, 3]);
+      for(i=[1:7]) {
+	translate([i*pitch-1.5,0,0]) rotate([-90,0,0]) rotate([0,90,0]) linear_extrude(height=3) polygon([[0,0], [20,0], [15,5], [5,5]]);
       }
+      rotate([-90,0,0]) rotate([0,90,0]) linear_extrude(height=pitch*8-1) polygon([[0,3], [20,0], [0,-3]]);
+      
       // Control arm
-      for(x=[0, pitch*8]) translate([x,0,0]) rotate([90,0,0]) translate([0,0,-3]) cube([3,25,6]);
+      for(x=[0, pitch*8-2]) translate([x,0,0]) rotate([180,0,0]) translate([0,0,-3]) cube([3,50,6]);
     }
     translate([-1,0,0]) rotate([0,90,0])cylinder(d=3, h=6);
     translate([pitch*8+3-5,0,0]) rotate([0,90,0])cylinder(d=3, h=6);
 
-    translate([-1,-22,-2]) rotate([45,0,0]) cube([pitch*8+10, 3, 5]);
+    translate([3,-22,-2]) rotate([45,0,0]) cube([pitch*8-5, 3, 5]);
   }
 }
 
@@ -44,74 +49,119 @@ module housing1() {
 module hopper1() {
   difference() {
     union() {
-      translate([-pitch/2-4.5,0,0]) cube([pitch*8+9, 31,20]);
+      translate([-pitch/2-4.5,0,0]) cube([pitch*8+9, 31,7]);
+      for(x=[0, pitch*8+6]) translate([-pitch/2-4.5+x, 15,0]) cube([3,10,15]);
     }
     for(x=[0:7]) {
-      translate([pitch*x, 10, 21])
-		   rotate([0,180,0]) pyramid(pitch, 20, 25);
+      translate([pitch*x, 10, 8])
+	rotate([0,180,0]) pyramid(pitch, 20, 7);
       translate([pitch*x, 10, -1]) cylinder(d=7, h=32);
     }
     // Runoff channel
-    translate([2+4.5-pitch/2,21,15]) rotate([0,3,0]) cube([pitch*8+10, 15, 25]);
-    // Mounting holes
+    translate([2+4.5-pitch/2,21,7]) rotate([0,2,0]) cube([pitch*8+10, 15, 7]);
 
-    for(x=[0,pitch*6]) translate([x+pitch/2,20,4]) rotate([-90,0,0]) cylinder(d=3,h=30);
+    // Holes to mount diverter
+    translate([-20,20,10]) rotate([0,90,0]) cylinder(d=3,h=300);
+    
+  }
+}
+
+module hopper2() {
+  difference() {
+    union() {
+      for(x=[0:8]) translate([pitch*x+1.5-pitch/2,0,0]) rotate([0,-90,0]) linear_extrude(height=3) polygon([[0,0], [15,0], [0,17]]);
+      translate([-pitch/2,-2,-5]) cube([pitch*8,6,30]);
+    }
+    translate([-pitch/2-1,1,22]) rotate([0,90,0]) cylinder(d=3,h=pitch*8+2);
+  }
+}
+
+module hopper() {
+  difference() {
+    union() {
+      hopper1();
+      translate([0,0,5]) hopper2();
+    }
+    for(x=[1,7]) translate([pitch*x-pitch/2,18,-1]) cylinder(d=3,h=30);
   }
 }
 
 
-module regen_intake_pipe(outset) {
-  r1 = 31;
-  r2 = 5+outset;
-  translate([-(3+outset)/2,10,32]) rotate([0,90,0]) linear_extrude(height=3+outset) {
+module regen_intake_bar(offset) {
+  r2 = 5;
+  rotate([0,90,0]) translate([0,0,-1.5-offset]) linear_extrude(height=3+offset*2) {
     difference() {
-      circle(r=r1+r2/2);
-      circle(r=r1-r2/2);
-      translate([-r1-5, -r1-5]) square([r1+5, r1+5]);
-      translate([-r1-5, 0]) square([r1+50, r1+5]);
+      circle(r=arc_radius+r2/2+offset);
+      circle(r=arc_radius-r2/2-offset);
+      translate([-arc_radius-5, -arc_radius-5]) square([arc_radius+5, arc_radius+5]);
+      translate([-arc_radius-5, 0]) square([arc_radius+50, arc_radius+5]);
     }
   }
 }
 
 module regen_pull_bar() {
-  arm_length = 40;
-  axle_position = 35;
+  arm_length = arc_radius+5;
+  axle_position = arc_radius;
   translate([-pitch/2-4.5,0,0])
   difference() {
     union() {
-      translate([-4,-25,35]) cube([pitch*8+16, 10,10]);
-      translate([-4,-25,35]) cube([3, arm_length, 10]);
-      translate([pitch*8+10,-25,35]) cube([3, arm_length, 10]);
+      translate([-1,-25,35]) cube([pitch*8+10, 10,12]);
+      translate([-1,-25,35]) cube([3, arm_length, 12]);
+      translate([pitch*8+6,-25,35]) cube([3, arm_length, 12]);
     }
     for(x=[0:7]) {
-      translate([x*pitch+pitch/2+4.5,0,10]) regen_intake_pipe(0.2);
+      translate([-(3+0.2)/2,10,32])
+      translate([x*pitch+pitch/2+6,0,10]) regen_intake_bar(0.2);
     }
     translate([-5,-25+axle_position,42]) rotate([0,90,0]) cylinder(d=3,h=300);
 
   }
 }
 
+
+
 module regen_body() {
-  translate([-pitch/2-4.5,0,0])
+  intake_y = 15;
+  depth = 31;
+  translate([-pitch/2-4.5,0,0]) {
   difference() {
-    translate([0, 0, 0]) cube([pitch*8+9, 31,20]);
+    cube([pitch*8+9, depth,15]);
     for(x=[0:7]) {
       translate([pitch*x+pitch/2+4.5,0,0]) {
-	translate([0, 10, 10]) cylinder(d=7, h=32);
+	// Intake channel
+	translate([0, intake_y-5, 10]) cylinder(d=7, h=32);
+
+	// Channel sloping upwards which the bearing will fall through if allowed to by the push bar
 	hull() {
-	  translate([0,10,10]) sphere(d=7);
-	  translate([0,5,8]) sphere(d=7);
+	  translate([0,intake_y-3,10]) sphere(d=7);
+	  translate([0,intake_y-10,8]) sphere(d=7);
 	}
-	translate([0,5,8])rotate([-80,0,0])  cylinder(d=7,h=8);
-	translate([0,5,-1]) cylinder(d=7,h=11);
-	translate([0,10,10]) rotate([-90,0,0]) cylinder(d=3.5,h=30);
-	translate([0,10,10]) rotate([-90,0,0]) cylinder(d=7,h=19);
-	translate([0,0,10]) regen_intake_pipe(1);
+
+	
+	// Also upward sloping channel?
+	//translate([0,intake_y-5,8])rotate([-80,0,0])  cylinder(d=7,h=8);
+
+	// Outtake channel
+	translate([0,intake_y-10,-1]) cylinder(d=7,h=10);
+
+	// plunger shaft hole
+	translate([0,intake_y,10]) rotate([-90,0,0]) cylinder(d=3.5,h=30);
+
+	// Plunger hole
+	translate([0,intake_y-5,10]) rotate([-90,0,0]) cylinder(d=7,h=depth-intake_y+2);
+
+	translate([0,intake_y-10,arc_radius+10]) rotate([20,0,0]) regen_intake_bar(0.5);
       }
     }
+    // Horizontal mounting holes
+    for(x=[2,6]) translate([pitch*x+4.5,20,10]) rotate([-90,0,0]) cylinder(d=3,h=100);
 
+    // Vertical mounting holes
+    for(x=[1,7]) translate([pitch*x+4.5,18,-1]) cylinder(d=3,h=30);
+  }
   }
 }
+
 debug1 = 0;
 module regen() {
   regen_body();
@@ -123,9 +173,9 @@ module regen() {
 	translate([0,31,10]) rotate([-90,0,0]) cylinder(d=6, h=3);
       }
     }
-    translate([pitch*x+debug1,0,10]) regen_intake_pipe(0);
+    translate([pitch*x+debug1,5,10+arc_radius]) rotate([0,0,0]) regen_intake_bar(0);
   }
-  translate([0,0,0]) regen_pull_bar();
+  translate([0,-5,0]) regen_pull_bar();
 }
 
 module output_lever_2d() {
@@ -176,7 +226,10 @@ module backing_plate_2d() {
 	translate([x,y]) circle(d=3);
       }
     }
-    for(x=[25,210]) translate([x,10]) square([10,30]);
+    translate([25,30]) square([195,60]);
+
+    for(x=[0:7]) translate([x*pitch+data7_x,10]) circle(d=10);
+    for(x=[3,7]) translate([pitch*x+6,10]) circle(d=3);
   }
 }
 
@@ -184,27 +237,29 @@ module backing_plate() {
   color([0.5,0.5,0.5,0.5]) rotate([90,0,0]) linear_extrude(height=3) backing_plate_2d();
 }
 
-$fn=20;
 module regen_diverter() {
-  translate([3,18,3]) rotate([flap_rotate,0,0]) flap();
-  color([1,0,0]) housing1();
-  translate([10,10,0]) sphere(d=ball_bearing_diameter);
-  color([0,1,0]) translate([0,0,-20]) hopper1();
 
-  translate([0,0,-40]) regen();
+  translate([0,0,0]) regen();
 
-  translate([1.5,50,-50]) output_lever();
+  color([1,0,0]) translate([1.5,50,-10]) output_lever();
+
+  translate([0,0,15]) color([0,1,0]) hopper();
+  //translate([3,20,25]) rotate([-55,0,0]) flap();
 }
 
  
-translate([data7_x,-16,20]) regen_diverter();
-translate([0,15+3,0]) backing_plate();
+translate([data7_x,-16-18,0]) regen_diverter();
+translate([0,0,0]) backing_plate();
 
-translate([0,0,0]) cube([15,15,50]);
-translate([250,0,0]) cube([15,15,50]);
+// Simulate rack rails
+if(1) {
+  color([0.5,0.5,0.5]) {
+    translate([0,0,0]) cube([15,15,50]);
+    translate([250,0,0]) cube([15,15,50]);
+  }
+}
 
 // Illustrate data coming from memory
-
 for(i=[0:7]) {
   translate([pitch*i+data7_x, data7_y,50]) cylinder(d=7, h=50);
  }
