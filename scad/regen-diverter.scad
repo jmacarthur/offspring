@@ -8,7 +8,7 @@ arc_radius = 31;
 subtractor_flap_width = 15;
 diverter_slope = 10;
 collector_width = pitch*8+9;
-
+flap_box_x = 30;
 module pyramid(width, depth, apex_height) {
   polyhedron(
   points=[ [width/2,depth/2,0],[width/2,-depth/2,0],[-width/2,-depth/2,0],[-width/2,depth/2,0], // the four points at base
@@ -262,8 +262,23 @@ module subtractor_flap() {
     translate([-1,0,0]) rotate([0,90,0])cylinder(d=3, h=6);
     translate([pitch*8-4,0,0]) rotate([0,90,0])cylinder(d=3, h=6);
 
-    translate([-1,-width,0]) rotate([0,90,0])cylinder(d=6, h=pitch*8+2);
+    translate([-1,-width,0]) rotate([0,90,0])cylinder(d=6.5, h=pitch*8+2);
   }
+}
+
+module diverter_support_plate_2d() {
+  difference() {
+    square([265,30]);
+    translate([flap_box_x, -10]) square([pitch*8+9,60]);
+    for(x=[7.5, 7.5+250]) {
+      translate([x,10]) circle(d=3);
+      translate([x,25]) circle(d=3);
+    }
+  }
+}
+
+module diverter_support_plate() {
+  color([0.5,0.5,0.5,0.5]) rotate([90,0,0]) linear_extrude(height=3) diverter_support_plate_2d();
 }
 
 module subtractor_flap_frame() {
@@ -288,11 +303,16 @@ module subtractor_collector(height) {
     for(i=[0:2]) hull() {
 	translate([0,i*-output_spacing+1.5,10]) rotate([0,90,0]) cylinder(d=3, h=width);
 	translate([0,i*-input_spacing+1.5+offset,20]) rotate([0,90,0]) cylinder(d=3, h=width);
-      }
+      }    
   }
 }
 
-
+module collector_side_bracket() {
+  // Support jigs
+  translate([-5,-6,0]) linear_extrude(height=30) polygon([[6,6], [6,0], [0,6]]);
+  translate([-5,3,0]) linear_extrude(height=30) polygon([[5,5], [6,0], [0,0]]);
+  translate([-5,-5,30]) linear_extrude(height=5) polygon([[6,10], [5,0], [0,5], [0,8], [5,13]]);
+}
 
 module collector() {
   translate([0,-3,-66]) {
@@ -309,7 +329,12 @@ module collector() {
 	  }
 	}
       }
-      
+      // Y-axis plates
+      for(i=[1:7]) {
+	translate([pitch*i-1.5,-53,0]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) polygon([[0,0], [60,0], [60,33], [0,23]]);
+      }
+      collector_side_bracket();
+      translate([pitch*8+9,3,0]) rotate([0,0,180]) collector_side_bracket();
     }
   }
 }
@@ -333,7 +358,8 @@ module flap_assembly() {
 
 translate([data7_x,-16-18,0]) regen_diverter();
 translate([0,0,0]) backing_plate();
-translate([30,0,0]) flap_assembly();  
+translate([flap_box_x,0,0]) flap_assembly();  
+translate([0,0,-66]) diverter_support_plate();
 
 
 // Simulate rack rails
