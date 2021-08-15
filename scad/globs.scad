@@ -132,3 +132,15 @@ module hex_bar_2d() {
 // X coordinate of data channel 7 entering memory, relative to the left edge of the left openbeam
 data7_x = 40.5;
 data7_y = -11.5;
+
+
+// Perforated angle iron layout
+angle_iron_internal_spacing=265;
+angle_iron_hole_offset = 19.5;
+
+slot_spacing = 50;
+slot_diameter = 6;
+slot_height = 28;
+
+
+
