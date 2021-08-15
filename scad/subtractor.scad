@@ -55,6 +55,7 @@ module rail_mounting_holes() {
   x = -195.5;
   translate([x,60]) circle(d=3);
   translate([x+250,60]) circle(d=3);
+  translate([x+250,0]) circle(d=3);
   translate([x,-70]) circle(d=3);
 }
 
@@ -69,6 +70,7 @@ module generic_support_plate()
         |_/
        A  F
     */
+    union() {
     offset(r=5) hull() {
       for(i=[0:7]) {
       translate([-subtractor_pitch_x*i, -subtractor_pitch_y*i]) {
@@ -86,6 +88,8 @@ module generic_support_plate()
       rail_mounting_holes();
 
       }
+    }
+    translate([-195.5-25,0]) polygon([[0,0], [0,20], [25,45], [250+50-25,45], [250+50,20], [250+50,0]]);
     }
 }
 
