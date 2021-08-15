@@ -280,10 +280,11 @@ module subtractor_flap_pulley() {
 
 module diverter_support_plate_2d() {
   difference() {
-    square([265,30]);
+    translate([-20,0]) square([265+40,30]);
     translate([flap_box_x, -10]) square([pitch*8+9,60]);
+    translate([20, 20]) square([265-40,60]);
     for(x=[7.5, 7.5+250]) {
-      translate([x,10]) circle(d=3);
+      translate([x,5]) circle(d=3);
       translate([x,25]) circle(d=3);
     }
   }
@@ -310,7 +311,7 @@ module subtractor_collector(height) {
   offset = 5;
   width = collector_width;
   union() {
-    for(i=[0:2]) translate([0,i*-output_spacing,0]) cube([width, 3, 10]);
+    for(i=[0:2]) translate([0,i*-output_spacing,8.5]) cube([width, 3, 1.5]);
     for(i=[0:2]) translate([0,i*-input_spacing+offset,20]) cube([width, 3, height-i*2]);
     for(i=[0:2]) hull() {
 	translate([0,i*-output_spacing+1.5,10]) rotate([0,90,0]) cylinder(d=3, h=width);
@@ -321,8 +322,8 @@ module subtractor_collector(height) {
 
 module collector_side_bracket() {
   // Support jigs
-  translate([-5,-6,0]) linear_extrude(height=30) polygon([[6,6], [6,0], [0,6]]);
-  translate([-5,3,0]) linear_extrude(height=30) polygon([[5,5], [6,0], [0,0]]);
+  translate([-5,-6,10]) linear_extrude(height=20) polygon([[6,6], [6,0], [0,6]]);
+  translate([-5,3,10]) linear_extrude(height=20) polygon([[5,5], [6,0], [0,0]]);
   translate([-5,-5,30]) linear_extrude(height=5) polygon([[6,10], [5,0], [0,5], [0,8], [5,13]]);
 }
 
@@ -335,20 +336,31 @@ module collector() {
       
       translate([0,-55,0]) {
 	for(x=[0,collector_width-3]) {
-	  translate([x,0,0]) difference() {
+	  translate([x,0,8]) difference() {
 	    cube([3,63,40]);
-	    translate([-1,0,25]) rotate([diverter_slope, 0,0]) cube([5,80,20]);
+	    translate([-1,0,17]) rotate([diverter_slope, 0,0]) cube([5,80,30]);
 	  }
 	}
       }
       // Y-axis plates
       for(i=[1:7]) {
-	translate([pitch*i-1.5,-53,0]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) polygon([[0,0], [60,0], [60,33], [0,23]]);
+	h1 = 14;
+	translate([pitch*i-1.5,-53,8.5]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) polygon([[0,0], [60,0], [60,h1+10], [0,h1]]);
       }
       collector_side_bracket();
       translate([pitch*8+9,3,0]) rotate([0,0,180]) collector_side_bracket();
     }
   }
+}
+
+module collector_with_frame() {
+  union() {
+    for(x=[0, pitch*8+6]) {
+      translate([x,-10-3*subtractor_flap_width*cos(diverter_slope),-30-3*subtractor_flap_width*sin(diverter_slope)]) rotate([diverter_slope,0,0]) subtractor_flap_frame();
+    }
+    collector();
+  }
+ 
 }
 
 module flap_assembly() {
@@ -359,13 +371,7 @@ module flap_assembly() {
       if(i%2==0) color([0.5,0,0]) translate([25,-subtractor_flap_width*i, 0]) subtractor_flap_pulley();
     }
   }
-
-  union() {
-    for(x=[0, pitch*8+6]) {
-      translate([x,-10-3*subtractor_flap_width*cos(diverter_slope),-30-3*subtractor_flap_width*sin(diverter_slope)]) rotate([diverter_slope,0,0]) subtractor_flap_frame();
-    }
-    collector();
-  }
+  collector_with_frame();
 }
 
 
@@ -399,7 +405,7 @@ module returner() {
 translate([data7_x,-16-18,0]) regen_diverter();
 translate([0,0,0]) backing_plate();
 translate([flap_box_x,0,0]) flap_assembly();  
-translate([0,0,-66]) diverter_support_plate();
+translate([0,0,-56]) diverter_support_plate();
 color([0,1,0]) translate([data7_x,-34,-15]) returner();
 
 
