@@ -40,8 +40,8 @@ openbeam();
 translate([angle_iron_internal_spacing-15, 0 ,0]) openbeam();
 
 color([0,0,0.9,0.5]) translate([-100+7.5,-5,memory_mount_z]) memory_mounting_plate();
-
-translate([0,0,810]) distributor();
+translate([0,0,800]) injector_assembly();
+translate([0,0,450]) regen_diverter_assembly();
 
 
 // Indicate where memory input is

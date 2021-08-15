@@ -1,7 +1,6 @@
 // Regenerator and diverter unit
 include <globs.scad>;
 
-flap_rotate=-90;
 pipe_diameter = 7;
 
 arc_radius = 31;
@@ -403,11 +402,16 @@ module returner() {
 
 
 
-translate([data7_x,-16-18,0]) regen_diverter();
-translate([0,0,0]) backing_plate();
-translate([flap_box_x,0,0]) flap_assembly();  
-translate([0,0,-56]) diverter_support_plate();
-color([0,1,0]) translate([data7_x,-34,-15]) returner();
+module regen_diverter_assembly() {
+  
+  translate([data7_x,-16-18,0]) regen_diverter();
+  translate([0,0,0]) backing_plate();
+  translate([flap_box_x,0,0]) flap_assembly();  
+  translate([0,0,-56]) diverter_support_plate();
+  color([0,1,0]) translate([data7_x,-34,-15]) returner();
+}
+
+regen_diverter_assembly();
 
 
 // Simulate rack rails
