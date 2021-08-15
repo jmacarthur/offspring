@@ -377,6 +377,7 @@ module flap_assembly() {
 
 // Passive module which moves bearings toward the back of the machine
 module returner() {
+  channel_diameter = 7.5;
   intake_y = 5;
   output_y = 30;
   h1 = 10;
@@ -386,12 +387,12 @@ module returner() {
 
     // Intake holes
     for(i=[0:7]) {
-      translate([pitch*i, intake_y, h1]) cylinder(d=7, h=10);
+      translate([pitch*i, intake_y, h1]) cylinder(d=channel_diameter, h=10);
       hull() {
-	translate([pitch*i, intake_y, h1]) sphere(d=7);
-	translate([pitch*i, output_y, h2]) sphere(d=7);
+	translate([pitch*i, intake_y, h1]) sphere(d=channel_diameter);
+	translate([pitch*i, output_y, h2]) sphere(d=channel_diameter);
       }
-      translate([pitch*i, output_y, -1]) cylinder(d=7, h=h2+1);
+      translate([pitch*i, output_y, -1]) cylinder(d=channel_diameter, h=h2+1);
       
     }
     // Vertical mounting holes
