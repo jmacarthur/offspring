@@ -159,7 +159,7 @@ module regen_body() {
       }
     }
     // Horizontal mounting holes
-    for(x=[2,6]) translate([pitch*x+4.5,20,10]) rotate([-90,0,0]) cylinder(d=3,h=100);
+    for(x=[2,6]) translate([pitch*x+4.5,20,5]) rotate([-90,0,0]) cylinder(d=3,h=100);
 
     // Vertical mounting holes
     for(x=[1,7]) translate([pitch*x+4.5,18,-1]) cylinder(d=3,h=30);
@@ -234,7 +234,8 @@ module backing_plate_2d() {
     translate([25,30]) square([195,60]);
 
     for(x=[0:7]) translate([x*pitch+data7_x,10]) circle(d=10);
-    for(x=[3,7]) translate([pitch*x+6,10]) circle(d=3);
+    // Mounting holes
+    for(x=[3,7]) translate([pitch*x+6,5]) circle(d=3);
   }
 }
 
