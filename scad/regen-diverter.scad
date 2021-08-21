@@ -412,6 +412,24 @@ module returner() {
   }
 }
 
+module lever_support_holes_2d(diam) {
+  translate([0,0]) circle(d=diam);
+  translate([0,7.5]) circle(d=diam);
+  translate([15,0]) circle(d=diam);
+}
+
+
+module lever_support() {
+  translate([15,7.5,0])   rotate([0,90,0]) 
+  linear_extrude(height=5) {
+    difference() {
+      hull() {
+	lever_support_holes_2d(10);
+      }
+      lever_support_holes_2d(3);
+    }
+  }
+}
 
 
 module regen_diverter_assembly() {
@@ -421,6 +439,9 @@ module regen_diverter_assembly() {
   translate([flap_box_x,0,0]) flap_assembly();  
   translate([0,0,-56]) diverter_support_plate();
   color([0,1,0]) translate([data7_x,-34,-15]) returner();
+
+  translate([0,0,-10]) lever_support();
+  translate([250-15-5,0,-10]) lever_support();
 }
 
 regen_diverter_assembly();
