@@ -328,26 +328,38 @@ module collector_side_bracket() {
 
 module collector() {
   translate([0,-3,-66]) {
-    union() {
+    difference() {
+      union() {
       
-      subtractor_collector(13);
-      translate([0,-29.5,0])  subtractor_collector(7);
-      
-      translate([0,-55,0]) {
-	for(x=[0,collector_width-3]) {
-	  translate([x,0,8]) difference() {
-	    cube([3,63,40]);
-	    translate([-1,0,17]) rotate([diverter_slope, 0,0]) cube([5,80,30]);
+	subtractor_collector(13);
+	translate([0,-29.5,0])  subtractor_collector(7);
+	
+	translate([0,-55,0]) {
+	  for(x=[0,collector_width-3]) {
+	    translate([x,0,8]) difference() {
+	      cube([3,63,40]);
+	      translate([-1,0,17]) rotate([diverter_slope, 0,0]) cube([5,80,30]);
+	    }
 	  }
 	}
+	// Y-axis plates
+	for(i=[1:7]) {
+	  h1 = 14;
+	  translate([pitch*i-1.5,-53,8.5]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) polygon([[0,0], [60,0], [60,h1+10], [0,h1]]);
+	}
+	//collector_side_bracket();
+	//translate([pitch*8+9,3,0]) rotate([0,0,180]) collector_side_bracket();
+
+	// Mounting supports
+	for(x=[-5,collector_width-1]) {translate([x,-29,8]) cube([6,10,20]);}
       }
-      // Y-axis plates
-      for(i=[1:7]) {
-	h1 = 14;
-	translate([pitch*i-1.5,-53,8.5]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) polygon([[0,0], [60,0], [60,h1+10], [0,h1]]);
+      // Mounting holes
+
+      for(z=[13,23]) {
+	translate([-6,-24,z]) rotate([0,90,0]) cylinder(d=3,h=8);
+	translate([collector_width-2,-24,z]) rotate([0,90,0]) cylinder(d=3,h=8);
       }
-      collector_side_bracket();
-      translate([pitch*8+9,3,0]) rotate([0,0,180]) collector_side_bracket();
+     
     }
   }
 }
