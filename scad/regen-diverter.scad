@@ -266,7 +266,7 @@ module subtractor_flap() {
 
     // Holes in each end to place axles in
     translate([-1,0,0]) rotate([0,90,0]) cylinder(d=3, h=11);
-    translate([pitch*8-4,0,0]) rotate([0,90,0])cylinder(d=3, h=11);
+    translate([pitch*8-10,0,0]) rotate([0,90,0])cylinder(d=3, h=11);
 
 
     translate([-1,-width,0]) rotate([0,90,0])cylinder(d=6.5, h=pitch*8+2);
@@ -301,7 +301,7 @@ module subtractor_flap_frame() {
     translate([0,-4,-3]) cube([3,64,6]);
 
     for(i=[0:3]) {
-      translate([-1,i*subtractor_flap_width, 0]) rotate([0,90,0]) cylinder(d=3, h=10);
+      translate([-1,i*subtractor_flap_width, 0]) rotate([0,90,0]) cylinder(d=3.5, h=10);
     }
   }
 }
@@ -339,7 +339,7 @@ module collector() {
 	
 	translate([0,-55,0]) {
 	  for(x=[0,collector_width-3]) {
-	    translate([x,0,8]) difference() {
+	    translate([x,0,8.5]) difference() {
 	      cube([3,63,40]);
 	      translate([-1,0,17]) rotate([diverter_slope, 0,0]) cube([5,80,30]);
 	    }
@@ -354,7 +354,7 @@ module collector() {
 	//translate([pitch*8+9,3,0]) rotate([0,0,180]) collector_side_bracket();
 
 	// Mounting supports
-	for(x=[-5,collector_width-1]) {translate([x,-29,8]) cube([6,10,20]);}
+	for(x=[-5,collector_width-1]) {translate([x,-29,8.5]) cube([6,10,20]);}
       }
       // Mounting holes
 
