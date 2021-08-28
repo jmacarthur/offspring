@@ -283,22 +283,6 @@ module subtractor_flap_pulley() {
   }
 }
 
-module diverter_support_plate_2d() {
-  difference() {
-    translate([-20,0]) square([265+40,30]);
-    translate([flap_box_x, -10]) square([pitch*8+9,60]);
-    translate([20, 20]) square([265-40,60]);
-    for(x=[7.5, 7.5+250]) {
-      translate([x,5]) circle(d=3);
-      translate([x,25]) circle(d=3);
-    }
-  }
-}
-
-module diverter_support_plate() {
-  color([0.5,0.5,0.5,0.5]) rotate([90,0,0]) linear_extrude(height=3) diverter_support_plate_2d();
-}
-
 module subtractor_flap_frame() {
   difference() {
     translate([0,-4,-3]) cube([3,64,6]);
@@ -443,7 +427,6 @@ module regen_diverter_assembly() {
   translate([data7_x,-16-18,0]) regen_diverter();
   translate([0,0,0]) backing_plate();
   translate([flap_box_x,0,0]) flap_assembly();  
-  translate([0,0,-56]) diverter_support_plate();
   color([0,1,0]) translate([data7_x,-34,-15]) returner();
 
   translate([0,0,-10]) lever_support();
