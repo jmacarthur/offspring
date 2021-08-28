@@ -421,6 +421,21 @@ module lever_support() {
   }
 }
 
+module diverter_bracket() {
+  x1 = 25;
+  y1 = 32;
+  difference() {
+    translate([0,-y1,-58])  cube([x1,y1,22]);
+    translate([-1,-y1-1,-61])  cube([x1-11+1,y1-3+1,30]);
+    translate([-1,-y1-1,-61])  cube([x1-3+1,y1-11+1,30]);
+    translate([12,-10-3,-61])  cylinder(r=10, h=50);
+    translate([0,-y1+5,-53]) rotate([0,90,0]) cylinder(d=3, h=50);
+    translate([0,-y1+5,-43]) rotate([0,90,0]) cylinder(d=3, h=50);
+    translate([7.5,-5,-53]) rotate([-90,0,0]) cylinder(d=3, h=50);
+    translate([7.5,-5,-43]) rotate([-90,0,0]) cylinder(d=3, h=50);
+  }
+}
+
 
 module regen_diverter_assembly() {
   
@@ -431,6 +446,8 @@ module regen_diverter_assembly() {
 
   translate([0,0,-10]) lever_support();
   translate([250-15-5,0,-10]) lever_support();
+
+diverter_bracket();
 }
 
 regen_diverter_assembly();
