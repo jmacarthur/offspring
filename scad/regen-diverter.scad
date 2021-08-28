@@ -106,21 +106,24 @@ module regen_intake_bar(offset) {
 module regen_pull_bar() {
   arm_length = arc_radius+5;
   axle_position = arc_radius;
-  clearance = 0.10;
+  clearance = 0.125;
+  axle_adjust = 2;
   translate([-pitch/2-4.5,0,0])
   difference() {
     union() {
-      translate([-1,-25,35]) cube([pitch*8+10, 10,12]);
-      translate([-1,-25,35]) cube([3, arm_length, 12]);
-      translate([pitch*8+6,-25,35]) cube([3, arm_length, 12]);
-      for(x=[0,pitch*8-4]) translate([x,-15,35]) cube([12,10,12]);
+      translate([-1,-25,35]) cube([pitch*8+10, 10,12+axle_adjust]);
+      translate([-1,-25,35]) cube([3, arm_length, 12+axle_adjust]);
+      translate([pitch*8+6,-25,35]) cube([3, arm_length, 12+axle_adjust]);
+      for(x=[0,pitch*8-4]) {
+	translate([x,-15,35]) cube([12,10,12+axle_adjust]);
+      }
     }
     for(x=[0:7]) {
       translate([-(3+clearance)/2,10,32])
       translate([x*pitch+pitch/2+6,0,10]) regen_intake_bar(clearance);
-      for(x=[12,pitch*8-4]) translate([x,-5,-1]) cylinder(r=10,h=50);
+      for(x=[12,pitch*8-4]) translate([x,-5,-1]) cylinder(r=10,h=55);
     }
-    translate([-5,-25+axle_position,42]) rotate([0,90,0]) cylinder(d=3,h=300);
+    translate([-5,-25+axle_position,42+axle_adjust]) rotate([0,90,0]) cylinder(d=3,h=300);
 
   }
 }
