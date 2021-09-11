@@ -1,6 +1,6 @@
 include <globs.scad>;
 
-radius = 50;
+radius = 40;
 input_arc_thickness = 5;
 module sector_2d(min_radius, max_radius, degrees)
 {
@@ -61,19 +61,23 @@ module input_coupler_2d() {
 
 
 module housing() {
+  height = 17;
+  depth = 50;
   difference() {
     union() {
-      translate([-50,0,-70]) cube([100,pitch*8,40]);
-      translate([-10,0,-70]) cube([20,pitch*8,80]);
+      translate([-depth/2,0,-radius-6]) cube([depth,pitch*8,height]);
+      translate([-10,0,-radius-5]) cube([20,pitch*8,radius+10]);
     }
     for(i=[0:7]) {
       translate([0,pitch/2+pitch*i-3.5,0]) rotate([-90,0,0]) cylinder(h=7, r=radius+4, $fn=200);
-      translate([0,pitch/2+pitch*i-7,0]) rotate([-90,0,0]) cylinder(h=14, r=30, $fn=200);
+      translate([0,pitch/2+pitch*i,0]) rotate([-90,0,0]) cylinder(h=12, r1=radius-5, r2=radius-10, $fn=200);
+      translate([0,pitch/2+pitch*i-7,0]) rotate([-90,0,0]) cylinder(h=8, r1=radius-10, r2=radius, $fn=200);
     }
 
+    
     // Drain holes
     for(i=[0:7]) {
-      translate([0,pitch/2+pitch*i-3.5,-71]) cube([7,7,20]);
+      translate([0,pitch/2+pitch*i-3.5,-radius-10-1]) cube([7,7,20]);
     }
 
     // Assistance slope for the drain holes
@@ -96,7 +100,7 @@ module base_regen()
     translate([0, pitch*i+pitch/2-input_arc_thickness/2,0]) rotate([90,0,0]) linear_extrude(height=3) input_coupler_2d();
     translate([0, pitch*i+pitch/2+input_arc_thickness/2+3,0]) rotate([90,0,0]) linear_extrude(height=3) input_coupler_2d();
   }
-  translate([-3.5,pitch/2,-48]) sphere(r=ball_bearing_radius, $fn=40);
+  translate([-3.5,pitch/2,-35]) sphere(r=ball_bearing_radius, $fn=40);
 }
   
 base_regen();
