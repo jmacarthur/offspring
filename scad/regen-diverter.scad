@@ -422,8 +422,16 @@ module lever_support() {
 }
 
 module diverter_bracket(x1, y1) {
+  color([1,0,0])
   difference() {
-    translate([0,-y1,-58])  cube([x1,y1,22]);
+    union() {
+      translate([x1-3,-y1,-58])  cube([3,y1-10,22]);
+      translate([0,-3,-58])  cube([x1-10,3,22]);
+      translate([x1-10,-10,-58])  cylinder(r=10,h=22);
+
+      translate([x1,-y1+10,-58])  cube([3,3,22]);
+
+    }
     translate([-1,-y1-1,-61])  cube([x1-11+1,y1-3+1,30]);
     translate([-1,-y1-1,-61])  cube([x1-3+1,y1-11+1,30]);
     translate([x1-3-10,-10-3,-61])  cylinder(r=10, h=50);
