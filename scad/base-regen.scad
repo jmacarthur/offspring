@@ -66,12 +66,29 @@ module housing() {
   difference() {
     union() {
       translate([-depth/2,0,-radius-6]) cube([depth,pitch*8,height]);
-      translate([-10,0,-radius-5]) cube([20,pitch*8,radius+10]);
+
+      // Axle posts
+      hull() {
+	translate([-10,0,-radius-5]) cube([20,pitch*8,10]);
+	rotate([-90,0,0]) cylinder(d=10,h=pitch*8+10);
+      }
+      // Catchment area
+      for(i=[0:7]) {
+	difference() {
+	  translate([-depth/2,pitch/2+pitch*i,-40]) cube([20,20,20]);
+          // Drain cone, +Y
+          translate([0,pitch/2+pitch*i,0]) rotate([-90,0,0]) cylinder(h=18, r1=radius-7, r2=radius-11, $fn=200);
+	}
+      }
     }
     for(i=[0:7]) {
+      // Main channel
       translate([0,pitch/2+pitch*i-3.5,0]) rotate([-90,0,0]) cylinder(h=7, r=radius+4, $fn=200);
-      translate([0,pitch/2+pitch*i,0]) rotate([-90,0,0]) cylinder(h=12, r1=radius-5, r2=radius-10, $fn=200);
-      translate([0,pitch/2+pitch*i-7,0]) rotate([-90,0,0]) cylinder(h=8, r1=radius-10, r2=radius, $fn=200);
+
+      // Drain cone, +Y
+      translate([0,pitch/2+pitch*i,0]) rotate([-90,0,0]) cylinder(h=12, r1=radius-3, r2=radius-10, $fn=200);
+      // Spacing cylinder, -Y
+      translate([0,pitch/2+pitch*i-7,0]) rotate([-90,0,0]) cylinder(h=5, r=22, $fn=200);
     }
 
     
