@@ -17,27 +17,28 @@ module sector_2d(min_radius, max_radius, degrees)
 }
 
 
-module input_arc()
-{
-  rotate([-90,0,0]) linear_extrude(height=input_arc_thickness) {
-    difference() {
-      union() {
-	sector_2d(radius-5, radius+3, 90);
-	translate([10,-5]) square([radius-10+3+10, 10]);
-      }
-
-      // Angle the end to hold the bearing in place durig push
-      polygon([[0,radius-5], [3, radius+3], [0, radius+3]]);
-      translate([15,0]) circle(d=3);
-      translate([35,0]) circle(d=3);
+module input_arc_2d() {
+  difference() {
+    union() {
+      sector_2d(radius-5, radius+3, 90);
+      translate([10,-5]) square([radius-10+3+10, 10]);
     }
+
+    // Angle the end to hold the bearing in place durig push
+    polygon([[0,radius-5], [3, radius+3], [0, radius+3]]);
+    translate([15,0]) circle(d=3);
+    translate([35,0]) circle(d=3);
   }
 }
 
-module output_arc()
+module input_arc()
 {
+  rotate([-90,0,0]) linear_extrude(height=input_arc_thickness) input_arc_2d();
+}
+
+module output_arc_2d() {
   arc = 80;
-  rotate([0,100,0]) rotate([-90,0,0]) linear_extrude(height=3) difference() {
+  difference() {
     union() {
       sector_2d(radius-3, radius+3, arc);
       rotate(arc) translate([0,-5]) square([radius+3+30, 10]);
@@ -45,6 +46,11 @@ module output_arc()
     }
     circle(d=3);
   }
+}
+
+module output_arc()
+{
+  rotate([0,100,0]) rotate([-90,0,0]) linear_extrude(height=3) output_arc_2d();
 }
 
 module input_coupler_2d() {
