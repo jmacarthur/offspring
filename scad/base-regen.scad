@@ -26,6 +26,7 @@ module input_arc_2d() {
   difference() {
     union() {
       sector_2d(radius-5, radius+3, 90);
+      sector_2d(radius-10, radius+3, 70);
       translate([10,-5]) square([radius-10+3+10, 10]);
     }
 
@@ -46,6 +47,7 @@ module output_arc_2d() {
   difference() {
     union() {
       sector_2d(radius-3, radius+3, arc);
+      rotate(10) sector_2d(radius-6, radius+3, arc-10);
       rotate(arc) translate([0,-5]) square([radius+3+30, 10]);
       circle(d=10);
     }
