@@ -2,6 +2,11 @@ include <globs.scad>;
 
 radius = 40;
 input_arc_thickness = 5;
+
+input_x = 48; // Position of input relative to left edge of openbeam; 48 matches subtractor
+
+centre_x = input_x-10; // Centre line for arms
+
 module sector_2d(min_radius, max_radius, degrees)
 {
   // degrees must be <= 90
@@ -65,6 +70,25 @@ module input_coupler_2d() {
   }
 }
 
+module backing_plate_2d() {
+  difference() {
+    translate([0, 0]) square([250+15,41]);
+    for(x=[0,250]) {
+      translate([7.5+x,10]) circle(d=3);
+      translate([7.5+x,30]) circle(d=3);
+    }
+    for(i=[0:7]) {
+      translate([centre_x-2+pitch*i, 11]) offset(r=1) square([4,18]);
+    }
+    for(i=[1,6]) {
+      translate([centre_x+pitch*i+pitch/2, 10]) circle(d=3);
+    }
+  }
+}
+
+module backing_plate() {
+  rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) backing_plate_2d();
+}
 
 module housing() {
   height = 17;
@@ -109,21 +133,31 @@ module housing() {
     }
     // Axle hole
     translate([0,-5,0]) rotate([-90,0,0]) cylinder(d=3.2, h=pitch*8+50);
+
+    // Mounting holes
+    for(i=[2,7]) {
+        #translate([-26, pitch*i, -radius-6+10]) rotate([0,90,0]) cylinder(d=3, h=20);
+    }
+
   }
 }
-
 
 module base_regen()
 {
-  housing();
+  translate([0,centre_x-pitch/2,0]) housing();
   for(i=[0:7]) {
-    translate([0,pitch/2+pitch*i-1.5,0]) output_arc();
-    color([0,1,0]) translate([0,pitch/2+pitch*i-input_arc_thickness/2,0]) input_arc();
+    translate([0,centre_x+pitch*i-1.5,0]) output_arc();
+    color([0,1,0]) translate([0,centre_x+pitch*i-input_arc_thickness/2,0]) input_arc();
 
-    translate([0, pitch*i+pitch/2-input_arc_thickness/2,0]) rotate([90,0,0]) linear_extrude(height=3) input_coupler_2d();
-    translate([0, pitch*i+pitch/2+input_arc_thickness/2+3,0]) rotate([90,0,0]) linear_extrude(height=3) input_coupler_2d();
+    translate([0, centre_x+pitch*i-input_arc_thickness/2,0]) rotate([90,0,0]) linear_extrude(height=3) input_coupler_2d();
+    translate([0, centre_x+pitch*i+input_arc_thickness/2+3,0]) rotate([90,0,0]) linear_extrude(height=3) input_coupler_2d();
   }
-  translate([-3.5,pitch/2,-35]) sphere(r=ball_bearing_radius, $fn=40);
+  translate([-3.5,centre_x,-35]) sphere(r=ball_bearing_radius, $fn=40);
+  color([0,1,0]) translate([-25-3,0,-radius-6]) backing_plate();
+
 }
-  
+
+// Illustrate data
+color([1,0,0]) translate([0,input_x,0]) cylinder(r=1, h=100);
+
 base_regen();
