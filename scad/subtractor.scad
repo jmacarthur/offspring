@@ -482,4 +482,3 @@ module pipe_connector() {
 }
 
 
-translate([0,0,-18]) linear_extrude(height=3) pipe_connector();
