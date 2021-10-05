@@ -97,12 +97,12 @@ module housing() {
   depth = 50;
   difference() {
     union() {
-      translate([-depth/2,0,-radius-6]) cube([depth,pitch*8,height]);
+      translate([-depth/2,0,-radius-6]) cube([depth,pitch*8+9,height]);
 
       // Axle posts
       hull() {
-	translate([-10,0,-radius-5]) cube([20,pitch*8,10]);
-	rotate([-90,0,0]) cylinder(d=10,h=pitch*8+10);
+	translate([-10,0,-radius-5]) cube([20,pitch*8+5,10]);
+	rotate([-90,0,0]) cylinder(d=10,h=pitch*8+5);
       }
       // Catchment area
       for(i=[0:7]) {
