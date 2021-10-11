@@ -277,9 +277,17 @@ module subtractor_flap() {
 }
 
 module subtractor_flap_pulley() {
-  rotate([0,90,0]) union() {
-    for(z=[0,4]) translate([0,0,z]) cylinder(d=10,h=1);
-    cylinder(d=8,h=5);
+  min_diameter = 8;
+  max_diameter = 10;
+  rotate([0,90,0]) difference() {
+    union() {
+      translate([0,0,0]) cylinder(d=max_diameter,h=1);
+      translate([0,0,1]) cylinder(d1=max_diameter,d2=min_diameter,h=1);
+      translate([0,0,3]) cylinder(d1=min_diameter,d2=max_diameter,h=1);
+      translate([0,0,4]) cylinder(d=max_diameter,h=1);
+      cylinder(d=min_diameter,h=5);
+    }
+    translate([0,0,-1]) cylinder(d=3, h= 15);
   }
 }
 
