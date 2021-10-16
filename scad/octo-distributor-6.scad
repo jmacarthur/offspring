@@ -145,6 +145,7 @@ module injector_assembly() {
 
 
 module lever_bracket_2d() {
+  clip_step = 0.2;
   difference() {
     hull() {
       translate([5,5]) circle(d=10);
@@ -152,7 +153,8 @@ module lever_bracket_2d() {
       translate([27,10]) circle(d=10);
     }
 
-    translate([7,-1]) square([3,21]);
+    translate([7,12]) square([3,8]);
+    translate([7+clip_step,-1]) square([3-clip_step*2,15]);
     translate([27,10]) circle(d=3);
   }
 
@@ -160,7 +162,10 @@ module lever_bracket_2d() {
 
 
 module lever_bracket() {
-  rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=5) lever_bracket_2d();
+  union() {
+    rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=5) lever_bracket_2d();
+    translate([0,5,20]) cube([20,5,7]);
+  }
 }
 
 
@@ -189,8 +194,10 @@ for(x=[0:7]) {
 injector_assembly();
 color([0,1,0]) backplate();
 
-translate([memory_x_7-1.5,17,40]) crank_arm();
-translate([30,-10,30]) lever_bracket();
+for(i=[0:7]) {
+  translate([memory_x_7-1.5+i*pitch,17,40]) crank_arm();
+ }
+translate([32,-10,30]) lever_bracket();
 translate([memory_x_7, memory_y_7, -14]) coupler();
 
 translate([22.5,-5,-130-11]) rotate([90,0,0]) memory_assembly();
