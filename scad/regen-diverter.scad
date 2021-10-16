@@ -19,24 +19,45 @@ module pyramid(width, depth, apex_height) {
 }
 
 module discard_flap() {
-  translate([-pitch/2-3,0,0])
+  translate([data7_x-pitch/2,0,0]) {
+    difference() {
+      union() {
+	hull() {
+	  translate([0,-3,0]) cube([pitch*8, 3, 27]);
+	  rotate([0,90,0]) cylinder(h=pitch*8, d=6);
+	}
+	for(i=[0:7]) {
+	  for(x=[-5, 5+3]) {
+	    translate([i*pitch+x+pitch/2, 0, 0]) rotate([90,0,0]) rotate([0,-90,0]) linear_extrude(height=3) polygon([[0,0], [10,10], [10,30], [0,30]]);
+	  }
+	}
+      }
+      translate([-1,0,0]) rotate([0,90,0]) cylinder(h=11, d=3);
+      translate([pitch*8-10,0,0]) rotate([0,90,0]) cylinder(h=12, d=3);
+    }
+  }
+}
+
+module discard_flap_holder() {
   difference() {
     union() {
-      rotate([0,90,0])cylinder(d=6, h=pitch*8+1);
-      translate([0,-23,0]) cube([pitch*8-1, 23, 3]);
-      for(i=[1:7]) {
-	translate([i*pitch-1.5,0,0]) rotate([-90,0,0]) rotate([0,90,0]) linear_extrude(height=3) polygon([[0,0], [20,0], [15,5], [5,5]]);
-      }
-      rotate([-90,0,0]) rotate([0,90,0]) linear_extrude(height=pitch*8-1) polygon([[0,3], [20,0], [0,-3]]);
-      
-      // Control arm
-      for(x=[0, pitch*8-2]) translate([x,0,0]) rotate([180,0,0]) translate([0,0,-3]) cube([3,50,6]);
+      translate([-13,-10,-5]) cube([11,15,20]);
+      translate([-13,3,-5]) cube([11,3,30]);
     }
-    translate([-1,0,0]) rotate([0,90,0])cylinder(d=3, h=6);
-    translate([pitch*8+3-5,0,0]) rotate([0,90,0])cylinder(d=3, h=6);
-
-    translate([3,-22,-2]) rotate([45,0,0]) cube([pitch*8-5, 3, 5]);
+    translate([1,0,0]) rotate([0,-90,0]) cylinder(d=3,h=15);
+    hull() {
+      translate([1,0,0]) rotate([0,-90,0]) cylinder(d=7,h=6);
+      translate([-5,0,0]) cube([10,3,30]);
+      translate([-5,-3,0]) rotate([30,0,0]) cube([10,3,30]);
+    }
+    translate([-10,0,20]) rotate([-90,0,0]) cylinder(d=3,h=15);
   }
+}
+
+module discard_assembly() {
+  translate([0,0,0]) rotate([0,0,0]) discard_flap();
+  translate([data7_x-pitch/2+5,0,0]) discard_flap_holder();
+  translate([data7_x-pitch/2-5,0,0]) translate([pitch*8,0,0]) scale([-1,1,1]) discard_flap_holder();
 }
 
 module housing1() {
@@ -220,11 +241,11 @@ module backing_plate_2d() {
 	translate([x,y]) circle(d=3);
       }
     }
-    translate([25,30]) square([195,60]);
+    translate([20,15]) square([250-35,20]);
+    translate([28,15]) square([250-64,40]);
 
-    for(x=[0:7]) translate([x*pitch+data7_x,10]) circle(d=10);
-    // Mounting holes
-    for(x=[3,7]) translate([pitch*x+6,5]) circle(d=3);
+    translate([data7_x-pitch/2-5,40]) circle(d=3);
+    translate([data7_x-pitch/2+pitch*8+5,40]) circle(d=3);
   }
 }
 
@@ -408,7 +429,7 @@ module right_diverter_bracket() {
 
 
 module regen_diverter_assembly() {
-  
+  translate([0,-3,20]) discard_assembly();
   translate([0,0,0]) backing_plate();
   translate([flap_box_x,0,0]) flap_assembly();  
 
