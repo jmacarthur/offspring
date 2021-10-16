@@ -27,7 +27,8 @@ module input_arc_2d() {
     union() {
       sector_2d(radius-5, radius+3, 90);
       sector_2d(radius-10, radius+3, 70);
-      translate([10,-5]) square([radius-10+3+10, 10]);
+      translate([10,-5]) square([radius-10+3+20, 10]);
+      translate([10,-5]) square([radius-10+3+25, 5]);
     }
 
     // Angle the end to hold the bearing in place durig push
@@ -48,9 +49,15 @@ module output_arc_2d() {
     union() {
       sector_2d(radius-3, radius+3, arc);
       rotate(10) sector_2d(radius-6, radius+3, arc-10);
-      rotate(arc) translate([0,-5]) square([radius+3+30, 10]);
+      rotate(arc) translate([0,-5]) square([radius+3+40, 10]);
       circle(d=10);
     }
+
+    for(x=[0:5]) {
+      rotate(arc) translate([radius+3+x*5+10,-6]) square([1,3]);
+      rotate(arc) translate([radius+3+x*5+10,3]) square([1,3]);
+    }
+
     circle(d=3);
   }
 }
