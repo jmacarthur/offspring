@@ -149,7 +149,7 @@ module mounting_plate_2d() {
     translate([-40,10-hole_to_frontplate_y+1]) square([100,70]);
     translate([-16,10-hole_to_frontplate_y+1+10]) circle(d=3);
     translate([-31,10-hole_to_frontplate_y+1+25]) circle(d=3);
-    translate([20,0]) square([20,100]);
+    translate([22.5,0]) offset(r=3) square([15,100]);
     top_plate_cutout_2d();
   }
 }

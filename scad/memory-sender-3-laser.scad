@@ -17,4 +17,6 @@ offset(kerf) {
   translate([10,50]) rotate(30) top_plate_2d();
   translate([60,60]) rotate(25) mid_plate_2d();
   translate([90,70]) lower_layer_2d();
+
+  translate([200,50]) mounting_plate_2d();
 }
