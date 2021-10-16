@@ -241,7 +241,7 @@ module backing_plate_2d() {
 	translate([x,y]) circle(d=3);
       }
     }
-    translate([20,15]) square([250-35,20]);
+    translate([15,15]) square([250-35,20]);
     translate([28,15]) square([250-64,40]);
 
     translate([data7_x-pitch/2-5,40]) circle(d=3);
