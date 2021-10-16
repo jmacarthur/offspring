@@ -172,22 +172,6 @@ module regen_body() {
   }
 }
 
-debug1 = 0;
-module regen() {
-  regen_body();
-  for(x=[0:7]) {
-    union() {
-      translate([pitch*x,0,0]) {
-	translate([0,14,10]) rotate([-90,0,0]) cylinder(d=6, h=3);
-	translate([0,14,10]) rotate([-90,0,0]) cylinder(d=3, h=30);
-	translate([0,31,10]) rotate([-90,0,0]) cylinder(d=6, h=3);
-      }
-    }
-    translate([pitch*x+debug1,5,10+arc_radius]) rotate([0,0,0]) regen_intake_bar(0);
-  }
-  color([0.5,0.5,0.5,0.5]) translate([0,-5,0]) regen_pull_bar();
-}
-
 module output_lever_2d() {
   l1 = 50;
   l2 = 30;
@@ -246,16 +230,6 @@ module backing_plate_2d() {
 
 module backing_plate() {
   color([0.5,0.5,0.5,0.5]) rotate([90,0,0]) linear_extrude(height=3) backing_plate_2d();
-}
-
-module regen_diverter() {
-
-  translate([0,0,0]) regen();
-
-  color([1,0,0]) translate([1.5,50,-10]) output_lever();
-
-  translate([0,0,15]) color([0,1,0]) hopper();
-  translate([3,20,25]) rotate([-55,0,0]) discard_flap();
 }
 
 module subtractor_flap() {
@@ -383,33 +357,6 @@ module flap_assembly() {
   collector_with_frame();
 }
 
-
-// Passive module which moves bearings toward the back of the machine
-module returner() {
-  channel_diameter = 7.5;
-  intake_y = 5;
-  output_y = 30;
-  h1 = 10;
-  h2 = 5;
-  difference() {
-    translate([-pitch/2,0,0]) cube([pitch*8, 35, 15]);
-
-    // Intake holes
-    for(i=[0:7]) {
-      translate([pitch*i, intake_y, h1]) cylinder(d=channel_diameter, h=10);
-      hull() {
-	translate([pitch*i, intake_y, h1]) sphere(d=channel_diameter);
-	translate([pitch*i, output_y, h2]) sphere(d=channel_diameter);
-      }
-      translate([pitch*i, output_y, -1]) cylinder(d=channel_diameter, h=h2+1);
-      
-    }
-    // Vertical mounting holes
-    for(x=[1,7]) translate([pitch*x-pitch/2,18,-1]) cylinder(d=3,h=30);
-
-  }
-}
-
 module lever_support_holes_2d(diam) {
   translate([0,0]) circle(d=diam);
   translate([0,7.5]) circle(d=diam);
@@ -462,10 +409,8 @@ module right_diverter_bracket() {
 
 module regen_diverter_assembly() {
   
-  translate([data7_x,-16-18,0]) regen_diverter();
   translate([0,0,0]) backing_plate();
   translate([flap_box_x,0,0]) flap_assembly();  
-  color([0,1,0]) translate([data7_x,-34,-15]) returner();
 
   translate([0,0,-10]) lever_support();
   translate([250-15-5,0,-10]) lever_support();
