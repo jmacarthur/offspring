@@ -1,5 +1,7 @@
 // Regenerator and diverter unit
 include <globs.scad>;
+use <base-regen.scad>;
+
 
 pipe_diameter = 7;
 
@@ -234,14 +236,14 @@ module upward_curved_pipe() {
 
 module backing_plate_2d() {
   difference() {
-    square([250+15,50]);
+    translate([0,5]) square([250+15,40]);
     for(y=[10,30]) {
       for(x=[7.5,7.5+250]) {
 	translate([x,y]) circle(d=3);
 	translate([x,y]) circle(d=3);
       }
     }
-    translate([15,15]) square([250-35,20]);
+    translate([15,0]) square([250-35,35]);
     translate([28,15]) square([250-64,40]);
 
     translate([data7_x-pitch/2-5,40]) circle(d=3);
@@ -413,10 +415,13 @@ module right_diverter_bracket() {
 module regen_diverter_assembly() {
   translate([0,-3,20]) discard_assembly();
   translate([0,0,0]) backing_plate();
-  translate([flap_box_x,0,0]) flap_assembly();  
+  translate([0,-25-3,5]) rotate([0,0,-90]) base_regen();
 
-  left_diverter_bracket();
-  right_diverter_bracket();
+  translate([0,0,-30]) {
+    translate([flap_box_x,0]) flap_assembly();  
+    left_diverter_bracket();
+    right_diverter_bracket();
+  }
 }
 
 regen_diverter_assembly();
