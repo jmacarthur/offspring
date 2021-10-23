@@ -79,24 +79,26 @@ module input_coupler_2d() {
   }
 }
 
-module backing_plate_2d() {
+module backing_plate_2d(shift) {
   difference() {
     translate([0, 0]) square([250+15,41]);
     for(x=[0,250]) {
       translate([7.5+x,10]) circle(d=3);
       translate([7.5+x,30]) circle(d=3);
     }
-    for(i=[0:7]) {
-      translate([centre_x-2+pitch*i, 11]) offset(r=1) square([4,18]);
-    }
-    for(i=[1,6]) {
-      translate([centre_x+pitch*i+pitch/2, 10]) circle(d=3);
+    translate([shift,0]) {
+      for(i=[0:7]) {
+	translate([centre_x-2+pitch*i, 11]) offset(r=1) square([4,18]);
+      }
+      for(i=[1,6]) {
+	translate([centre_x+pitch*i+pitch/2, 10]) circle(d=3);
+      }
     }
   }
 }
 
-module backing_plate() {
-  rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) backing_plate_2d();
+module backing_plate(shift) {
+  rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) backing_plate_2d(shift);
 }
 
 module housing() {
@@ -151,22 +153,24 @@ module housing() {
   }
 }
 
-module base_regen()
+module base_regen(shift)
 {
-  translate([0,centre_x-pitch/2,0]) housing();
-  for(i=[0:7]) {
-    translate([0,centre_x+pitch*i-1.5,0]) output_arc();
-    color([0,1,0]) translate([0,centre_x+pitch*i-input_arc_thickness/2,0]) input_arc();
-
-    translate([0, centre_x+pitch*i-input_arc_thickness/2,0]) rotate([90,0,0]) linear_extrude(height=3) input_coupler_2d();
-    translate([0, centre_x+pitch*i+input_arc_thickness/2+3,0]) rotate([90,0,0]) linear_extrude(height=3) input_coupler_2d();
+  translate([0,shift,0]) {
+    translate([0,centre_x-pitch/2,0]) housing();
+    for(i=[0:7]) {
+      translate([0,centre_x+pitch*i-1.5,0]) output_arc();
+      color([0,1,0]) translate([0,centre_x+pitch*i-input_arc_thickness/2,0]) input_arc();
+      
+      translate([0, centre_x+pitch*i-input_arc_thickness/2,0]) rotate([90,0,0]) linear_extrude(height=3) input_coupler_2d();
+      translate([0, centre_x+pitch*i+input_arc_thickness/2+3,0]) rotate([90,0,0]) linear_extrude(height=3) input_coupler_2d();
+    }
+    translate([-3.5,centre_x,-35]) sphere(r=ball_bearing_radius, $fn=40);
   }
-  translate([-3.5,centre_x,-35]) sphere(r=ball_bearing_radius, $fn=40);
-  color([0,1,0]) translate([-25-3,0,-radius-6]) backing_plate();
+  color([0,1,0]) translate([-25-3,0,-radius-6]) backing_plate(shift);
 
 }
 
 // Illustrate data
 color([1,0,0]) translate([0,input_x,0]) cylinder(r=1, h=100);
 
-base_regen();
+base_regen(0);

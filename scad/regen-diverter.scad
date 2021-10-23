@@ -417,7 +417,7 @@ module right_diverter_bracket() {
 module regen_diverter_assembly() {
   translate([0,-3,20]) discard_assembly();
   translate([0,0,0]) backing_plate();
-  translate([0,-25-3,5]) rotate([0,0,-90]) base_regen();
+  translate([0,-25-3,5]) rotate([0,0,-90]) base_regen(-5);
 
   translate([0,0,-30]) {
     translate([flap_box_x,0]) flap_assembly();  
