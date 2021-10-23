@@ -237,7 +237,7 @@ module upward_curved_pipe() {
 }
 
 
-module backing_plate_2d() {
+module discard_backing_plate_2d() {
   difference() {
     translate([0,5]) square([250+15,40]);
     for(y=[10,30]) {
@@ -254,8 +254,8 @@ module backing_plate_2d() {
   }
 }
 
-module backing_plate() {
-  color([0.5,0.5,0.5,0.5]) rotate([90,0,0]) linear_extrude(height=3) backing_plate_2d();
+module discard_backing_plate() {
+  color([0.5,0.5,0.5,0.5]) rotate([90,0,0]) linear_extrude(height=3) discard_backing_plate_2d();
 }
 
 module subtractor_flap() {
@@ -452,7 +452,7 @@ module returner() {
 
 module regen_diverter_assembly() {
   translate([0,-3,20]) discard_assembly();
-  translate([0,0,0]) backing_plate();
+  translate([0,0,0]) discard_backing_plate();
   translate([0,-25-3,5]) rotate([0,0,-90]) base_regen(regen_offset);
 
   translate([0,-3,-71]) returner();
