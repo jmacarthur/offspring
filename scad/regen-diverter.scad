@@ -11,6 +11,7 @@ diverter_slope = 10;
 collector_width = pitch*8+9;
 flap_box_x = 30;
 flap_rotate = 0;
+regen_offset = -5;
 module pyramid(width, depth, apex_height) {
   polyhedron(
   points=[ [width/2,depth/2,0],[width/2,-depth/2,0],[-width/2,-depth/2,0],[-width/2,depth/2,0], // the four points at base
@@ -414,12 +415,49 @@ module right_diverter_bracket() {
 }
 
 
+module returner() {
+  difference() {
+    union() {
+      translate([data7_x-pitch/2-5,-40,0])
+	cube([pitch*8, 47, 10]);
+      translate([0,-2,0]) cube([250+15, 5, 10]);
+    }
+    for(i=[0:7]) {
+      translate([data7_x-pitch/2+pitch*i,-40,0]) {
+	hull() {
+	  translate([pitch/2+regen_offset-3,10,10]) sphere(d=10);
+	  translate([pitch/2,40,5]) sphere(d=8);
+	  translate([pitch/2,40,10]) sphere(d=8);
+	}
+	translate([pitch/2,40,-1]) cylinder(d=8, h=5);
+	
+	// This isn't necessary - it's just reducing print volume
+	if(i>0) {
+	  hull() {
+	    translate([regen_offset-5,0,10]) sphere(d=10);
+	    translate([0,47,10]) sphere(d=8);
+	  }
+	}
+
+      }
+    }
+
+    for(x=[0,250]) {
+      translate([x+7.5,-3,5]) {
+	rotate([-90,0,0]) cylinder(d=3,h=10);
+      }
+    }
+  } 
+}
+
 module regen_diverter_assembly() {
   translate([0,-3,20]) discard_assembly();
   translate([0,0,0]) backing_plate();
-  translate([0,-25-3,5]) rotate([0,0,-90]) base_regen(-5);
+  translate([0,-25-3,5]) rotate([0,0,-90]) base_regen(regen_offset);
 
-  translate([0,0,-30]) {
+  translate([0,-3,-71]) returner();
+
+  translate([0,0,-60]) {
     translate([flap_box_x,0]) flap_assembly();  
     left_diverter_bracket();
     right_diverter_bracket();
@@ -427,7 +465,6 @@ module regen_diverter_assembly() {
 }
 
 regen_diverter_assembly();
-
 
 // Simulate rack rails
 if(1) {
