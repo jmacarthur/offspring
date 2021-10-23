@@ -30,7 +30,9 @@ module discard_flap() {
 	}
 	for(i=[0:7]) {
 	  for(x=[-5, 5+3]) {
-	    translate([i*pitch+x+pitch/2, 0, 0]) rotate([90,0,0]) rotate([0,-90,0]) linear_extrude(height=3) polygon([[0,0], [10,10], [10,30], [0,30]]);
+	    translate([i*pitch+x+pitch/2, 0, 0]) rotate([90,0,0]) rotate([0,-90,0]) linear_extrude(height=3) {
+	      polygon([[0,0], [20,10], [20,30], [0,30]]);
+	    }
 	  }
 	}
       }
