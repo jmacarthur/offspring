@@ -153,6 +153,23 @@ module housing() {
   }
 }
 
+module regen_input_coupler_2d() {
+  difference() {
+    translate([centre_x-pitch/2,0]) square([pitch*8,20]);
+    for(i=[0:7]) {
+      translate([centre_x+pitch*i-2.5,7.5]) square([5,5]);
+    }
+    for(i=[1,4,7]) {
+      translate([centre_x+pitch*i-pitch/2,5]) circle(d=3);
+      translate([centre_x+pitch*i-pitch/2,15]) circle(d=3);
+    }
+  }
+}
+
+module regen_input_coupler() {
+  rotate([0,90,0]) rotate([0,0,90]) linear_extrude(height=5) regen_input_coupler_2d();
+}
+
 module base_regen(shift)
 {
   translate([0,shift,0]) {
@@ -167,6 +184,8 @@ module base_regen(shift)
     translate([-3.5,centre_x,-35]) sphere(r=ball_bearing_radius, $fn=40);
   }
   color([0,1,0]) translate([-25-3,0,-radius-6]) backing_plate(shift);
+
+  translate([63,0,-7.5]) regen_input_coupler();
 
 }
 
