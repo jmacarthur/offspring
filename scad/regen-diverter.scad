@@ -32,7 +32,7 @@ module discard_flap() {
 	for(i=[0:7]) {
 	  for(x=[-5, 5+3]) {
 	    translate([i*pitch+x+pitch/2, 0, 0]) rotate([90,0,0]) rotate([0,-90,0]) linear_extrude(height=3) {
-	      polygon([[0,0], [20,10], [20,30], [0,30]]);
+	      polygon([[0,0], [13,10], [13,27], [0,27]]);
 	    }
 	  }
 	}
@@ -49,7 +49,7 @@ module discard_flap_holder() {
       translate([-13,-10,-5]) cube([11,15,20]);
       translate([-13,3,-5]) cube([11,3,30]);
     }
-    translate([1,0,0]) rotate([0,-90,0]) cylinder(d=3,h=15);
+    translate([1,0,0]) rotate([0,-90,0]) cylinder(d=3.5,h=15);
     hull() {
       translate([1,0,0]) rotate([0,-90,0]) cylinder(d=7,h=6);
       translate([-5,0,0]) cube([10,3,30]);
