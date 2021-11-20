@@ -393,6 +393,24 @@ module reset_lever_2d() {
   }
 }
 
+module reverse_reset_lever_2d() {
+  translate([-12.5+pitch,47]) {
+    rotate(reset_rot) {
+      difference() {
+	union() {
+	  circle(r=5);
+	  translate([-3,-40]) square([3,40]);
+	  translate([-5,-30]) square([5,30]);
+	  translate([-30,-5]) square([30,10]);
+	  translate([-15,-15]) square([15,15]);
+	}
+	translate([0,0]) circle(d=3);
+	translate([-25,0]) circle(d=3);
+	translate([-15,-15]) circle(r=10);
+      }
+    }
+  }
+}
 
 module reset_bar_2d() {
   translate([-12.5+20*sin(reset_rot),30-20*cos(reset_rot)]) {
@@ -443,7 +461,8 @@ module subtractor_assembly() {
     }
     translate([-i*subtractor_pitch_x, -i*subtractor_pitch_y,-21]) {
       color([0.5,0.5,0.8]) linear_extrude(height=3) rotate(rot) reset_toggle_2d();
-      if(i % 4 == 0) translate([0,0,-3]) color([1.0,1.0,0.5]) linear_extrude(height=3) reset_lever_2d(); // Reset lever is already rotated, as it's offset
+      //if(i % 4 == 0) translate([0,0,-3]) color([1.0,1.0,0.5]) linear_extrude(height=3) reset_lever_2d(); // Reset lever is already rotated, as it's offset
+      translate([0,0,-3]) color([1.0,1.0,0.5]) linear_extrude(height=3) reverse_reset_lever_2d(); // Reset lever is already rotated, as it's offset
     }
   }
   translate([1*subtractor_pitch_x, 1*subtractor_pitch_y,0]) {
@@ -453,7 +472,7 @@ module subtractor_assembly() {
     linear_extrude(height=3) output_guard_top_2d();
   }
 
-  translate([0,0,-21]) color([1.0,1.0,0.5]) linear_extrude(height=3) reset_bar_2d(); // Reset lever is already rotated, as it's offset
+  //translate([0,0,-21]) color([1.0,1.0,0.5]) linear_extrude(height=3) reset_bar_2d(); // Reset lever is already rotated, as it's offset
 }
 
 subtractor_assembly();
