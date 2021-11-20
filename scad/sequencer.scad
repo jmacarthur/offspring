@@ -5,7 +5,7 @@ use <generic_conrods.scad>;
 use <decoder.scad>;
 use <interconnect.scad>;
 include <sequencer_globs.scad>;
-use <sequencer-output.scad>;
+
 // At the moment, there are 17 cams. 4 of these are selective and only drive if certain instructions are in use. The rest are always in use.
 // The instructions which need a gate are LDN, STO, JRP, JMP and CMP. LDN and CMP have the same cam pattern so share one (although they must have independent outputs). SUB is the default instruction so does not need a gate; HLT is unimplemented.
 
@@ -103,57 +103,6 @@ module input_gear() {
   gear(20, 12, 25, 35, 35);
 }
 
-
-module follower_2d(long=false) {
-  len = long ? cam_diameter : cam_diameter/2;
-  difference() {
-    union() {
-      conrod(len);
-      // Output blob
-      hull() {
-	translate([5,0]) square([len-10,5]);
-	if(long) translate([cam_diameter/2-10,4]) square([10,6]);
-      }
-      translate([cam_diameter/2-10,4]) square([10,6]);
-      // Follower blob
-      translate([cam_diameter/2,-5]) circle(d=20);
-    }
-    if(!long) {
-      // Hole to mount a small bearing. TODO: size and position have not been checked.
-      translate([len,-7.5]) circle(d=3);
-    }
-  }
-}
-
-module decoder_drop_rod_2d() {
-  len = 38;
-  $fn=20;
-  union() {
-    conrod(cam_diameter/2+len+5);
-    hull() {
-      translate([cam_diameter/2+len,-10]) square([5,20]);
-      translate([cam_diameter/2+len+10,-10+1.5]) circle(d=3);
-      translate([cam_diameter/2+len+10,10-1.5]) circle(d=3);
-    }
-  }
-}
-
-module instruction_output_rod_2d() {
-  difference() {
-    union() {
-      conrod(cam_diameter);
-      hull() {
-	translate([0,-5]) square([cam_diameter,10]);
-	translate([cam_diameter/2-10,0]) square([10,10]);
-      }
-      translate([cam_diameter/2-10,-10]) square([10,20]);
-      circle(d=10);
-    }
-    circle(d=3);
-  }
-}
-
-
 module camshaft() {
   // The first four cam holders hold eight cams which are selectable
   // by instruction.  The next five run ten fixed functions. These can
@@ -188,20 +137,6 @@ module cam_clipons() {
 follower_x_offset = -3;
 function instruction_follower_x(x) = follower_spacing*x+follower_x_offset;
 function fixed_follower_x(x) = fixed_cam_spacing*x+follower_x_offset+follower_spacing*8-2;
-
-module followers() {
-
-  for(i=[0:7]) {
-    translate([instruction_follower_x(i), follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d(false);
-    color([0,0.5,0.5]) translate([instruction_follower_x(i), follower_axle_y-21,cam_diameter/2+60]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) decoder_drop_rod_2d();
-    translate([instruction_follower_x(i), instruction_axle_y,instruction_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) instruction_output_rod_2d();
-  }
-  for(i=[0:4]) {
-    translate([fixed_follower_x(i), follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d(true);
-    translate([fixed_follower_x(i)+cam_support_width+cam_width, follower_axle_y,follower_axle_z]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) follower_2d(true);
-  }
-}
-
 
 module outer_plate_2d() {
   // Deprecated. Was used to connect the camshaft to the decoder.
@@ -374,66 +309,6 @@ module resetter_side_2d() {
   }
 }
 
-module follower_cutout_2d() {
-  translate([5,-100+28]) square([105,55]);
-  translate([115,-100+68]) square([110,15]);
-}
-
-module decoder_mounting_plate_2d() {
-  difference() {
-    union() {
-      translate([10,0]) square([110,100]);
-      offset(r=10) hull() { follower_cutout_2d();
-	translate([10,-40]) square([110,30]); }
-    }
-
-    follower_cutout_2d();
-
-    for(y=[20,75]) {
-      for(x=[20,100]) {
-	translate([x,y]) square([10,3]);
-      }
-    }
-    for(y=[10,85]) {
-      for(x=[40,90]) {
-	translate([x,y]) circle(d=4);
-      }
-    }
-
-    // cutouts for dropper alignment
-    for(x=[15,98]) {
-      translate([x,-100+28-5]) square([3,65]);
-    }
-    for(x=[133,200]) {
-      translate([x,-100+68-5]) square([3,25]);
-    }
-  }
-}
-
-module big_follower_support_2d() {
-  difference() {
-    union() {
-      translate([-follower_axle_y-5,-33]) square([55,55]);
-      translate([-follower_axle_y-10,14]) square([65,10]);
-      translate([-follower_axle_y-10,-33]) square([65,3]);
-    }
-    translate([-follower_axle_y,   2]) circle(d=3);
-    translate([-instruction_axle_y,2]) circle(d=3, $fn=20);
-  }
-}
-
-module small_follower_support_2d() {
-  difference() {
-    union() {
-      translate([-follower_axle_y-5,-33]) square([15,55]);
-      translate([-follower_axle_y-10,14]) square([25,10]);
-      translate([-follower_axle_y-5,-33]) square([25,3]);
-    }
-    translate([-follower_axle_y,   2]) circle(d=3);
-  }
-}
-
-
 module resetter_assembly() {
   translate([47,0,0]) rotate([0,90,0]) linear_extrude(height=3) resetter_end_plate_2d();
   translate([27,0,-35]) linear_extrude(height=3) resetter_drive_plate_2d();
@@ -452,36 +327,9 @@ module instruction_decoder() {
   color([0.7,0.7,0]) translate([decoder_origin_x-3,decoder_origin_y,decoder_origin_z]) rotate([0,90,0]) linear_extrude(height=3) input_support_plate_2d();
 }
 
-module top_comb_2d() {
-  clearance = 0.2;
-  difference() {
-    square([230,80]);
-    for(i=[0:7]) translate([instruction_follower_x(i)+14, 10]) square([3+clearance*2, 80]);
-    for(i=[0:4]) {
-      translate([fixed_follower_x(i)+14, 45]) square([3+clearance*2, 80]);
-      translate([fixed_follower_x(i)+22, 45]) square([3+clearance*2, 80]);
-    }
-    // Mounting holes
-    translate([19,20]) square([3, 80]);
-    translate([102,20]) square([3, 80]);
-
-    translate([137,60]) square([3, 80]);
-    translate([204,60]) square([3, 80]);
-  }
-}
-
 module sequencer_assembly() {
   camshaft();
-  followers();
   instruction_decoder();
-  translate([decoder_origin_x,decoder_origin_y-3-20,decoder_origin_z-13]) linear_extrude(height=3) decoder_mounting_plate_2d();
-  for(x=[5, 88]) {
-    translate([x,0,83]) rotate([90,0,-90]) linear_extrude(height=3) big_follower_support_2d();
-  }
-  for(x=[123, 190]) {
-    translate([x,0,83]) rotate([90,0,-90]) linear_extrude(height=3) small_follower_support_2d();
-  }
-  color([0.5,0.5,0]) translate([-17,-160,53]) linear_extrude(height=3) top_comb_2d();
 }
 
 sequencer_assembly();
@@ -498,49 +346,8 @@ module camshaft_bearing() {
   }
 }
 
-case_thickness = 6;
-sequencer_z = -113;
-sequencer_y = -170;
-sequencer_x = -40;
-
-case_width = 320;
-case_height = 198;
-case_depth = 300;
-
-case_explode = 0; // Helps with visualization
-
-module case_base() {
-  cube([case_width, case_depth, case_thickness]);
-}
-
-module case_top() {
-  difference() {
-    cube([case_width, case_depth, case_thickness]);
-    translate([30,30,-1]) cube([110,55,case_thickness+2]);
-    translate([145,70,-1]) cube([110,15,case_thickness+2]);
-  }
-}
-
-
-module sequencer_case() {
-  translate([sequencer_x+case_width-33,0,0]) rotate([0,90,0]) camshaft_bearing();
-  translate([sequencer_x,0,0]) rotate([0,90,0]) camshaft_bearing();
-  color([0.5,0.5,0.5,0.9]) {
-    translate([sequencer_x,sequencer_y,sequencer_z]) {
-      for(x=[-case_thickness-case_explode,case_width+case_explode]) {
-	//translate([x,0,0]) cube([case_thickness,case_depth, case_height+case_thickness*2]);
-      }
-      for(y=[-case_explode,case_depth-case_thickness+case_explode]) {
-	//translate([0,y,case_thickness]) cube([case_width,case_thickness, case_height]);
-      }
-      translate([0,0,0]) case_base();
-      translate([0,0,case_height+case_thickness]) case_top();
-    }
-  }
-}
-
-sequencer_case();
-
 translate([-47,0,0]) rotate([0,90,0]) cylinder(d=15,h=333);
 
-translate([0,90,-90]) input_assembly();
+translate([-50,0,0]) rotate([0,90,0]) camshaft_bearing();
+translate([270,0,0]) rotate([0,90,0]) camshaft_bearing();
+
