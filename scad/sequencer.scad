@@ -138,36 +138,6 @@ follower_x_offset = -3;
 function instruction_follower_x(x) = follower_spacing*x+follower_x_offset;
 function fixed_follower_x(x) = fixed_cam_spacing*x+follower_x_offset+follower_spacing*8-2;
 
-module outer_plate_2d() {
-  // Deprecated. Was used to connect the camshaft to the decoder.
-  sideplate_holes = [ [0,0,bearing_outer_diameter],
-		      [follower_axle_y, follower_axle_z, 3],
-  		      [instruction_axle_y, instruction_axle_z, 3],
-		      [decoder_origin_y+18, decoder_origin_z, 4],
-		      [decoder_origin_y+18, decoder_origin_z+40, 4]];
-  instruction_holder_slots = [decoder_origin_y-5, decoder_origin_y+30];
-  difference() {
-    hull() {
-      for(hole=sideplate_holes) {
-	translate([-hole[1],hole[0]]) circle(d=hole[2]+10);
-      }
-      offset(5) {
-	for(slot=instruction_holder_slots)
-	  translate([-decoder_origin_z-30, slot]) square([20,3]);
-      }
-    }
-    for(hole=sideplate_holes) {
-      translate([-hole[1],hole[0]]) circle(d=hole[2]);
-    }
-    for(slot=instruction_holder_slots)
-       #translate([-decoder_origin_z-30, slot]) square([20,3]);
-
-    // Cutout for enumerator rods.
-    translate([-decoder_origin_z-35,decoder_origin_y+1]) square([30,25]);
-  }
-
-}
-
 module input_support_plate_2d() {
   sideplate_holes = [ [18.5, 0, 4],
 		      [18.5, -40, 4]];
