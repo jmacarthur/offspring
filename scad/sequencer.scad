@@ -141,7 +141,7 @@ function fixed_follower_x(x) = fixed_cam_spacing*x+follower_x_offset+follower_sp
 module input_support_plate_2d() {
   sideplate_holes = [ [18.5, 0, 4],
 		      [18.5, -40, 4]];
-  instruction_holder_slots = [-5, 30];
+  instruction_holder_slots = [-8, 33];
   difference() {
     hull() {
       for(hole=sideplate_holes) {
@@ -180,12 +180,12 @@ module reader_support_2d() {
 
 module reader_input_plate_2d() {
   difference() {
-    w=38;
-    square([20,w]);
+    w=44;
+    translate([0,-3]) square([20,w]);
     for(y=[-1,17])
       {
-	translate([y,-1]) square([4,4]);
-	translate([y,w-3]) square([4,4]);
+	translate([y,-4]) square([4,4]);
+	translate([y,w-6]) square([4,4]);
       }
     for(i=[0:2]) {
       translate([8,5.5+3+10*i]) circle(d=pipe_outer_diameter,$fn=50);
@@ -195,42 +195,39 @@ module reader_input_plate_2d() {
 
 module reader_base_2d() {
   difference() {
-    w=38;
-    square([26,w]);
-    translate([10,-1]) square([10,4]);
-    translate([10,w-3]) square([10,4]);
+    w=44;
+    translate([0,-3]) square([26,w]);
+    translate([10,-4]) square([10,4]);
+    translate([10,w-6]) square([10,4]);
   }
 }
 
 module reader_pusher_2d() {
   difference() {
-    translate([-10,0]) square([42,32]);
+    translate([0,-2.5]) square([32,37]);
     for(c=[0:2]) {
       translate([23,5.5+c*10]) circle(d=7, $fn=20);
       translate([23,5.5+c*10-3.5]) square([10,7]);
       translate([18,7+c*10-3.5]) square([20,4]);
     }
-    translate([0,15]) cable_clamp_cutout_2d();
-    translate([-15,15+0.5]) square([20,bowden_cable_inner_diameter]);
   }
 }
 
 module reader_end_2d() {
   difference() {
     hull() {
-      square([38,20]);
+      translate([-3,0]) square([44,20]);
       translate([23.5,-10]) circle(d=10);
     }
-    translate([-1,5]) square([4,10]);
-    translate([35,5]) square([4,10]);
-    translate([18+0.5+bowden_cable_inner_diameter/2,4]) circle(d=bowden_cable_outer_diameter,$fn=20);
+    translate([-4,5]) square([4,10]);
+    translate([38,5]) square([4,10]);
     // Hole to attach to main decoder body
     translate([23.5,-10]) circle(d=4);
   }
 }
 
 module reader_assembly() {
-  for(y=[0,35]) {
+  for(y=[-3,38]) {
     color([0.1,0.5,0.5]) translate([0,y,0]) rotate([90,0,0]) linear_extrude(height=3) reader_support_2d();
   }
   translate([0,-3,-3]) rotate([0,0,0]) linear_extrude(height=3) reader_base_2d();
