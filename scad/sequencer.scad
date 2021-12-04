@@ -166,15 +166,19 @@ module input_support_plate_2d() {
 
 
 module reader_support_2d() {
-  union() {
-    translate([-10,0]) square([60,20]);
-    translate([10,-3]) square([10,4]);
-    translate([-13,5]) square([4,10]);
-    translate([15,0]) square([20,25]);
-    for(y=[0,17])
-      {
-	translate([15+y,0]) square([3,28]);
-      }
+  difference() {
+    union() {
+      translate([-10,0]) square([60,20]);
+      translate([10,-3]) square([10,4]);
+      translate([-13,5]) square([4,10]);
+      translate([15,0]) square([20,25]);
+      for(y=[0,17])
+	{
+	  translate([15+y,0]) square([3,28]);
+	}
+      translate([0,15]) square([10,25]);
+    }
+    translate([5,35]) circle(d=3);
   }
 }
 
@@ -210,7 +214,22 @@ module reader_pusher_2d() {
       translate([23,5.5+c*10-3.5]) square([10,7]);
       translate([18,7+c*10-3.5]) square([20,4]);
     }
+    // Cutout tabs to make a swing arm
+    translate([0,-3]) square([10,3.5]);
+    translate([0,37-5.5]) square([10,4]);
   }
+}
+
+module reader_swing_arm_2d() {
+  l1 = 33;
+  difference() {
+    union() {
+      circle(d=10);
+      translate([-5,-l1]) square([10,l1]);
+    }
+    circle(d=3);
+  }
+  
 }
 
 module reader_end_2d() {
@@ -229,6 +248,9 @@ module reader_end_2d() {
 module reader_assembly() {
   for(y=[-3,38]) {
     color([0.1,0.5,0.5]) translate([0,y,0]) rotate([90,0,0]) linear_extrude(height=3) reader_support_2d();
+  }
+  for(y=[0.5,34.5]) {
+    color([0.5,0.1,0.1]) translate([5,y,35]) rotate([90,0,0]) linear_extrude(height=3) reader_swing_arm_2d();
   }
   translate([0,-3,-3]) rotate([0,0,0]) linear_extrude(height=3) reader_base_2d();
   translate([15,-3,25]) rotate([0,0,0]) linear_extrude(height=3) reader_input_plate_2d();
