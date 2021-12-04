@@ -49,9 +49,9 @@ follower_axle_z = cam_diameter/2;
 instruction_axle_y = follower_axle_y-42;
 instruction_axle_z = follower_axle_z;
 
-decoder_origin_x = -13;
-decoder_origin_y = -45;
-decoder_origin_z = 110;
+decoder_origin_x = -16;
+decoder_origin_y = 65;
+decoder_origin_z = 70;
 
 module cam_mounting_holes() {
   for(i=[0:7]) {
