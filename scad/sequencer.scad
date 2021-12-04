@@ -49,6 +49,9 @@ follower_axle_z = cam_diameter/2;
 instruction_axle_y = follower_axle_y-42;
 instruction_axle_z = follower_axle_z;
 
+decoder_origin_x = -13;
+decoder_origin_y = -45;
+decoder_origin_z = 110;
 
 module cam_mounting_holes() {
   for(i=[0:7]) {
@@ -303,10 +306,6 @@ module resetter_assembly() {
   translate([27,0,-35]) linear_extrude(height=3) resetter_drive_plate_2d();
   color([0.1,0.1,0.9]) translate([3,3,-45]) rotate([90,0,0]) linear_extrude(height=3) resetter_side_2d();
 }
-
-decoder_origin_x = -13;
-decoder_origin_y = -45;
-decoder_origin_z = 110;
 
 module instruction_decoder() {
   translate([decoder_origin_x,decoder_origin_y,decoder_origin_z]) decoder_assembly(3, false);
