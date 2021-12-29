@@ -12,6 +12,8 @@ axle_clearance = 0.1;
 
 rot = -20;
 
+pipe_out_angle = 110;
+
 // The position of mounting holes is put in modules so they can be
 // edited in one place.
 
@@ -460,9 +462,9 @@ module subtractor_assembly() {
       linear_extrude(height=3) output_guard_a_2d();
     }
     translate([-i*subtractor_pitch_x, -i*subtractor_pitch_y,-21]) {
-      color([0.5,0.5,0.8]) linear_extrude(height=3) rotate(rot) reset_toggle_2d();
+      translate([0,0,2]) color([0.5,0.5,0.8]) linear_extrude(height=3) rotate(rot) reset_toggle_2d();
       //if(i % 4 == 0) translate([0,0,-3]) color([1.0,1.0,0.5]) linear_extrude(height=3) reset_lever_2d(); // Reset lever is already rotated, as it's offset
-      translate([0,0,-3]) color([1.0,1.0,0.5]) linear_extrude(height=3) reverse_reset_lever_2d(); // Reset lever is already rotated, as it's offset
+      translate([0,0,2]) color([1.0,1.0,0.5]) linear_extrude(height=3) reverse_reset_lever_2d(); // Reset lever is already rotated, as it's offset
     }
   }
   translate([1*subtractor_pitch_x, 1*subtractor_pitch_y,0]) {
@@ -482,3 +484,56 @@ rotate([90,0,0]) translate([-220,0,-500]) {
   cube([15,15,1000]);
   translate([support_rail_separation,0,0]) cube([15,15,1000]);
 }
+
+module pipe_connector() {
+  connector_diameter = 13;
+  union() {
+    sphere(d=connector_diameter);
+    cylinder(d=connector_diameter, h=20);
+    rotate([0,pipe_out_angle,0]) cylinder(d=connector_diameter, h=20);
+  }
+}
+
+
+module pipe_connector_cutout() {
+  pipe_external_diameter = 10;
+  rotate([0,pipe_out_angle,0]) cylinder(d=8, h=25);
+  rotate([0,pipe_out_angle,0]) translate([0,0,10]) cylinder(d=pipe_external_diameter, h=25);
+  sphere(d=8);
+  cylinder(d=8, h=31);
+  translate([0,0,15]) cylinder(d1=8, d2=13, h=6);
+  translate([0,0,21]) cylinder(d=12, h=12);
+
+  translate([-7,-7,8]) cube([4,6,25]);
+}
+
+module pipe_connector_plate() {
+  mounting_holes = [[24,15], [24-subtractor_pitch_x*6,15-subtractor_pitch_y*6]];
+  difference() {
+    union() {
+      translate([0,-12,0]) 
+	rotate([90,0,0]) linear_extrude(height=3) {
+	difference() {
+	  hull() {
+	    for(i=[0:6]) {
+	      translate([24-i*subtractor_pitch_x, 15-subtractor_pitch_y*i]) circle(d=10);
+	    }
+	  }
+	  for(i=[0:6]) {
+	    translate([24-i*subtractor_pitch_x, 15-subtractor_pitch_y*i]) circle(d=3);
+	  }
+	}
+      }
+      for(i=[0:4]) {
+	translate([-subtractor_pitch_x*i,-8,-subtractor_pitch_y*i]) pipe_connector();
+      }
+    }
+    for(i=[0:4]) {
+      translate([-subtractor_pitch_x*i,-8,-subtractor_pitch_y*i]) pipe_connector_cutout();
+    }
+
+  }
+}
+
+
+translate([-9,-30,-30]) rotate([-90,0,0]) pipe_connector_plate();
