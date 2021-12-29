@@ -482,22 +482,3 @@ rotate([90,0,0]) translate([-220,0,-500]) {
   cube([15,15,1000]);
   translate([support_rail_separation,0,0]) cube([15,15,1000]);
 }
-
-
-// Pipe connector
-
-
-module pipe_connector() {
-  difference() {
-    union() {
-      offset(r=3) {
-	intake_holes();
-      }
-      translate([-3,0])
-	hull() { intake_holes(); }
-    }
-    intake_holes();
-  }
-}
-
-
