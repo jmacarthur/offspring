@@ -172,12 +172,12 @@ module input_guard_top_2d()
 {
   // A special input guard for the rightmost part of the subtractor.
   difference() {
-    hull() {
-      translate([-subtractor_pitch_x + channel_width/2,-22]) square([25,55]);
-      translate([-subtractor_pitch_x + channel_width/2+5,55]) circle(d=6);
-    }
+    translate([-subtractor_pitch_x + channel_width/2,-22]) square([25,60]);
     translate([-subtractor_pitch_x, -subtractor_pitch_y]) circle(r=18, $fn=50);
 
+    translate([-subtractor_pitch_x+channel_width/2, -22+60]) rotate(45) square([15,15], center=true);
+
+    
     // Mounting holes
     input_guard_a_holes();
 
@@ -311,11 +311,11 @@ module output_guard_top_2d()
 {
   // A special input guard for the rightmost part of the subtractor.
   difference() {
-    hull() {
-      translate([-subtractor_pitch_x + channel_width/2,-37]) square([15,70]);
-      translate([-subtractor_pitch_x + channel_width/2+5,55]) circle(d=6);
-    }
+    translate([-subtractor_pitch_x + channel_width/2,-37]) square([15,75]);
 
+    translate([-subtractor_pitch_x+channel_width/2, -37+75]) rotate(45) square([10,10], center=true);
+
+    
     translate([-subtractor_pitch_x+channel_width/2, -subtractor_pitch_y+10]) circle(r=8.25, $fn=50);
 
     // Mounting holes

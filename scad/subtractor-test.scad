@@ -4,12 +4,15 @@ kerf = 0.05;
 
 
 offset(r=kerf) {
-  input_guard_a_2d();
+  input_guard_top_2d();
 
   translate([50,0]) 
-    output_guard_a_2d();
+    output_guard_top_2d();
 }
 
+
+//scale([1,-1,1])
+//pipe_connector_plate();
 
 
 //translate([330,0]) back_layer_2d();
