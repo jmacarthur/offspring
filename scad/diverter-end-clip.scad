@@ -68,9 +68,9 @@ module mid_section() {
 module end_clip() {
   translate([0,0,15]) mid_section();
 
-  /*for(x=[0]) {
+  for(x=[0]) {
     translate([x,0,0]) color([1,0,0]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) side_clip_2d();
-    }*/
+  }
 }
 
 
