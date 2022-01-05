@@ -2,7 +2,8 @@ include <globs.scad>;
 use <subtractor.scad>;
 use <infra.scad>;
 
-
+use <regen-diverter.scad>;
+use <diverter-end-clip.scad>;
 // Main accumulator
 translate([203,-15,0]) rotate([90,0,0]) subtractor_assembly();
 
@@ -45,3 +46,6 @@ module subtractor_bracket_left() {
 
 subtractor_bracket_left();
 translate([250+15,0,0]) scale([-1,1,1]) subtractor_bracket_left();
+translate([0,0,190]) regen_diverter_assembly();
+
+translate([22,-78,57]) end_clip();
