@@ -129,33 +129,6 @@ module regen_intake_bar(offset) {
   }
 }
 
-module regen_pull_bar() {
-  arm_length = arc_radius+5;
-  axle_position = arc_radius;
-  clearance = 0.125;
-  axle_adjust = 2;
-  translate([-pitch/2-4.5,0,0])
-  difference() {
-    union() {
-      translate([-1,-25,35]) cube([pitch*8+10, 10,12+axle_adjust]);
-      translate([-1,-25,35]) cube([3, arm_length, 12+axle_adjust]);
-      translate([pitch*8+6,-25,35]) cube([3, arm_length, 12+axle_adjust]);
-      for(x=[0,pitch*8-4]) {
-	translate([x,-15,35]) cube([12,10,12+axle_adjust]);
-      }
-    }
-    for(x=[0:7]) {
-      translate([-(3+clearance)/2,10,32])
-      translate([x*pitch+pitch/2+6,0,10]) regen_intake_bar(clearance);
-      for(x=[12,pitch*8-4]) translate([x,-5,-1]) cylinder(r=10,h=55);
-    }
-    translate([-5,-25+axle_position,42+axle_adjust]) rotate([0,90,0]) cylinder(d=3,h=300);
-
-  }
-}
-
-
-
 module regen_body() {
   intake_y = 15;
   depth = 31;
@@ -197,37 +170,6 @@ module regen_body() {
   }
   }
 }
-
-module output_lever_2d() {
-  l1 = 50;
-  l2 = 30;
-  clearance = 0.5;
-  difference() {
-    union() {
-      translate([-5,0]) square([10,l1]);
-      translate([0,-5]) square([l2,10]);
-      circle(d=10);
-    }
-    circle(d=3);
-
-    // Ridges
-    for(x=[0:7]) {
-      translate([-5,10+x*5]) circle(d=2);
-      translate([5,10+x*5]) circle(d=2);
-    }
-  }
-}
-
-module output_lever() {
-  rotate([0,90,0]) difference() {
-    union() {
-      rotate([0,180,0]) linear_extrude(height=3) output_lever_2d();
-      cylinder(d=10,h=10);
-    }
-    translate([0,0,-1]) cylinder(d=3.2,h=12);
-  }
-}
-
 
 module upward_curved_pipe() {
   translate([0,0,20]) 
