@@ -264,15 +264,20 @@ module subtractor_flap() {
   difference() {
     union() {
       rotate([0,90,0])cylinder(d=6, h=pitch*8-1);
-      translate([0,-width,0]) cube([pitch*8-1, width, 3]);
+      difference() {
+	translate([0,-width,0]) cube([pitch*8-1, width, 3]);
+	for(i=[1:7]) {
+	  translate([i*pitch+4, -width-1,-3]) cube([3,width, 7]);
+	}
+      }
     }
 
     // Holes in each end to place axles in
     translate([-1,0,0]) rotate([0,90,0]) cylinder(d=3, h=11);
     translate([pitch*8-10,0,0]) rotate([0,90,0])cylinder(d=3, h=11);
 
-
-    translate([-1,-width,0]) rotate([0,90,0])cylinder(d=6.5, h=pitch*8+2);
+    // Cutout for next flap
+    translate([-1,-width,0]) rotate([0,90,0]) cylinder(d=6.5, h=pitch*8+2);
   }
 }
 
