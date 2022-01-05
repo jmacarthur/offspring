@@ -29,6 +29,7 @@ module input_arc_2d() {
       sector_2d(radius-10, radius+3, 70);
       translate([10,-5]) square([radius-10+3+20, 10]);
       translate([10,-5]) square([radius-10+3+25, 5]);
+      rotate(36.5) translate([30,-5]) square([17, 10]);
     }
 
     // Angle the end to hold the bearing in place durig push
@@ -185,7 +186,7 @@ module base_regen(shift)
   }
   color([0,1,0]) translate([-25-3,0,-radius-6]) backing_plate(shift);
 
-  translate([63,0,-7.5]) regen_input_coupler();
+  translate([63,-5,-7.5]) regen_input_coupler();
 
 }
 
