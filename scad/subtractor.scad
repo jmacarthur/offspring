@@ -531,7 +531,22 @@ module pipe_connector_plate() {
     for(i=[0:4]) {
       translate([-subtractor_pitch_x*i,-8,-subtractor_pitch_y*i]) pipe_connector_cutout();
     }
+   }
+}
 
+module pipe_extender() {
+  rotate([0,pipe_out_angle,0])
+  difference() {
+    union() {
+      translate([0,0,30]) cylinder(d=10, h=25);
+      translate([0,0,40]) cylinder(d=13, h=25);
+      translate([0,0,50]) rotate([0,-pipe_out_angle,0]) cylinder(d=13, h=20);
+    }
+    translate([0,0,0]) cylinder(d=8, h=100);
+    translate([0,0,50]) cylinder(d=10, h=100);
+    translate([0,0,50]) rotate([0,-pipe_out_angle,0]) cylinder(d=8, h=30);
+    translate([0,0,50]) rotate([0,-pipe_out_angle,0]) translate([0,0,10]) cylinder(d=10, h=30);
+    
   }
 }
 

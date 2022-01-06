@@ -3,16 +3,22 @@ use <subtractor.scad>;
 kerf = 0.05;
 
 
-offset(r=kerf) {
+/*offset(r=kerf) {
   input_guard_top_2d();
 
   translate([50,0]) 
     output_guard_top_2d();
 }
-
+*/
 
 //scale([1,-1,1])
 //pipe_connector_plate();
+
+intersection() {
+
+  translate([0,8,0]) pipe_extender();
+  translate([0,0,-30]) cube([100,12,50]);
+}
 
 
 //translate([330,0]) back_layer_2d();
