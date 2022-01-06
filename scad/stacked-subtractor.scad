@@ -49,3 +49,4 @@ translate([250+15,0,0]) scale([-1,1,1]) subtractor_bracket_left();
 translate([0,0,190]) regen_diverter_assembly();
 
 translate([22,-78,57]) end_clip();
+translate([194,-68,-30]) scale([1,-1,1]) pipe_connector_plate();
