@@ -535,15 +535,20 @@ module pipe_connector_plate() {
 }
 
 module pipe_extender() {
-  rotate([0,pipe_out_angle,0])
+  input_clearance = 0.1;
+  rotate([0,pipe_out_angle,0])    
   difference() {
     union() {
-      translate([0,0,30]) cylinder(d=10, h=25);
+      translate([0,0,30]) cylinder(d=10-input_clearance*2, h=25);
       translate([0,0,40]) cylinder(d=13, h=25);
-      translate([0,0,50]) rotate([0,-pipe_out_angle,0]) cylinder(d=13, h=20);
+      translate([0,0,50]) rotate([0,-pipe_out_angle,0]) {
+	cylinder(d=13, h=20);
+	translate([-6.5,0,0]) cube([13,10,20]);
+      }
+      translate([-6.5,0,40]) cube([13,10,25]);
     }
     translate([0,0,0]) cylinder(d=8, h=100);
-    translate([0,0,50]) cylinder(d=10, h=100);
+    translate([0,0,58]) cylinder(d=10, h=100);
     translate([0,0,50]) rotate([0,-pipe_out_angle,0]) cylinder(d=8, h=30);
     translate([0,0,50]) rotate([0,-pipe_out_angle,0]) translate([0,0,10]) cylinder(d=10, h=30);
     

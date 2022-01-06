@@ -17,7 +17,7 @@ kerf = 0.05;
 intersection() {
 
   translate([0,8,0]) pipe_extender();
-  translate([0,0,-30]) cube([100,12,50]);
+  translate([0,0,-30]) cube([100,13,50]);
 }
 
 
