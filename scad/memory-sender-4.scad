@@ -49,8 +49,8 @@ module sender() {
       // Mounting plate
       translate([0,0,22]) linear_extrude(height=3) hull() {
 	translate([-25,0]) square([45,60]);
-	translate([rod_x+22.5, rod_y_offset+decoder_pitch*2.5]) circle(d=15);
-	translate([rod_x-17.5, rod_y_offset+decoder_pitch*2.5]) circle(d=15);
+	translate([rod_x+22.5, rod_y_offset+decoder_pitch*1.5]) circle(d=15);
+	translate([rod_x-17.5, rod_y_offset+decoder_pitch*1.5]) circle(d=15);
       }
 
       // Plates to mount release lever
@@ -76,9 +76,9 @@ module sender() {
     }
 
     // Mounting holes
-    offset = 17.5; // Note: It's unclear which way round this should be - might be 22.5. Check.
+    offset = 17.5;
     for(i=[0:1]) {
-      translate([i*40-offset+rod_x, 2.5*decoder_pitch+rod_y_offset, -4]) cylinder(d=4,h=102);
+      translate([i*40-offset+rod_x, 1.5*decoder_pitch+rod_y_offset, -4]) cylinder(d=4,h=102);
     }
 
     // Hole for release axle
