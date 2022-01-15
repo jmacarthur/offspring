@@ -197,16 +197,35 @@ module decoder_hanger_2d() {
     }
     for(i=[0:2]) {
       translate([10+10*i,10]) offset(r=clearance) square([3,30]);
+      translate([10+10*i,55]) offset(r=clearance) square([3,20]);
     }
   }
 }
 
 module decoder_side_runner_2d() {
   difference() {
-    square([170,30]);
+    union() {
+      square([190,30]);
+      translate([170,0]) square([30,65]);
+    }
     translate([30,10]) square([3,10]);
     translate([159,10]) square([3,10]);
     translate([10,10]) circle(d=3);
+    translate([190,60]) circle(d=3);
+  }
+}
+
+module instruction_lever_2d() {
+  l1 = 100;
+  l2 = 30;
+  hole_pos = [[-l1,0],[l1,0], [0,-l2], [0,0]];
+  difference() {
+    union() {
+      translate([-l1,-5]) square([l1*2,10]);
+      translate([-5,-l2]) square([10,l2]);
+      for(p=hole_pos) translate(p) circle(d=10);
+    }
+    for(p=hole_pos) translate(p) circle(d=3);
   }
 }
 
@@ -225,13 +244,18 @@ module reset_assembly() {
   }
   for(y=[3,40]) {    
     translate([10,y,10]) rotate([0,-105,0]) rotate([90,0,0]) linear_extrude(height=3) conrod(25);
-    translate([10,0,10]) rotate([0,-105,0]) translate([25,-3,0]) rotate([-90,0,0]) cylinder(d=3, h=50);
   }
+  translate([10,0,10]) rotate([0,-105,0]) translate([25,-3,0]) rotate([-90,0,0]) cylinder(d=3, h=50);
+
+  for(y=[13,23,33]) {    
+    translate([190,y,60]) rotate([0,0,0]) rotate([90,0,0]) linear_extrude(height=3) instruction_lever_2d();
+  }
+
 }
 
 
 module instruction_decoder() {
-  translate([-23-7,-90,67]) decoder_rods();
+  translate([-23,-90,67]) decoder_rods();
   translate([-6, 100, 90+3+10]) {
     for(i=[0:7]) {
       color([0.5,0,0]) translate([14*i,0,0]) rotate([-90,0,0]) rotate([0,90,0]) linear_extrude(height=3) follower_rod_2d();
@@ -240,7 +264,7 @@ module instruction_decoder() {
     for(x=[-10,119]) {
       color([0,1,0]) translate([x,-203,-46]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) decoder_hanger_2d();
     }
-    translate([-40,-203,-46]) reset_assembly();
+    translate([-40,-203,-46]) reset_assembly();    
   }
 }
 
