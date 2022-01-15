@@ -5,7 +5,7 @@ use <generic_conrods.scad>;
 use <decoder.scad>;
 use <interconnect.scad>;
 include <sequencer_globs.scad>;
-
+use <generic_conrods.scad>;
 // At the moment, there are 17 cams. 4 of these are selective and only drive if certain instructions are in use. The rest are always in use.
 // The instructions which need a gate are LDN, STO, JRP, JMP and CMP. LDN and CMP have the same cam pattern so share one (although they must have independent outputs). SUB is the default instruction so does not need a gate; HLT is unimplemented.
 
@@ -191,22 +191,56 @@ module follower_rod_2d() {
 module decoder_hanger_2d() {
   clearance = 0.1;
   difference() {
-    square([40,80]);
+    union() {
+      square([40,80]);
+      translate([-3,10]) square([46,10]);
+    }
     for(i=[0:2]) {
       translate([10+10*i,10]) offset(r=clearance) square([3,30]);
     }
   }
 }
 
+module decoder_side_runner_2d() {
+  difference() {
+    square([170,30]);
+    translate([30,10]) square([3,10]);
+    translate([159,10]) square([3,10]);
+    translate([10,10]) circle(d=3);
+  }
+}
+
+
+module bearing() {
+  rotate([0,90,0])
+  difference() {
+    cylinder(d=6, h=2.5, $fn=20);
+    translate([0,0,-1]) cylinder(d=3,h=12);
+  }
+}
+
+module reset_assembly() {
+  for(y=[0,43]) {
+    translate([0,y,0]) rotate([90,0,0]) linear_extrude(height=3) decoder_side_runner_2d();
+  }
+  for(y=[3,40]) {    
+    translate([10,y,10]) rotate([0,-105,0]) rotate([90,0,0]) linear_extrude(height=3) conrod(25);
+    translate([10,0,10]) rotate([0,-105,0]) translate([25,-3,0]) rotate([-90,0,0]) cylinder(d=3, h=50);
+  }
+}
+
+
 module instruction_decoder() {
-  translate([-23,-90,55])decoder_rods();
-  translate([-6, 100, 90]) {
+  translate([-23-7,-90,67]) decoder_rods();
+  translate([-6, 100, 90+3+10]) {
     for(i=[0:7]) {
       color([0.5,0,0]) translate([14*i,0,0]) rotate([-90,0,0]) rotate([0,90,0]) linear_extrude(height=3) follower_rod_2d();
+      translate([14*i+((i%2==0)?3:-2.5),-100,-15]) bearing();
     }
     for(x=[-10,119]) {
-      color([0,1,0]) translate([x,-203,-45]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) decoder_hanger_2d();
+      color([0,1,0]) translate([x,-203,-46]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) decoder_hanger_2d();
     }
+    translate([-40,-203,-46]) reset_assembly();
   }
 }
 
