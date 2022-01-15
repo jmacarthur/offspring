@@ -3,9 +3,13 @@ include <globs.scad>;
 decoder_pitch = 10;
 
 intake_slope = 10;
-pipe_outer_diameter = 10.5;
+pipe_outer_diameter = 11;
 
 $fn=20;
+
+
+rod_x = ball_bearing_radius;
+rod_y_offset = 10;
 
 module hold_release_lever() {
   difference() {
@@ -38,9 +42,35 @@ module release_lever_bracket() {
 }
 
 
+module sender_clamp() {
+  difference() {
+    clearance = 0.3;
+    union() {
+      intersection() {
+	translate([10,0,-1]) cube([10,decoder_pitch*5+10,23]);
+	// Cut off the base of the body so we can print this in two parts
+	translate([0,rod_y_offset+clearance,7.5]) rotate([0,90-intake_slope,0]) union() {
+	  translate([0,-pipe_outer_diameter/2,10]) cube([50, decoder_pitch*4+pipe_outer_diameter-clearance*2, 20]);
+	}
+	
+      }
+      // Base bar
+      translate([10,-15,-7]) cube([10,decoder_pitch*5+40,6]);
+    }
+
+    // BB slots
+    for(i=[0:4]) {
+      translate([0,i*decoder_pitch+rod_y_offset,7.5]) rotate([0,90-intake_slope,0]) union() {
+	translate([0,0,9]) cylinder(d=pipe_outer_diameter, h=110);
+      }
+    }
+    translate([15,-10,-8]) cylinder(d=3,h=10);
+    translate([15,70,-8]) cylinder(d=3,h=10);
+  }
+}
+
+
 module sender() {
-  rod_x = ball_bearing_radius;
-  rod_y_offset = 10;
   difference() {
     union() {
       // Main body
@@ -75,6 +105,12 @@ module sender() {
       }
     }
 
+    // Cut off the base of the body so we can print this in two parts
+    translate([0,rod_y_offset,7.5]) rotate([0,90-intake_slope,0]) union() {
+      translate([0,-pipe_outer_diameter/2,10]) cube([50, decoder_pitch*4+pipe_outer_diameter, 20]);
+    }
+
+
     // Mounting holes
     offset = 17.5;
     for(i=[0:1]) {
@@ -86,8 +122,10 @@ module sender() {
 
   }
 
-  color([1,0,0]) translate([-20,rod_y_offset-5,7.5-1.5]) hold_release_lever();
+  //color([1,0,0]) translate([-20,rod_y_offset-5,7.5-1.5]) hold_release_lever();
 }
 
-sender();
+//sender();
+
+translate([10,0,0]) color([0,1,0]) sender_clamp();
 //hold_release_lever();
