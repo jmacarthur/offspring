@@ -66,7 +66,7 @@ module cam_mounting_plate_2d() {
 
 module cam_ring_2d() {
   difference() {
-    circle(d=cam_base_diameter);
+    circle(d=cam_base_diameter+20);
     circle(d=cam_base_diameter-36);
     cam_mounting_holes();
   }
@@ -176,7 +176,7 @@ module follower_rod_2d() {
   drop_pos = 85;
   difference() {
     union() {
-      translate([-5,-5]) square([200,10]);
+      translate([-5,-5]) square([220,10]);
       translate([drop_pos,0])
       hull() {
 	translate([0,-5]) square([30,10]);
@@ -196,22 +196,24 @@ module decoder_hanger_2d() {
       translate([-3,10]) square([46,10]);
     }
     for(i=[0:2]) {
-      translate([10+10*i,10]) offset(r=clearance) square([3,30]);
-      translate([10+10*i,55]) offset(r=clearance) square([3,20]);
+      translate([10+10*i,5]) offset(r=clearance) square([3,30]);
+      translate([10+10*i,50]) offset(r=clearance) square([3,20]);
     }
   }
 }
 
 module decoder_side_runner_2d() {
+  clearance = 0.1;
   difference() {
     union() {
       square([190,30]);
-      translate([170,0]) square([30,65]);
+      translate([30,0]) square([165,60]);
     }
     translate([30,10]) square([3,10]);
     translate([159,10]) square([3,10]);
     translate([10,10]) circle(d=3);
-    translate([190,60]) circle(d=3);
+    translate([190,55]) circle(d=3);
+    for(i=[0:7]) translate([14*i+40,20]) offset(clearance) square([3,50]);
   }
 }
 
@@ -248,7 +250,7 @@ module reset_assembly() {
   translate([10,0,10]) rotate([0,-105,0]) translate([25,-3,0]) rotate([-90,0,0]) cylinder(d=3, h=50);
 
   for(y=[13,23,33]) {    
-    translate([190,y,60]) rotate([0,0,0]) rotate([90,0,0]) linear_extrude(height=3) instruction_lever_2d();
+    translate([190,y,55]) rotate([0,0,0]) rotate([90,0,0]) linear_extrude(height=3) instruction_lever_2d();
   }
 
 }
@@ -262,9 +264,9 @@ module instruction_decoder() {
       translate([14*i+((i%2==0)?3:-2.5),-100,-15]) bearing();
     }
     for(x=[-10,119]) {
-      color([0,1,0]) translate([x,-203,-46]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) decoder_hanger_2d();
+      color([0,1,0]) translate([x,-203,-41]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) decoder_hanger_2d();
     }
-    translate([-40,-203,-46]) reset_assembly();    
+    translate([-40,-203,-41]) reset_assembly();    
   }
 }
 
