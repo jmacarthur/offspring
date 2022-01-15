@@ -141,33 +141,6 @@ follower_x_offset = -3;
 function instruction_follower_x(x) = follower_spacing*x+follower_x_offset;
 function fixed_follower_x(x) = fixed_cam_spacing*x+follower_x_offset+follower_spacing*8-2;
 
-module input_support_plate_2d() {
-  sideplate_holes = [ [18.5, 0, 4],
-		      [18.5, -40, 4]];
-  instruction_holder_slots = [-8, 33];
-  difference() {
-    hull() {
-      for(hole=sideplate_holes) {
-	translate([hole[1],hole[0]]) circle(d=hole[2]+10);
-      }
-      offset(5) {
-	for(slot=instruction_holder_slots)
-	  translate([-30, slot]) square([20,3]);
-      }
-    }
-    for(hole=sideplate_holes) {
-      translate([hole[1],hole[0]]) circle(d=hole[2], $fn=20);
-    }
-    for(slot=instruction_holder_slots)
-      translate([-30, slot]) square([20,3]);
-
-    // Cutout for enumerator rods.
-    translate([-35,1]) square([30,25]);
-  }
-}
-
-
-
 module reader_support_2d() {
   difference() {
     union() {
@@ -185,44 +158,6 @@ module reader_support_2d() {
   }
 }
 
-module reader_input_plate_2d() {
-  difference() {
-    w=44;
-    translate([0,-3]) square([20,w]);
-    for(y=[-1,17])
-      {
-	translate([y,-4]) square([4,4]);
-	translate([y,w-6]) square([4,4]);
-      }
-    for(i=[0:2]) {
-      translate([8,5.5+3+10*i]) circle(d=pipe_outer_diameter,$fn=50);
-    }
-  }
-}
-
-module reader_base_2d() {
-  difference() {
-    w=44;
-    translate([0,-3]) square([26,w]);
-    translate([10,-4]) square([10,4]);
-    translate([10,w-6]) square([10,4]);
-  }
-}
-
-module reader_pusher_2d() {
-  difference() {
-    translate([0,-2.5]) square([32,37]);
-    for(c=[0:2]) {
-      translate([23,5.5+c*10]) circle(d=7, $fn=20);
-      translate([23,5.5+c*10-3.5]) square([10,7]);
-      translate([18,7+c*10-3.5]) square([20,4]);
-    }
-    // Cutout tabs to make a swing arm
-    translate([0,-3]) square([10,3.5]);
-    translate([0,37-5.5]) square([10,4]);
-  }
-}
-
 module reader_swing_arm_2d() {
   l1 = 33;
   difference() {
@@ -233,78 +168,6 @@ module reader_swing_arm_2d() {
     circle(d=3);
   }
   
-}
-
-module reader_end_2d() {
-  difference() {
-    hull() {
-      translate([-3,0]) square([44,20]);
-      translate([23.5,-10]) circle(d=10);
-    }
-    translate([-4,5]) square([4,10]);
-    translate([38,5]) square([4,10]);
-    // Hole to attach to main decoder body
-    translate([23.5,-10]) circle(d=4);
-  }
-}
-
-module reader_assembly() {
-  for(y=[-3,38]) {
-    color([0.1,0.5,0.5]) translate([0,y,0]) rotate([90,0,0]) linear_extrude(height=3) reader_support_2d();
-  }
-  for(y=[0.5,34.5]) {
-    color([0.5,0.1,0.1]) translate([5,y,35]) rotate([90,0,0]) linear_extrude(height=3) reader_swing_arm_2d();
-  }
-  translate([0,-3,-3]) rotate([0,0,0]) linear_extrude(height=3) reader_base_2d();
-  translate([15,-3,25]) rotate([0,0,0]) linear_extrude(height=3) reader_input_plate_2d();
-  travel = 0;
-  color([0.5,0.1,0.1]) translate([0,0,2]) rotate([0,0,0]) linear_extrude(height=3) reader_pusher_2d();
-  translate([23,5.5,3]) sphere(d=ball_bearing_diameter, $fn=20);
-  translate([-13,-3,0]) rotate([0,0,90]) rotate([90,0,0]) linear_extrude(height=3) reader_end_2d();
-}
-
-module resetter_drive_plate_2d() {
-  difference() {
-    square([20,40]);
-    translate([15,12]) scale([-1,1]) cable_clamp_cutout_with_cable_2d();
-  }
-}
-
-module resetter_end_plate_2d() {
-  // This bolts to the two holes usually used for the 'sender' on the decoder.
-  difference() {
-    union() {
-      square([60,40]);
-      translate([0,-20]) square([20,21]);
-    }
-    translate([10,20]) circle(d=4);
-    translate([50,20]) circle(d=4);
-    translate([33.5,13.5]) circle(d=bowden_cable_outer_diameter,$fn=20);
-
-    // Tabs
-    translate([10,0]) square([5,3]);
-    translate([40,-1]) square([5,4]);
-
-    // Hole for bowden cable
-    translate([10,-8]) circle(d=bowden_cable_inner_diameter);
-  }
-}
-
-module resetter_side_2d() {
-  difference() {
-    union() {
-      square([44,40]);
-      translate([0,30]) square([44+3,5]);
-      translate([0,0]) square([44+3,5]);
-    }
-    translate([20,10]) square([50,3]);
-  }
-}
-
-module resetter_assembly() {
-  translate([47,0,0]) rotate([0,90,0]) linear_extrude(height=3) resetter_end_plate_2d();
-  translate([27,0,-35]) linear_extrude(height=3) resetter_drive_plate_2d();
-  color([0.1,0.1,0.9]) translate([3,3,-45]) rotate([90,0,0]) linear_extrude(height=3) resetter_side_2d();
 }
 
 module decoder_rods() {
