@@ -307,12 +307,34 @@ module resetter_assembly() {
   color([0.1,0.1,0.9]) translate([3,3,-45]) rotate([90,0,0]) linear_extrude(height=3) resetter_side_2d();
 }
 
+module decoder_rods() {
+  for(i=[0:2]) {
+    translate([0,10*i,0])
+    rotate([90,0,0]) linear_extrude(height=3) enumerator_rod(i, 3, 14, 7, 20);
+  }
+}
+
+module follower_rod_2d() {
+  drop_pos = 85;
+  difference() {
+    union() {
+      translate([-5,-5]) square([200,10]);
+      translate([drop_pos,0])
+      hull() {
+	translate([0,-5]) square([30,10]);
+	translate([15,15]) circle(d=10);
+      }
+    }
+    translate([0,0]) circle(d=3);
+    translate([drop_pos+15,15]) circle(d=3);
+  }
+}
+
 module instruction_decoder() {
-  translate([decoder_origin_x,decoder_origin_y,decoder_origin_z]) decoder_assembly(3, false);
-  translate([decoder_origin_x,decoder_origin_y,decoder_origin_z]) enumerator_rods(3);
-  translate([decoder_origin_x-50,decoder_origin_y-2,decoder_origin_z+10]) reader_assembly();
-  translate([decoder_origin_x+decoder_box_length(3),decoder_origin_y-3,decoder_origin_z+50]) resetter_assembly();
-  color([0.7,0.7,0]) translate([decoder_origin_x-3,decoder_origin_y,decoder_origin_z]) rotate([0,90,0]) linear_extrude(height=3) input_support_plate_2d();
+  translate([-23,-90,55])decoder_rods();
+  for(i=[0:7]) {
+    color([0.5,0,0]) translate([-6+14*i,100,90]) rotate([-90,0,0]) rotate([0,90,0]) linear_extrude(height=3) follower_rod_2d();
+  }
 }
 
 module sequencer_assembly() {
