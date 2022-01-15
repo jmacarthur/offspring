@@ -28,6 +28,7 @@ include <sequencer_globs.scad>;
 // JRP and JMP when it is engaged. JRP will still function on its own
 // without JMP.
 
+cam_base_diameter = 150; // Diameter of mounting plates
 cam_diameter = 170; // This includes the cam ridge modules
 cam_inner_diameter = 15;
 bolt_circle_diameter = 125;
@@ -43,12 +44,6 @@ num_cams = 17;
 
 gap_width = 30;
 
-follower_axle_y = -cam_diameter/2-5;
-follower_axle_z = cam_diameter/2;
-
-instruction_axle_y = follower_axle_y-42;
-instruction_axle_z = follower_axle_z;
-
 decoder_origin_x = -16;
 decoder_origin_y = 65;
 decoder_origin_z = 70;
@@ -60,10 +55,10 @@ module cam_mounting_holes() {
 }
 
 // Example cams
-module cam_2d() {
+module cam_mounting_plate_2d() {
   cam_axle_clearance = 0.2;
   difference() {
-    circle(d=cam_diameter-30);
+    circle(d=cam_base_diameter);
     circle(d=cam_inner_diameter+cam_axle_clearance);
     cam_mounting_holes();
   }
@@ -71,8 +66,8 @@ module cam_2d() {
 
 module cam_ring_2d() {
   difference() {
-    circle(d=cam_diameter-20);
-    circle(d=cam_diameter-45);
+    circle(d=cam_base_diameter);
+    circle(d=cam_base_diameter-36);
     cam_mounting_holes();
   }
 }
@@ -113,14 +108,14 @@ module camshaft() {
   // set by the sequencer.
   for(i=[0:3]) {
     translate([cam_spacing*i, 0,0]) rotate([0,90,0]) {
-      color([0.4,0.4,0.4]) linear_extrude(height=cam_support_width) cam_2d();
+      color([0.4,0.4,0.4]) linear_extrude(height=cam_support_width) cam_mounting_plate_2d();
       translate([0,0,-3]) linear_extrude(height=3) cam_ring_2d();
       translate([0,0,5]) linear_extrude(height=3) cam_ring_2d();
     }
   }
   for(i=[1:5]) {
     translate([cam_spacing*3+fixed_cam_spacing*i, 0,0]) rotate([0,90,0])  {
-      color([0.4,0.4,0.4]) linear_extrude(height=cam_support_width) cam_2d();
+      color([0.4,0.4,0.4]) linear_extrude(height=cam_support_width) cam_mounting_plate_2d();
       translate([0,0,-3]) linear_extrude(height=3) cam_ring_2d();
       translate([0,0,5]) linear_extrude(height=3) cam_ring_2d();
     }
@@ -133,7 +128,7 @@ module camshaft() {
 
 module cam_clipons() {
   for(i=[0:3]) {
-    translate([cam_spacing*i, 0,0]) rotate([0,90,0]) linear_extrude(height=cam_width) cam_2d();
+    translate([cam_spacing*i, 0,0]) rotate([0,90,0]) linear_extrude(height=cam_width) cam_mounting_plate_2d();
   }
 }
 
