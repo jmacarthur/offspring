@@ -193,12 +193,28 @@ module follower_rod_2d() {
   }
 }
 
-module instruction_decoder() {
-  translate([-23,-90,55])decoder_rods();
-  for(i=[0:7]) {
-    color([0.5,0,0]) translate([-6+14*i,100,90]) rotate([-90,0,0]) rotate([0,90,0]) linear_extrude(height=3) follower_rod_2d();
+module decoder_hanger_2d() {
+  clearance = 0.1;
+  difference() {
+    square([40,80]);
+    for(i=[0:2]) {
+      translate([10+10*i,10]) offset(r=clearance) square([3,30]);
+    }
   }
 }
+
+module instruction_decoder() {
+  translate([-23,-90,55])decoder_rods();
+  translate([-6, 100, 90]) {
+    for(i=[0:7]) {
+      color([0.5,0,0]) translate([14*i,0,0]) rotate([-90,0,0]) rotate([0,90,0]) linear_extrude(height=3) follower_rod_2d();
+    }
+    for(x=[-10,119]) {
+      color([0,1,0]) translate([x,-203,-45]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) decoder_hanger_2d();
+    }
+  }
+}
+
 
 module sequencer_assembly() {
   camshaft();
