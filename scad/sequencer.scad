@@ -49,7 +49,9 @@ decoder_origin_y = 65;
 decoder_origin_z = 70;
 
 hanger_x = [-16,113];
+case_depth=250;
 
+side_x = [-50,290];
 module cam_mounting_holes() {
   for(i=[0:7]) {
     rotate(i*360/8 + (360/16)) translate([0, bolt_circle_diameter/2]) circle(d=8);
@@ -176,9 +178,10 @@ module decoder_rods() {
 
 module follower_rod_2d() {
   drop_pos = 85;
+  len = 220;
   difference() {
     union() {
-      translate([-5,-5]) square([220,10]);
+      translate([-5,-5]) square([len,10]);
       translate([drop_pos,0])
       hull() {
 	translate([0,-5]) square([30,10]);
@@ -187,6 +190,10 @@ module follower_rod_2d() {
     }
     translate([0,0]) circle(d=3);
     translate([drop_pos+15,15]) circle(d=3);
+
+    // Hook on the end to add weights
+    translate([len-10,-3]) circle(d=3);
+    translate([len-10-1.5,-13]) square([3,10]);
   }
 }
 
@@ -237,6 +244,7 @@ module decoder_side_runner_2d() {
       square([190,30]);
       translate([30,0]) square([165,60]);
     }
+
     translate([30,10]) square([3,10]);
     translate([159,10]) square([3,10]);
     translate([10,10]) circle(d=3);
@@ -323,15 +331,24 @@ module camshaft_bearing() {
 module top_plate_2d() {
   y1 = 17;
   difference() {
-    translate([-50,-120]) square([300,300]);
+    translate([-56,-120]) square([340+6,case_depth]);
     translate([hanger_x[0],-120+y1]) square([hanger_x[1]-hanger_x[0]+3,40]);
     translate([hanger_x[0],90]) square([hanger_x[1]-hanger_x[0]+3,20]);
     for(i=[0:2]) translate([hanger_x[1]+120, -120+y1+11.5+10*i]) circle(d=10.5);
   }
 }
 
+module side_plate_2d() {
+  difference() {
+    square([236,case_depth]);  
+    translate([100,120]) circle(d=20);
+  }
+}
+
 module casing() {
   translate([0,0,136]) color([0.5,0.5,0.5]) linear_extrude(height=6) top_plate_2d();
+  for(x=side_x)
+    translate([x,-120,-100]) rotate([0,-90,0]) color([0.4,0.4,0.4]) linear_extrude(height=6) side_plate_2d();
 }
 
 casing();
@@ -339,5 +356,5 @@ casing();
 translate([-47,0,0]) rotate([0,90,0]) cylinder(d=15,h=333);
 
 translate([-50,0,0]) rotate([0,90,0]) camshaft_bearing();
-translate([270,0,0]) rotate([0,90,0]) camshaft_bearing();
+translate([250,0,0]) rotate([0,90,0]) camshaft_bearing();
 
