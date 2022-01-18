@@ -51,6 +51,10 @@ decoder_origin_z = 70;
 hanger_x = [-16,113];
 case_depth=250;
 
+gear_separation = 100;
+
+input_shaft_angle = 30;
+
 side_x = [-50,290];
 module cam_mounting_holes() {
   for(i=[0:7]) {
@@ -126,7 +130,11 @@ module camshaft() {
   }
   translate([cam_spacing*4+fixed_cam_spacing*5,0,0]) {
     translate([0,0,0]) rotate([0,90,0]) drive_gear();
-    rotate([30,0,0]) translate([0,25+75,0]) rotate([0,90,0]) input_gear();
+    rotate([input_shaft_angle,0,0]) translate([0,gear_separation,0]) {
+      translate([20,0,0]) rotate([0,-90,0]) input_gear();
+      // Input shaft
+      translate([-300,0,0]) rotate([0,90,0]) cylinder(d=12,h=400);
+    }
   }
 }
 
@@ -341,7 +349,10 @@ module top_plate_2d() {
 module side_plate_2d() {
   difference() {
     square([236,case_depth]);  
-    translate([100,120]) circle(d=20);
+    translate([100,120]) {
+      circle(d=20);
+      rotate(-input_shaft_angle) translate([0,gear_separation]) circle(d=15);
+    }    
   }
 }
 
