@@ -48,6 +48,8 @@ decoder_origin_x = -16;
 decoder_origin_y = 65;
 decoder_origin_z = 70;
 
+hanger_x = [-16,113];
+
 module cam_mounting_holes() {
   for(i=[0:7]) {
     rotate(i*360/8 + (360/16)) translate([0, bolt_circle_diameter/2]) circle(d=8);
@@ -192,12 +194,38 @@ module decoder_hanger_2d() {
   clearance = 0.1;
   difference() {
     union() {
-      square([40,80]);
+      square([40,90]);
       translate([-3,10]) square([46,10]);
+      translate([-10,80]) square([60,10]);
     }
     for(i=[0:2]) {
       translate([10+10*i,5]) offset(r=clearance) square([3,30]);
       translate([10+10*i,50]) offset(r=clearance) square([3,20]);
+    }
+  }
+}
+
+module follower_hanger_2d() {
+  difference() {
+    union() {
+      square([20,50]);
+      translate([-10,44]) square([40,10]);
+    }
+    translate([10,5]) circle(d=3);
+    translate([-1,15]) square([4,10]);
+  }
+}
+
+
+module follower_comb_2d() {
+  clearance = 0.1;
+  difference() {
+    union() {
+      translate([3,-5]) square([hanger_x[1]-hanger_x[0]-3,49+5]);
+      translate([0,10]) square([hanger_x[1]-hanger_x[0]+3,10]);
+    }
+    for(i=[0:7]) {
+      translate([10+14*i,-6]) offset(r=clearance) square([3,15]);
     }
   }
 }
@@ -258,15 +286,17 @@ module reset_assembly() {
 
 module instruction_decoder() {
   translate([-23,-90,67]) decoder_rods();
-  translate([-6, 100, 90+3+10]) {
+  translate([0, 100, 90+3+10]) {
     for(i=[0:7]) {
-      color([0.5,0,0]) translate([14*i,0,0]) rotate([-90,0,0]) rotate([0,90,0]) linear_extrude(height=3) follower_rod_2d();
-      translate([14*i+((i%2==0)?3:-2.5),-100,-15]) bearing();
+      color([0.5,0,0]) translate([14*i-6,0,0]) rotate([-90,0,0]) rotate([0,90,0]) linear_extrude(height=3) follower_rod_2d();
+      translate([14*i+((i%2==0)?3:-2.5)-6,-100,-15]) bearing();
     }
-    for(x=[-10,119]) {
+    for(x=hanger_x) {
       color([0,1,0]) translate([x,-203,-41]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) decoder_hanger_2d();
+      color([0,1,0]) translate([x,-10,-5]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) follower_hanger_2d();
     }
-    translate([-40,-203,-41]) reset_assembly();    
+    translate([-46,-203,-41]) reset_assembly();
+    translate([hanger_x[0],-7,0]) rotate([90,0,0]) linear_extrude(height=3) follower_comb_2d();
   }
 }
 
@@ -289,6 +319,22 @@ module camshaft_bearing() {
     }
   }
 }
+
+module top_plate_2d() {
+  y1 = 17;
+  difference() {
+    translate([-50,-120]) square([300,300]);
+    translate([hanger_x[0],-120+y1]) square([hanger_x[1]-hanger_x[0]+3,40]);
+    translate([hanger_x[0],90]) square([hanger_x[1]-hanger_x[0]+3,20]);
+    for(i=[0:2]) translate([hanger_x[1]+120, -120+y1+11.5+10*i]) circle(d=10.5);
+  }
+}
+
+module casing() {
+  translate([0,0,136]) color([0.5,0.5,0.5]) linear_extrude(height=6) top_plate_2d();
+}
+
+casing();
 
 translate([-47,0,0]) rotate([0,90,0]) cylinder(d=15,h=333);
 
