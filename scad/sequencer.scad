@@ -49,6 +49,7 @@ decoder_origin_y = 65;
 decoder_origin_z = 70;
 
 hanger_x = [-16,113];
+follower_support_x = [-16, 113, 210];
 case_depth=250;
 
 gear_separation = 100;
@@ -309,10 +310,12 @@ module instruction_decoder() {
     }
     for(x=hanger_x) {
       color([0,1,0]) translate([x,-203,-41]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) decoder_hanger_2d();
+    }
+    for(x=follower_support_x) {
       color([0,1,0]) translate([x,-10,-5]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) follower_hanger_2d();
     }
     translate([-46,-203,-41]) reset_assembly();
-    translate([hanger_x[0],-7,0]) rotate([90,0,0]) linear_extrude(height=3) follower_comb_2d();
+    translate([follower_support_x[0],-7,0]) rotate([90,0,0]) linear_extrude(height=3) follower_comb_2d();
   }
 }
 
@@ -341,7 +344,7 @@ module top_plate_2d() {
   difference() {
     translate([-56,-120]) square([340+6,case_depth]);
     translate([hanger_x[0],-120+y1]) square([hanger_x[1]-hanger_x[0]+3,40]);
-    translate([hanger_x[0],90]) square([hanger_x[1]-hanger_x[0]+3,20]);
+    translate([follower_support_x[0],90]) square([follower_support_x[2]-follower_support_x[0]+3,20]);
     for(i=[0:2]) translate([hanger_x[1]+120, -120+y1+11.5+10*i]) circle(d=10.5);
   }
 }
@@ -368,4 +371,3 @@ translate([-47,0,0]) rotate([0,90,0]) cylinder(d=15,h=333);
 
 translate([-50,0,0]) rotate([0,90,0]) camshaft_bearing();
 translate([250,0,0]) rotate([0,90,0]) camshaft_bearing();
-
