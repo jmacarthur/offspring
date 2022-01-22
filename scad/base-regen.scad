@@ -176,11 +176,11 @@ module base_regen(shift)
   translate([0,shift,0]) {
     translate([0,centre_x-pitch/2,0]) housing();
     for(i=[0:7]) {
-      translate([0,centre_x+pitch*i-1.5,0]) output_arc();
+      color([0.5,0,0]) translate([0,centre_x+pitch*i-1.5,0]) output_arc();
       color([0,1,0]) translate([0,centre_x+pitch*i-input_arc_thickness/2,0]) input_arc();
       
-      translate([0, centre_x+pitch*i-input_arc_thickness/2,0]) rotate([90,0,0]) linear_extrude(height=3) input_coupler_2d();
-      translate([0, centre_x+pitch*i+input_arc_thickness/2+3,0]) rotate([90,0,0]) linear_extrude(height=3) input_coupler_2d();
+      color([0.4,0.4,0.4]) translate([0, centre_x+pitch*i-input_arc_thickness/2,0]) rotate([90,0,0]) linear_extrude(height=3) input_coupler_2d();
+       color([0.4,0.4,0.4])  translate([0, centre_x+pitch*i+input_arc_thickness/2+3,0]) rotate([90,0,0]) linear_extrude(height=3) input_coupler_2d();
     }
     translate([-3.5,centre_x,-35]) sphere(r=ball_bearing_radius, $fn=40);
   }
