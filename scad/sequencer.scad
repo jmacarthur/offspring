@@ -52,10 +52,13 @@ hanger_x = [-16,113];
 follower_support_x = [-16, 97, 215];
 follower_support_x2 = [97+22, 215-26];
 case_depth=280;
-
+case_width = 340;
+case_height=236;
 gear_separation = 100;
 
 input_shaft_angle = 30;
+
+angle_iron_bolt_distance = 304;
 
 side_x = [-50,290];
 module cam_mounting_holes() {
@@ -331,14 +334,21 @@ module bearing() {
   }
 }
 
+module reset_crank_2d() {
+  union() {
+    conrod(25);
+    rotate(90) conrod(25);
+  }
+}
+
 module reset_assembly() {
   for(y=[0,43]) {
     translate([0,y-30,0]) rotate([90,0,0]) linear_extrude(height=3) decoder_side_runner_2d();
   }
   for(y=[3,40]) {    
-    translate([10,y,10]) rotate([0,-105,0]) rotate([90,0,0]) linear_extrude(height=3) conrod(25);
+    translate([10,y-30,10]) rotate([0,-105,0]) rotate([90,0,0]) linear_extrude(height=3) reset_crank_2d();
   }
-  translate([10,0,10]) rotate([0,-105,0]) translate([25,-3,0]) rotate([-90,0,0]) cylinder(d=3, h=50);
+  translate([10,-30,10]) rotate([0,-105,0]) translate([25,-3,0]) rotate([-90,0,0]) cylinder(d=3, h=50);
 
   for(y=[13,23,33]) {    
     translate([190,y-30,55]) rotate([0,0,0]) rotate([90,0,0]) linear_extrude(height=3) instruction_lever_2d();
@@ -403,17 +413,17 @@ module camshaft_bearing() {
 module top_plate_2d() {
   y1 = 17;
   difference() {
-    translate([-56,-150]) square([340+6,case_depth]);
+    translate([-56,-150]) square([case_width+6,case_depth]);
     translate([hanger_x[0],-150+y1]) square([hanger_x[1]-hanger_x[0]+3,40]);
     translate([follower_support_x[0],90]) square([follower_support_x[2]-follower_support_x[0]+3,20]);
     translate([follower_support_x2[0],-90]) square([follower_support_x2[1]-follower_support_x2[0]+3,20]);
-    for(i=[0:2]) translate([hanger_x[1]+120, -120+y1+11.5+10*i]) circle(d=10.5);
+    for(i=[0:2]) translate([hanger_x[1]+120, -150+y1+11.5+10*i]) circle(d=10.5);
   }
 }
 
 module side_plate_2d() {
   difference() {
-    square([236,case_depth-30]);  
+    translate([0,30]) square([case_height,case_depth-60]);
     translate([100,120]) {
       circle(d=20);
       rotate(-input_shaft_angle) translate([0,gear_separation]) circle(d=15);
@@ -421,10 +431,21 @@ module side_plate_2d() {
   }
 }
 
+module back_plate_2d() {
+  difference() {
+    square([case_width-6, case_height]);
+    for(x=[0,angle_iron_bolt_distance]) {
+      for(y=[20,20+4*50])
+      translate([x+15,y]) circle(d=6);
+    }
+  }
+}
+
 module casing() {
-  //translate([0,0,136]) color([0.5,0.5,0.5]) linear_extrude(height=6) top_plate_2d();
+  translate([0,0,136]) color([0.5,0.5,0.5]) linear_extrude(height=6) top_plate_2d();
   for(x=side_x)
     translate([x,-120,-100]) rotate([0,-90,0]) color([0.4,0.4,0.4]) linear_extrude(height=6) side_plate_2d();
+  translate([side_x[0],130,-100]) color([0.4,0.5,0.5]) rotate([90,0,0]) linear_extrude(height=6) back_plate_2d();
 }
 
 casing();
