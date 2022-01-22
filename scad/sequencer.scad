@@ -49,8 +49,9 @@ decoder_origin_y = 65;
 decoder_origin_z = 70;
 
 hanger_x = [-16,113];
-follower_support_x = [-16, 113, 210];
-case_depth=250;
+follower_support_x = [-16, 97, 215];
+follower_support_x2 = [97+22, 215-26];
+case_depth=280;
 
 gear_separation = 100;
 
@@ -185,9 +186,30 @@ module decoder_rods() {
   }
 }
 
-module follower_rod_2d() {
+module instruction_follower_rod_2d() {
   drop_pos = 85;
-  len = 220;
+  len = 250;
+  difference() {
+    union() {
+      translate([-5,-5]) square([len,10]);
+      translate([drop_pos,0])
+      hull() {
+	translate([0,-5]) square([30,10]);
+	translate([15,15]) circle(d=10);
+      }
+    }
+    translate([0,0]) circle(d=3);
+    translate([drop_pos+15,15]) circle(d=3);
+
+    // Hook on the end to add weights
+    translate([len-10,-3]) circle(d=3);
+    translate([len-10-1.5,-13]) square([3,10]);
+  }
+}
+
+module universal_follower_rod_2d() {
+  drop_pos = 65;
+  len = 200;
   difference() {
     union() {
       translate([-5,-5]) square([len,10]);
@@ -237,12 +259,21 @@ module follower_comb_2d() {
   clearance = 0.1;
   difference() {
     union() {
-      translate([3,-5]) square([hanger_x[1]-hanger_x[0]-3,49+5]);
-      translate([0,10]) square([hanger_x[1]-hanger_x[0]+3,10]);
+      translate([3,-5]) square([follower_support_x[1]-follower_support_x[0]-3,49+5]);
+      translate([follower_support_x[1]-follower_support_x[0]+3,-5]) square([follower_support_x[2]-follower_support_x[1]-3,49+5]);
+      translate([follower_support_x[1]-follower_support_x[0]-2,-25]) square([follower_support_x[2]-follower_support_x[1]+2,25]);
+      translate([0,10]) square([follower_support_x[2]-follower_support_x[0]+3,10]);
     }
     for(i=[0:7]) {
       translate([10+14*i,-6]) offset(r=clearance) square([3,15]);
     }
+
+    for(i=[0:5]) {
+      xoffset = 10+14*8-5;
+      translate([xoffset+23*i+14,-26]) offset(r=clearance) square([3,32]);
+      translate([xoffset+23*i,-26]) offset(r=clearance) square([3,32]);
+    }
+
   }
 }
 
@@ -287,7 +318,7 @@ module bearing() {
 
 module reset_assembly() {
   for(y=[0,43]) {
-    translate([0,y,0]) rotate([90,0,0]) linear_extrude(height=3) decoder_side_runner_2d();
+    translate([0,y-30,0]) rotate([90,0,0]) linear_extrude(height=3) decoder_side_runner_2d();
   }
   for(y=[3,40]) {    
     translate([10,y,10]) rotate([0,-105,0]) rotate([90,0,0]) linear_extrude(height=3) conrod(25);
@@ -295,25 +326,39 @@ module reset_assembly() {
   translate([10,0,10]) rotate([0,-105,0]) translate([25,-3,0]) rotate([-90,0,0]) cylinder(d=3, h=50);
 
   for(y=[13,23,33]) {    
-    translate([190,y,55]) rotate([0,0,0]) rotate([90,0,0]) linear_extrude(height=3) instruction_lever_2d();
+    translate([190,y-30,55]) rotate([0,0,0]) rotate([90,0,0]) linear_extrude(height=3) instruction_lever_2d();
   }
 
 }
 
 
 module instruction_decoder() {
-  translate([-23,-90,67]) decoder_rods();
+  translate([-23,-90-30,67]) decoder_rods();
   translate([0, 100, 90+3+10]) {
     for(i=[0:7]) {
-      color([0.5,0,0]) translate([14*i-6,0,0]) rotate([-90,0,0]) rotate([0,90,0]) linear_extrude(height=3) follower_rod_2d();
+      color([0.5,0,0]) translate([14*i-6,0,0]) rotate([-90,0,0]) rotate([0,90,0]) linear_extrude(height=3) instruction_follower_rod_2d();
       translate([14*i+((i%2==0)?3:-2.5)-6,-100,-15]) bearing();
     }
+    for(i=[0:9]) {
+      xoffset = 8*14;
+      translate([xoffset+11.5*i,0,0]) {
+	color([0.5,0,0]) translate([((i%2==0)?-2:0.5)-6,-180,0]) rotate([0,0,180]) rotate([-90,0,0]) rotate([0,90,0]) linear_extrude(height=3) universal_follower_rod_2d();
+	translate([((i%2==0)?-2:-5)-6,-100,-15]) bearing();
+      }
+    }
+
+
     for(x=hanger_x) {
-      color([0,1,0]) translate([x,-203,-41]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) decoder_hanger_2d();
+      color([0,1,0]) translate([x,-233,-41]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) decoder_hanger_2d();
     }
     for(x=follower_support_x) {
       color([0,1,0]) translate([x,-10,-5]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) follower_hanger_2d();
     }
+
+    for(x=follower_support_x2) {
+      color([0,1,0]) translate([x,-190,-5]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) follower_hanger_2d();
+    }
+
     translate([-46,-203,-41]) reset_assembly();
     translate([follower_support_x[0],-7,0]) rotate([90,0,0]) linear_extrude(height=3) follower_comb_2d();
   }
@@ -342,16 +387,17 @@ module camshaft_bearing() {
 module top_plate_2d() {
   y1 = 17;
   difference() {
-    translate([-56,-120]) square([340+6,case_depth]);
-    translate([hanger_x[0],-120+y1]) square([hanger_x[1]-hanger_x[0]+3,40]);
+    translate([-56,-150]) square([340+6,case_depth]);
+    translate([hanger_x[0],-150+y1]) square([hanger_x[1]-hanger_x[0]+3,40]);
     translate([follower_support_x[0],90]) square([follower_support_x[2]-follower_support_x[0]+3,20]);
+    translate([follower_support_x2[0],-90]) square([follower_support_x2[1]-follower_support_x2[0]+3,20]);
     for(i=[0:2]) translate([hanger_x[1]+120, -120+y1+11.5+10*i]) circle(d=10.5);
   }
 }
 
 module side_plate_2d() {
   difference() {
-    square([236,case_depth]);  
+    square([236,case_depth-30]);  
     translate([100,120]) {
       circle(d=20);
       rotate(-input_shaft_angle) translate([0,gear_separation]) circle(d=15);
