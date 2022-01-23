@@ -60,6 +60,9 @@ input_shaft_angle = 30;
 
 angle_iron_bolt_distance = 304;
 
+// How high off the ground is the first bolt to angle iron?
+base_angleiron_bolt_y = 80;
+
 side_x = [-50,290];
 module cam_mounting_holes() {
   for(i=[0:7]) {
@@ -458,11 +461,12 @@ module side_plate_2d() {
 module back_plate_2d() {
   difference() {
     square([case_width-6, case_height]);
+    // Bolt holes to perforated angle iron
     for(x=[0,angle_iron_bolt_distance]) {
-      for(y=[20,20+4*50])
-      translate([x+15,y]) circle(d=6);
+      for(y=[0,2*50])
+      translate([x+15,y+base_angleiron_bolt_y]) circle(d=6);
     }
-    for(y=[70,120]) {
+    for(y=[30,120]) {
       translate([12.5, y]) circle(d=6);
       translate([case_width-6-12.5, y]) circle(d=6);
     }
