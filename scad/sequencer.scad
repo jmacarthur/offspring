@@ -139,6 +139,9 @@ module camshaft() {
       translate([20,0,0]) rotate([0,-90,0]) input_gear();
       // Input shaft
       translate([-300,0,0]) rotate([0,90,0]) cylinder(d=12,h=400);
+
+      // Bearing shape
+      translate([-280,0,0]) rotate([0,90,0]) cylinder(r=20, h=10);
     }
   }
 }
@@ -418,16 +421,37 @@ module top_plate_2d() {
     translate([follower_support_x[0],90]) square([follower_support_x[2]-follower_support_x[0]+3,20]);
     translate([follower_support_x2[0],-90]) square([follower_support_x2[1]-follower_support_x2[0]+3,20]);
     for(i=[0:2]) translate([hanger_x[1]+120, -150+y1+11.5+10*i]) circle(d=10.5);
+
+    // Bolt holes for mounting
+    for(x=[6+12.5, case_width+6-6-12.5]) {
+      translate([-56+x, -150+50]) circle(d=6);
+      translate([-56+x, 50]) circle(d=6);
+    }
   }
 }
 
 module side_plate_2d() {
   difference() {
     translate([0,30]) square([case_height,case_depth-60]);
+
+    // Axle holes and bearing mounts
     translate([100,120]) {
       circle(d=20);
-      rotate(-input_shaft_angle) translate([0,gear_separation]) circle(d=15);
-    }    
+      rotate(-input_shaft_angle) translate([0,gear_separation]) {
+	rotate(input_shaft_angle+90) {
+	  translate([0,25]) circle(d=6); // MEASUREMENTS NOT CHECKED - verify against spec
+	  translate([0,-25]) circle(d=6);
+	}
+	circle(d=15);
+      }
+    }
+    
+    // Bolt holes for mounting
+    translate([case_height-12.5, 50]) circle(d=6);
+    translate([case_height-12.5, 150]) circle(d=6);
+
+    translate([50,case_depth+30-60-12.5-6]) circle(d=6);
+    translate([100,case_depth+30-60-12.5-6]) circle(d=6);
   }
 }
 
@@ -437,6 +461,10 @@ module back_plate_2d() {
     for(x=[0,angle_iron_bolt_distance]) {
       for(y=[20,20+4*50])
       translate([x+15,y]) circle(d=6);
+    }
+    for(y=[70,120]) {
+      translate([12.5, y]) circle(d=6);
+      translate([case_width-6-12.5, y]) circle(d=6);
     }
   }
 }
