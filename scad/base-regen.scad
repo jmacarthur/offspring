@@ -186,7 +186,7 @@ module base_regen(shift)
   }
   color([0,1,0]) translate([-25-3,0,-radius-6]) backing_plate(shift);
 
-  translate([63,-5,-7.5]) regen_input_coupler();
+  translate([63,0,-7.5]) regen_input_coupler();
 
 }
 
