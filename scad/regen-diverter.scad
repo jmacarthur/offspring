@@ -11,7 +11,7 @@ diverter_slope = 10;
 collector_width = pitch*8+9;
 flap_box_x = 30;
 flap_rotate = 0;
-regen_offset = -5;
+regen_offset = 0;
 module pyramid(width, depth, apex_height) {
   polyhedron(
   points=[ [width/2,depth/2,0],[width/2,-depth/2,0],[-width/2,-depth/2,0],[-width/2,depth/2,0], // the four points at base
