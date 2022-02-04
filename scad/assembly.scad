@@ -8,7 +8,7 @@ use <stacked-subtractor.scad>;
 use <base-regen.scad>;
 
 use <sequencer.scad>;
-
+use <memory-sender-4.scad>;
 module memory_mounting_plate() {
   x1 = 100; // coord of first openbeam rail centre
   x2 = x1+20; // coord of first memory mounting hole
@@ -59,3 +59,5 @@ translate([0,-130,100]) {
   sequencer_assembly();
   casing();
 }
+
+translate([350,30,350]) sender();

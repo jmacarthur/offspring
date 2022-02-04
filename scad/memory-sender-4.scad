@@ -122,10 +122,11 @@ module sender() {
 
   }
 
-  //color([1,0,0]) translate([-20,rod_y_offset-5,7.5-1.5]) hold_release_lever();
+  color([1,0,0]) translate([-20,rod_y_offset-5,7.5-1.5]) hold_release_lever();
+
+  sender_clamp();
+
 }
 
-//sender();
+sender();
 
-translate([10,0,0]) color([0,1,0]) sender_clamp();
-//hold_release_lever();
