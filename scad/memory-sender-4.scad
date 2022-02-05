@@ -7,9 +7,13 @@ pipe_outer_diameter = 11;
 
 $fn=20;
 
-
 rod_x = ball_bearing_radius;
 rod_y_offset = 10;
+
+// Mounting details:
+// For the sensor rods to line up, the first sensor rod hole (closest to the front) must be:
+// Recessed 43mm from the front face of the angle iron/openbeam
+// 82mm in +X from the rightmost face of the right openbeam
 
 module hold_release_lever() {
   difference() {
@@ -69,6 +73,76 @@ module sender_clamp() {
   }
 }
 
+module mount_plate_common_holes() {
+    // Mounting holes
+    offset = 17.5;
+    for(i=[0:1]) {
+      translate([i*40-offset+rod_x, 1.5*decoder_pitch+rod_y_offset]) circle(d=4);
+    }
+
+    // Holes for pipe clamp
+    translate([15,-10]) circle(d=3);
+    translate([15,70]) circle(d=3);
+
+    // Hole for release cable
+    translate([-40,30]) circle(d=10);
+
+    // Hole to mount to mounting block
+    translate([-75+rod_x,-17]) circle(d=3);
+    translate([-75+rod_x+15,-17]) circle(d=3);
+
+    // Material-saving cutout
+    translate([-130,0]) rotate(-25) square([50,120]);
+    
+}
+
+module top_mounting_plate_2d() {
+  difference() {
+    translate([-81+rod_x,-22]) square([100,100]);
+    mount_plate_common_holes();
+
+    // Holes for address rods
+    for(i=[0:4]) {
+      translate([rod_x,i*decoder_pitch+rod_y_offset]) circle(d=6);
+    }
+  }
+}
+
+module base_mounting_plate_2d() {
+  difference() {
+    translate([-81+rod_x,-22]) square([100,100]);
+
+    mount_plate_common_holes();
+    //Drain hole for bearings
+    translate([-20,5]) offset(r=1) square([20,50]);
+  }
+}
+
+module plate_mounting_block() {
+  difference() {
+    translate([0,0,-25]) cube([25,20,60]);
+
+    translate([-1,10,-12]) cube([25,20,5]);
+    translate([-1,10,25]) cube([25,20,5]);
+
+    // Material-saving cutout
+    translate([-1,13,0]) cube([35,30,20]);
+    translate([-1,10,3]) cube([35,30,14]);
+    translate([-1,10+3,3]) rotate([0,90,0]) cylinder(r=3,h=35);
+    translate([-1,10+3,20-3]) rotate([0,90,0]) cylinder(r=3,h=35);
+
+    translate([5,15,-26]) cylinder(d=3,h=70);
+    translate([20,15,0]) cylinder(d=3,h=70);
+    
+    
+    translate([15,-1,-20]) {
+      rotate([-90,0,0]) cylinder(d=6,h=50);
+      translate([0,0,30]) rotate([-90,0,0]) cylinder(d=6,h=50);
+    }
+  }
+}
+
+
 
 module sender() {
   difference() {
@@ -124,9 +198,30 @@ module sender() {
 
   color([1,0,0]) translate([-20,rod_y_offset-5,7.5-1.5]) hold_release_lever();
 
+  translate([0,0,25]) color([0.1,0.1,0.1,0.5]) linear_extrude(height=5) top_mounting_plate_2d();
+  translate([0,0,-12]) color([0.1,0.1,0.1,0.5]) linear_extrude(height=5) base_mounting_plate_2d();
+  
   sender_clamp();
+
+  translate([-80+rod_x,-32]) plate_mounting_block();
 
 }
 
-sender();
+module positioned_sender() {
+  translate([98-rod_x, 33,0]) sender();
+}
 
+positioned_sender();
+
+// Fake Openbeam
+
+cube([15,15,100]);
+
+
+// Where the sensor should be
+color([1,0,0]) translate([15+83, 43,0]) cylinder(d=3, h=100);
+
+
+// where bolts go for angle iron
+
+translate([15+18,0,0]) rotate([90,0,0]) cylinder(d=6,h=40);
