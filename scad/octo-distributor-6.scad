@@ -138,7 +138,7 @@ module injector_assembly() {
     injector_housing_base();
     color([1,1,0]) translate([0,0,10+0.2]) injector_housing_top();
     for(x=[0:7]) {
-      color([1,0,0]) translate([pitch*x, 16,3]) injector();
+      color([1,0,0]) translate([pitch*x, 16,3.2]) injector();
     }
   }
 }

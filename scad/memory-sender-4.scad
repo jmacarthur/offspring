@@ -96,9 +96,16 @@ module mount_plate_common_holes() {
     
 }
 
+module generic_plate_2d() {
+  translate([-81+rod_x,-22]) hull() {
+    square([100,100]);
+    translate([100,22+1.5*decoder_pitch+rod_y_offset]) circle(d=20);
+  }
+}
+
 module top_mounting_plate_2d() {
   difference() {
-    translate([-81+rod_x,-22]) square([100,100]);
+    generic_plate_2d();
     mount_plate_common_holes();
 
     // Holes for address rods
@@ -110,7 +117,7 @@ module top_mounting_plate_2d() {
 
 module base_mounting_plate_2d() {
   difference() {
-    translate([-81+rod_x,-22]) square([100,100]);
+    generic_plate_2d();
 
     mount_plate_common_holes();
     //Drain hole for bearings
@@ -119,11 +126,12 @@ module base_mounting_plate_2d() {
 }
 
 module plate_mounting_block() {
+  clearance=0.1;
   difference() {
     translate([0,0,-25]) cube([25,20,60]);
 
-    translate([-1,10,-12]) cube([25,20,5]);
-    translate([-1,10,25]) cube([25,20,5]);
+    translate([-1,10-clearance,-12-clearance]) cube([35,20,5+clearance*2]);
+    translate([-1,10-clearance,25-clearance]) cube([35,20,5+clearance*2]);
 
     // Material-saving cutout
     translate([-1,13,0]) cube([35,30,20]);
@@ -131,8 +139,8 @@ module plate_mounting_block() {
     translate([-1,10+3,3]) rotate([0,90,0]) cylinder(r=3,h=35);
     translate([-1,10+3,20-3]) rotate([0,90,0]) cylinder(r=3,h=35);
 
-    translate([5,15,-26]) cylinder(d=3,h=70);
-    translate([20,15,0]) cylinder(d=3,h=70);
+    translate([5,15,-26]) cylinder(d=3+clearance*2,h=70);
+    translate([20,15,0]) cylinder(d=3+clearance*2,h=70);
     
     
     translate([15,-1,-20]) {
