@@ -53,6 +53,15 @@ module intake_holes_slot()
   }
 }
 
+module outtake_holes_slot()
+{
+  // Holes for a guide to keep bearings in line
+  translate([38, -20]) {
+    translate([-1.5, 0]) square([3, 20]);
+  }
+}
+
+
 module rail_mounting_holes() {
   x = -195.5;
   translate([x,60]) circle(d=3);
@@ -94,6 +103,35 @@ module generic_support_plate()
     translate([-195.5-25,0]) polygon([[0,0], [0,20], [25,45], [250+50-25,45], [250+50,20], [250+50,0]]);
     }
 }
+
+module extended_generic_support_plate()
+{
+    left_edge = -8*subtractor_pitch_x;
+    union() {
+      offset(r=5) hull() {
+	for(i=[0:7]) {
+	  translate([-subtractor_pitch_x*i, -subtractor_pitch_y*i]) {
+	    
+	    input_guard_a_holes();
+	    input_guard_b_holes();
+	    // Hole for hex axle
+	    translate([0, 0]) circle(r=hex_bar_max_radius+axle_clearance);
+	  }
+	  intake_holes();
+	  translate([-subtractor_pitch_x*-1, -subtractor_pitch_y*-1]) {
+	    input_guard_a_holes();
+	  }
+	  // Extend top corners corner
+	  rail_mounting_holes();
+
+	  // Extra hole to extend this plate
+	  translate([40,-215]) circle(d=3);
+	}
+      }
+      translate([-195.5-25,0]) polygon([[0,0], [0,20], [25,45], [250+50-25,45], [250+50,20], [250+50,0]]);
+    }
+}
+
 
 // Layer 0 - Top plate
 module top_layer_2d() {
@@ -268,7 +306,6 @@ module output_toggle_2d() {
   }
 }
 
-
 module output_guard_a_2d()
 {
   difference() {
@@ -335,14 +372,15 @@ module output_guard_top_2d()
 // Layer 4 - Rear support plate
 module back_layer_2d() {
   difference() {
-    generic_support_plate();
+    extended_generic_support_plate();
 
     for(i=[0:7]) {
       translate([-subtractor_pitch_x*i, -subtractor_pitch_y*i]) {
 	input_guard_a_holes();
 	input_guard_b_holes();
 	intake_holes_slot();
-
+	outtake_holes_slot();
+	
 	// Drain hole for output
 	hull() {
 	  translate([-channel_width/2-5, 0]) circle(d=channel_width+1);
@@ -365,7 +403,6 @@ module back_layer_2d() {
   }
 }
 
-
 // Layer 4 - Reset toggles
 
 reset_rot = 0;
@@ -376,6 +413,14 @@ module reset_toggle_2d() {
       circle(r=5);
     }
     hex_bar_2d();
+  }
+}
+
+module dropper_plate_2d(l)
+{
+  union() {
+    square([10,20]);
+    square([7,l]);
   }
 }
 
@@ -466,6 +511,7 @@ module subtractor_assembly() {
       //if(i % 4 == 0) translate([0,0,-3]) color([1.0,1.0,0.5]) linear_extrude(height=3) reset_lever_2d(); // Reset lever is already rotated, as it's offset
       translate([0,0,2]) color([1.0,1.0,0.5]) linear_extrude(height=3) reverse_reset_lever_2d(); // Reset lever is already rotated, as it's offset
     }
+    translate([-(i-1)*subtractor_pitch_x+16.5,-(i-1)*subtractor_pitch_y-27,-5]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) dropper_plate_2d(210-i*subtractor_pitch_y);
   }
   translate([1*subtractor_pitch_x, 1*subtractor_pitch_y,0]) {
     linear_extrude(height=3) input_guard_top_2d();
