@@ -397,6 +397,24 @@ module returner() {
   } 
 }
 
+module diverter_back_plate_2d() {
+  difference() {
+    square([pitch*8+9,30]);
+    for(x=[pitch*2,pitch*6]) {
+      translate([x,18]) circle(d=3);
+    }
+  }
+}
+
+module diverter_support_plate_2d() {
+  difference() {
+    translate([4,0]) square([pitch*8+9-8,6]);
+    for(x=[pitch*2,pitch*6]) {
+      translate([x,0]) circle(d=3);
+    }
+  }
+}
+
 module regen_diverter_assembly() {
   translate([0,-3,20]) discard_assembly();
   translate([0,0,0]) discard_backing_plate();
@@ -409,6 +427,9 @@ module regen_diverter_assembly() {
     left_diverter_bracket();
     right_diverter_bracket();
   }
+
+  color([0,1,1]) translate([flap_box_x,5+3,-110]) rotate([90,0,0]) linear_extrude(height=3) diverter_back_plate_2d();
+  color([0,0,1]) translate([flap_box_x,5,-92]) rotate([90,0,0]) linear_extrude(height=3) diverter_support_plate_2d();
 }
 
 regen_diverter_assembly();
