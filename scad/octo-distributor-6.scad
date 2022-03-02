@@ -9,6 +9,8 @@ large_pipe_diameter = 7;
 small_pipe_diameter = 7;
 pipe_diameter = large_pipe_diameter;
 
+all_inject_distance = 30;
+
 module mounting_holes() {
   for(x=[1,7]) translate([pitch*x-pitch/2, 15, -10]) cylinder(d=3, h=40);
 }
@@ -123,6 +125,23 @@ module crank_arm_2d() {
   }
 }
 
+module all_inject_crank_arm_2d() {
+  l1 = all_inject_distance+10;
+  l2 = 30;
+  clearance = 0.2;
+  difference() {
+    union() {
+      for(i=[0:4]) {
+	rotate(-10*i) translate([-5,0]) square([10,l1]);
+      }
+      circle(d=10);
+    }
+    offset(r=clearance) rotate(-20) translate([-10,all_inject_distance]) square([20,3]);
+  
+    circle(d=3);
+  }
+}
+
 module crank_arm() {
   rotate([0,90,0]) difference() {
     union() {
@@ -132,6 +151,29 @@ module crank_arm() {
     translate([0,0,-1]) cylinder(d=3.2,h=12);
   }
 }
+
+module all_inject_crank_arm() {
+  rotate([0,90,0]) difference() {
+    union() {
+      linear_extrude(height=3) all_inject_crank_arm_2d();
+      cylinder(d=10,h=10);
+    }
+    translate([0,0,-1]) cylinder(d=3.2,h=12);
+  }
+}
+
+
+module all_raise_plate_2d() {
+  difference() {
+    square([220,20]);
+    translate([pitch*4.5,10]) circle(d=3);
+  }
+}
+
+module all_raise_plate() {
+  linear_extrude(height=3) all_raise_plate_2d();
+}
+
 
 module injector_assembly() {
   translate([memory_x_7, memory_y_7-11-travel, 10]) {
@@ -194,9 +236,22 @@ for(x=[0:7]) {
 injector_assembly();
 color([0,1,0]) backplate();
 
-for(i=[0:7]) {
-  translate([memory_x_7-1.5+i*pitch,17,40]) crank_arm();
- }
+translate([memory_x_7-1.5,17,40]) {
+
+  for(i=[0:7]) {
+    translate([i*pitch,0,0]) crank_arm();
+  }
+  
+  // All-raise assembly
+  rotate([-10,0,0]) {
+    for(i=[-1,8]) {
+      translate([i*pitch,0,0]) all_inject_crank_arm();
+    }
+    
+    color([1,0,0]) rotate([-20,0,0]) translate([-pitch,all_inject_distance+3,-10]) rotate([90,0,0]) all_raise_plate();
+  }
+}
+
 translate([32,-10,30]) lever_bracket();
 translate([memory_x_7, memory_y_7, -14]) coupler();
 
