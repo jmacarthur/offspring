@@ -398,10 +398,14 @@ module returner() {
 }
 
 module diverter_back_plate_2d() {
+  notch_width=1;
   difference() {
     square([pitch*8+9,30]);
     for(x=[pitch*2,pitch*6]) {
       translate([x,18]) circle(d=3);
+    }
+    for(i=[0:8]) {
+      translate([pitch*i-notch_width/2,25]) square([notch_width,10]);
     }
   }
 }
