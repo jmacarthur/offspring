@@ -1,24 +1,29 @@
 use <subtractor.scad>;
-
+include <globs.scad>;
 kerf = 0.05;
 
 
-/*offset(r=kerf) {
-  input_guard_top_2d();
+offset(r=kerf) {
+  //input_guard_top_2d();
 
-  translate([50,0]) 
-    output_guard_top_2d();
+  //translate([50,0]) 
+  //    output_guard_top_2d();
+
+  for(i=[0:6]) {
+    translate([i*15,0,0]) intake_dropper_plate_2d(175-i*subtractor_pitch_y);
+  }
+
 }
-*/
+
 
 //scale([1,-1,1])
 //pipe_connector_plate();
 
-intersection() {
+/*intersection() {
 
   translate([0,8,0]) pipe_extender();
   translate([0,0,-30]) cube([100,13,50]);
-}
+  }*/
 
 
 //translate([330,0]) back_layer_2d();

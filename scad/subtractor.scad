@@ -424,6 +424,16 @@ module dropper_plate_2d(l)
   }
 }
 
+module intake_dropper_plate_2d(l)
+{
+  union() {
+    square([10,5]);
+    square([7,l]);
+    translate([0,l]) square([10,20]);
+  }
+}
+
+
 module reset_lever_2d() {
   translate([-12.5,30]) {
     rotate(reset_rot) {
@@ -512,6 +522,9 @@ module subtractor_assembly() {
       translate([0,0,2]) color([1.0,1.0,0.5]) linear_extrude(height=3) reverse_reset_lever_2d(); // Reset lever is already rotated, as it's offset
     }
     translate([-(i-1)*subtractor_pitch_x+16.5,-(i-1)*subtractor_pitch_y-27,-5]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) dropper_plate_2d(210-i*subtractor_pitch_y);
+
+    translate([(i+1)*subtractor_pitch_x-200+2.5,66,-5]) rotate([0,0,180]) rotate([0,90,0]) linear_extrude(height=3) intake_dropper_plate_2d(175-i*subtractor_pitch_y);
+
   }
   translate([1*subtractor_pitch_x, 1*subtractor_pitch_y,0]) {
     linear_extrude(height=3) input_guard_top_2d();
@@ -600,6 +613,4 @@ module pipe_extender() {
     
   }
 }
-
-
 translate([-9,-30,-30]) rotate([-90,0,0]) pipe_connector_plate();
