@@ -288,6 +288,9 @@ module collector() {
 
 	// Mounting supports
 	for(x=[-5,collector_width-1]) {translate([x,-29,8.5]) cube([6,10,20]);}
+
+	// Support for PC injector
+	translate([collector_width-3, -33-4,8.5]) cube([16, 8,8]);
       }
       // Mounting holes
 
@@ -295,7 +298,9 @@ module collector() {
 	translate([-6,-24,z]) rotate([0,90,0]) cylinder(d=3,h=8);
 	translate([collector_width-2,-24,z]) rotate([0,90,0]) cylinder(d=3,h=8);
       }
-     
+      // Hole for PC injector
+      translate([collector_width-4, -33, 20]) rotate([0,90,0]) cylinder(d=8,h=10);
+      translate([collector_width, -33, 20]) rotate([0,90,0]) cylinder(d=11,h=20);
     }
   }
 }
