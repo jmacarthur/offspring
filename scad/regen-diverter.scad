@@ -290,7 +290,7 @@ module collector() {
 	for(x=[-5,collector_width-1]) {translate([x,-29,8.5]) cube([6,10,20]);}
 
 	// Support for PC injector
-	translate([collector_width-3, -33-4,8.5]) cube([16, 8,8]);
+	translate([collector_width-3, -33-6,8.5]) cube([16, 10,12]);
       }
       // Mounting holes
 
