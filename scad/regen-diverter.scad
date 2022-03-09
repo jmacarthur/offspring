@@ -264,13 +264,6 @@ module subtractor_collector(height) {
   }
 }
 
-module collector_side_bracket() {
-  // Support jigs
-  translate([-5,-6,10]) linear_extrude(height=20) polygon([[6,6], [6,0], [0,6]]);
-  translate([-5,3,10]) linear_extrude(height=20) polygon([[5,5], [6,0], [0,0]]);
-  translate([-5,-5,30]) linear_extrude(height=5) polygon([[6,10], [5,0], [0,5], [0,8], [5,13]]);
-}
-
 module collector() {
   translate([0,-3,-66]) {
     difference() {
@@ -292,8 +285,6 @@ module collector() {
 	  h1 = 14;
 	  translate([pitch*i-1.5,-53,8.5]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) polygon([[0,0], [60,0], [60,h1+10], [0,h1]]);
 	}
-	//collector_side_bracket();
-	//translate([pitch*8+9,3,0]) rotate([0,0,180]) collector_side_bracket();
 
 	// Mounting supports
 	for(x=[-5,collector_width-1]) {translate([x,-29,8.5]) cube([6,10,20]);}
