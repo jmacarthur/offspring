@@ -434,6 +434,31 @@ module regen_diverter_assembly() {
 
 regen_diverter_assembly();
 
+module flap_axle_support() {
+  union() {
+    difference() {
+      translate([0,-3,-3]) cube([20,3,45]);
+      hull() {
+	translate([10,1,10]) rotate([90,0,0]) cylinder(d=6,h=10);
+	translate([10,1,50]) rotate([90,0,0]) cylinder(d=6,h=10);
+      }
+    }
+    translate([0,-20,-3]) cube([20,20,3]);
+    intersection() {
+      union() {
+	translate([0,-10-3*subtractor_flap_width*cos(diverter_slope),0]) rotate([diverter_slope,0,0]) subtractor_flap_frame();
+	translate([0,0,-3]) rotate([90,0,0]) rotate([0,90,0]) linear_extrude(height=3) {
+	  l1 = 55;
+	  polygon([[0,0],[-l1,0], [0,l1*sin(diverter_slope)]]);
+	}
+      }
+      translate([0,-100,-3]) cube([25,100,100]);
+    }
+  }
+}
+
+translate([-25,0,-97]) flap_axle_support();
+
 // Simulate rack rails
 if(1) {
   color([0.5,0.5,0.5]) {
