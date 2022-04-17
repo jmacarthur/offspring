@@ -224,8 +224,8 @@ module subtractor_flap() {
 }
 
 module subtractor_flap_pulley() {
-  min_diameter = 8;
-  max_diameter = 10;
+  min_diameter = 10;
+  max_diameter = 12;
   rotate([0,90,0]) difference() {
     union() {
       translate([0,0,0]) cylinder(d=max_diameter,h=1);
@@ -437,11 +437,12 @@ regen_diverter_assembly();
 module flap_axle_support() {
   union() {
     difference() {
-      translate([0,-3,-3]) cube([20,3,45]);
+      translate([0,-3,-3]) cube([20,8,45]);
       hull() {
-	translate([10,1,10]) rotate([90,0,0]) cylinder(d=6,h=10);
-	translate([10,1,50]) rotate([90,0,0]) cylinder(d=6,h=10);
+	translate([10,-5,10]) rotate([-90,0,0]) cylinder(d=6,h=20);
+	translate([10,-5,50]) rotate([-90,0,0]) cylinder(d=6,h=20);
       }
+      translate([2,0,-4]) cube([20,1.8,50]);
     }
     translate([0,-20,-3]) cube([20,20,3]);
     intersection() {
