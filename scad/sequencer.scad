@@ -441,14 +441,21 @@ module side_plate_2d() {
     translate([100,120]) {
       circle(d=20);
       rotate(-input_shaft_angle) translate([0,gear_separation]) {
+	// 12mm shaft bearing
 	rotate(input_shaft_angle+90) {
-	  translate([0,25]) circle(d=6); // MEASUREMENTS NOT CHECKED - verify against spec
-	  translate([0,-25]) circle(d=6);
+	  translate([0,24]) circle(d=6);
+	  translate([0,-24]) circle(d=6);
 	}
-	circle(d=15);
       }
-    }
-    
+      // 20mm shaft bearing UCF 202
+      for(i=[0:3]) {
+	rotate(i*90) {
+	    translate([32,32]) circle(d=12);
+	}
+      }
+      circle(d=15);
+    }	
+    	
     // Bolt holes for mounting
     translate([case_height-12.5, 50]) circle(d=6);
     translate([case_height-12.5, 150]) circle(d=6);
