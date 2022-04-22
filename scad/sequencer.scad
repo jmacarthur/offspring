@@ -197,7 +197,7 @@ module decoder_rods() {
 
 module instruction_follower_rod_2d() {
   drop_pos = 85;
-  len = 250;
+  len = 270;
   difference() {
     union() {
       translate([-5,-5]) square([len,10]);
@@ -218,7 +218,7 @@ module instruction_follower_rod_2d() {
 
 module universal_follower_rod_2d() {
   drop_pos = 65;
-  len = 200;
+  len = 190;
   difference() {
     union() {
       translate([-5,-5]) square([len,10]);
@@ -289,7 +289,7 @@ module universal_follower_comb_2d() {
   clearance  =0.1;
   difference() {
     union() {
-      translate([-20,-10]) square([follower_support_x2[1]-follower_support_x2[0]+3+40, 30]);
+      translate([-23,-10]) square([follower_support_x2[1]-follower_support_x2[0]+3+46, 30]);
     }
     translate([0,-5]) square([3,15]);
     translate([follower_support_x2[1]-follower_support_x2[0],-5]) square([3,15]);
@@ -441,6 +441,7 @@ module side_plate_2d() {
     translate([100,120]) {
       circle(d=20);
       rotate(-input_shaft_angle) translate([0,gear_separation]) {
+	circle(d=15);
 	// 12mm shaft bearing
 	rotate(input_shaft_angle+90) {
 	  translate([0,24]) circle(d=6);
@@ -453,7 +454,6 @@ module side_plate_2d() {
 	    translate([32,32]) circle(d=12);
 	}
       }
-      circle(d=15);
     }	
     	
     // Bolt holes for mounting
@@ -462,6 +462,7 @@ module side_plate_2d() {
 
     translate([50,case_depth+30-60-12.5-6]) circle(d=6);
     translate([100,case_depth+30-60-12.5-6]) circle(d=6);
+    translate([12.5,30+12.5]) circle(d=6);
   }
 }
 
