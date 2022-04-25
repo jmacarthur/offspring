@@ -259,7 +259,7 @@ module follower_hanger_2d() {
       translate([-10,44]) square([40,10]);
     }
     translate([10,5]) circle(d=3);
-    translate([-1,15]) square([4,10]);
+    translate([-1,-1]) square([4,26]);
   }
 }
 
@@ -270,7 +270,7 @@ module follower_comb_2d() {
     union() {
       translate([3,-5]) square([follower_support_x[1]-follower_support_x[0]-3,49+5]);
       translate([follower_support_x[1]-follower_support_x[0]+3,-5]) square([follower_support_x[2]-follower_support_x[1]-3,49+5]);
-      translate([follower_support_x[1]-follower_support_x[0]-2,-25]) square([follower_support_x[2]-follower_support_x[1]+2,25]);
+      translate([follower_support_x[1]-follower_support_x[0]-2,-25]) square([follower_support_x[2]-follower_support_x[1]+2,36]);
       translate([0,10]) square([follower_support_x[2]-follower_support_x[0]+3,10]);
     }
     for(i=[0:7]) {
@@ -289,10 +289,10 @@ module universal_follower_comb_2d() {
   clearance  =0.1;
   difference() {
     union() {
-      translate([-23,-10]) square([follower_support_x2[1]-follower_support_x2[0]+3+46, 30]);
+      translate([-23,-10]) square([follower_support_x2[1]-follower_support_x2[0]+3+46, 35]);
     }
-    translate([0,-5]) square([3,15]);
-    translate([follower_support_x2[1]-follower_support_x2[0],-5]) square([3,15]);
+    translate([0,20]) square([3,30]);
+    translate([follower_support_x2[1]-follower_support_x2[0],20]) square([3,30]);
     for(i=[0:5]) {
       xoffset = -18;
       translate([xoffset+23*i+14,-26]) offset(r=clearance) square([3,32]);
