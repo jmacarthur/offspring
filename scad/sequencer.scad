@@ -28,10 +28,6 @@ use <generic_conrods.scad>;
 // JRP and JMP when it is engaged. JRP will still function on its own
 // without JMP.
 
-cam_base_diameter = 150; // Diameter of mounting plates
-cam_diameter = 170; // This includes the cam ridge modules
-cam_inner_diameter = 15;
-bolt_circle_diameter = 125;
 
 cam_support_width = 5;
 cam_width = 3;
@@ -75,15 +71,15 @@ module cam_mounting_plate_2d() {
   cam_axle_clearance = 0.2;
   difference() {
     circle(d=cam_base_diameter);
-    circle(d=cam_inner_diameter+cam_axle_clearance);
+    circle(d=cam_axle_diameter+cam_axle_clearance);
     cam_mounting_holes();
   }
 }
 
 module cam_ring_2d() {
   difference() {
-    circle(d=cam_base_diameter+12.5*2);
-    circle(d=cam_base_diameter-36);
+    circle(d=cam_top_diameter);
+    circle(d=cam_lower_diameter);
     cam_mounting_holes();
   }
 }
