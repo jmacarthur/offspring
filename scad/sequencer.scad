@@ -324,10 +324,12 @@ module instruction_lever_2d() {
   difference() {
     union() {
       translate([-l1,-5]) square([l1*2,10]);
+      translate([-15,-15]) square([30,15]);
       translate([-5,-l2]) square([10,l2]);
       for(p=hole_pos) translate(p) circle(d=10);
     }
     for(p=hole_pos) translate(p) circle(d=3);
+    for(x=[-15,15]) translate([x,-15]) circle(r=10);
   }
 }
 
