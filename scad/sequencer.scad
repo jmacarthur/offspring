@@ -82,7 +82,7 @@ module cam_mounting_plate_2d() {
 
 module cam_ring_2d() {
   difference() {
-    circle(d=cam_base_diameter+20);
+    circle(d=cam_base_diameter+12.5*2);
     circle(d=cam_base_diameter-36);
     cam_mounting_holes();
   }
