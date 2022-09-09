@@ -4,36 +4,14 @@
 // moment.
 
 include <globs.scad>;
+include <sequencer_globs.scad>;
 use <sequencer.scad>;
 
 $fn=20;
 
 kerf = 0.08;
 offset(r=kerf) {
-  decoder_mounting_plate_2d();
-  for(i=[0:1]) translate([90+i*100,50]) big_follower_support_2d();
-  for(i=[0:1]) translate([90+i*100,120]) small_follower_support_2d();
-  translate([400,0]) top_comb_2d();
-  for(y=[0,35]) {
-    translate([10,400+y]) reader_support_2d();
-  }
-
-  translate([0,200]) reader_base_2d();
-  translate([50,200]) reader_input_plate_2d();
-  translate([100,200]) reader_pusher_2d();
-  translate([150,360]) reader_end_2d();
-  translate([200,200]) input_support_plate_2d();
-  translate([250,400]) resetter_end_plate_2d();
-  translate([300,200]) resetter_drive_plate_2d();
-  translate([350,400]) resetter_side_2d();
-
-  // 8 of this group
-  for(y=[0:7]) {
-    translate([400,150+30*y]) follower_2d(false);
-    translate([550,150+30*y]) decoder_drop_rod_2d();
-    translate([700,150+30*y]) instruction_output_rod_2d();
-    translate([900,150+30*y]) follower_2d(true);
-  }
+  follower_comb_2d();
 }
 
 
