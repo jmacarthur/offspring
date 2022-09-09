@@ -266,17 +266,17 @@ module follower_comb_2d() {
     union() {
       translate([3,-5]) square([follower_support_x[1]-follower_support_x[0]-3,49+5]);
       translate([follower_support_x[1]-follower_support_x[0]+3,-5]) square([follower_support_x[2]-follower_support_x[1]-3,49+5]);
-      translate([follower_support_x[1]-follower_support_x[0]-2,-25]) square([follower_support_x[2]-follower_support_x[1]+2,36]);
+      translate([follower_support_x[1]-follower_support_x[0]-2,-30]) square([follower_support_x[2]-follower_support_x[1]+2,41]);
       translate([0,10]) square([follower_support_x[2]-follower_support_x[0]+3,10]);
     }
     for(i=[0:7]) {
-      translate([10+14*i,-6]) offset(r=clearance) square([3,15]);
+      translate([10+14*i,-11]) offset(r=clearance) square([3,21]);
     }
 
     for(i=[0:5]) {
       xoffset = 10+14*8-5;
-      translate([xoffset+23*i+14,-26]) offset(r=clearance) square([3,32]);
-      translate([xoffset+23*i,-26]) offset(r=clearance) square([3,32]);
+      translate([xoffset+23*i+14,-31]) offset(r=clearance) square([3,37]);
+      translate([xoffset+23*i,-31]) offset(r=clearance) square([3,37]);
     }
   }
 }
