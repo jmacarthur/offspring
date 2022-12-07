@@ -220,15 +220,15 @@ module universal_follower_rod_2d() {
       translate([-5,-5]) square([len,10]);
       translate([drop_pos,0])
       hull() {
-	translate([20,19]) circle(d=5);
-	translate([10,19]) circle(d=5);
-	translate([35,0]) circle(d=5);
-	translate([-5,0]) circle(d=5);
+	translate([18,15]) circle(r=6.5);
+	translate([12,15]) circle(r=6.5);
       }
+      translate([drop_pos,0]) square([30,10]);
+      translate([drop_pos+12-6.5,0]) square([19,15]);
     }
 
-    translate([drop_pos+35,15]) circle(d=20);
-    translate([drop_pos-5,15]) circle(d=20);
+    translate([drop_pos+29.5,10]) circle(d=10);
+    translate([drop_pos+0.5,10]) circle(d=10);
 
     translate([0,0]) circle(d=3);
     translate([drop_pos+15,15]) circle(d=3);
