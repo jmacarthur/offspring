@@ -238,6 +238,7 @@ module follower_hanger_2d() {
 
 
 module follower_comb_2d() {
+  // The big follower comb which has slots both universal and instruction followers
   clearance = 0.1;
   difference() {
     union() {
@@ -251,8 +252,8 @@ module follower_comb_2d() {
     }
 
     for(i=[0:5]) {
-      xoffset = 10+14*8-5;
-      translate([xoffset+23*i+14,-31]) offset(r=clearance) square([3,37]);
+      xoffset = 10+14*8-6;
+      translate([xoffset+23*i+16,-31]) offset(r=clearance) square([3,37]);
       translate([xoffset+23*i,-31]) offset(r=clearance) square([3,37]);
     }
   }
@@ -267,8 +268,8 @@ module universal_follower_comb_2d() {
     translate([0,20]) square([3,30]);
     translate([follower_support_x2[1]-follower_support_x2[0],20]) square([3,30]);
     for(i=[0:5]) {
-      xoffset = -18;
-      translate([xoffset+23*i+14,-26]) offset(r=clearance) square([3,32]);
+      xoffset = -19;
+      translate([xoffset+23*i+16,-26]) offset(r=clearance) square([3,32]);
       translate([xoffset+23*i,-26]) offset(r=clearance) square([3,32]);
     }
   }
@@ -345,7 +346,7 @@ module instruction_decoder() {
     for(i=[0:9]) {
       xoffset = 8*14;
       translate([xoffset+11.5*i,0,0]) {
-	color([0.5,0,0]) translate([((i%2==0)?-2:0.5)-6,-180,0]) rotate([0,0,180]) rotate([-90,0,0]) rotate([0,90,0]) linear_extrude(height=3) universal_follower_rod_2d();
+	color([0.5,0,0]) translate([((i%2==0)?-3:1.5)-6,-180,0]) rotate([0,0,180]) rotate([-90,0,0]) rotate([0,90,0]) linear_extrude(height=3) universal_follower_rod_2d();
 	translate([((i%2==0)?-2:-5)-6,-100,-15]) bearing();
       }
     }
