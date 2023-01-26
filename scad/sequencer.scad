@@ -306,7 +306,6 @@ module instruction_lever_2d() {
   }
 }
 
-
 module bearing() {
   rotate([0,90,0])
   difference() {
@@ -326,17 +325,15 @@ module reset_assembly() {
   for(y=[0,43]) {
     translate([0,y-30,0]) rotate([90,0,0]) linear_extrude(height=3) decoder_side_runner_2d();
   }
-  for(y=[3,40]) {    
+  for(y=[3,40]) {
     translate([10,y-30,10]) rotate([0,-105,0]) rotate([90,0,0]) linear_extrude(height=3) reset_crank_2d();
   }
   translate([10,-30,10]) rotate([0,-105,0]) translate([25,-3,0]) rotate([-90,0,0]) cylinder(d=3, h=50);
 
-  for(y=[13,23,33]) {    
+  for(y=[13,23,33]) {
     translate([190,y-30,55]) rotate([0,0,0]) rotate([90,0,0]) linear_extrude(height=3) instruction_lever_2d();
   }
-
 }
-
 
 module instruction_decoder() {
   translate([-23,-90-30,67]) decoder_rods();
@@ -370,7 +367,6 @@ module instruction_decoder() {
     translate([follower_support_x2[0],-170,0]) rotate([90,0,0]) linear_extrude(height=3) universal_follower_comb_2d();
   }
 }
-
 
 module sequencer_assembly() {
   camshaft();
@@ -429,8 +425,8 @@ module side_plate_2d() {
 	    translate([32,32]) circle(d=12);
 	}
       }
-    }	
-    	
+    }
+
     // Bolt holes for mounting
     translate([case_height-12.5, 50]) circle(d=6);
     translate([case_height-12.5, 150]) circle(d=6);
