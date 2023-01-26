@@ -155,35 +155,6 @@ follower_x_offset = -3;
 function instruction_follower_x(x) = follower_spacing*x+follower_x_offset;
 function fixed_follower_x(x) = fixed_cam_spacing*x+follower_x_offset+follower_spacing*8-2;
 
-module reader_support_2d() {
-  difference() {
-    union() {
-      translate([-10,0]) square([60,20]);
-      translate([10,-3]) square([10,4]);
-      translate([-13,5]) square([4,10]);
-      translate([15,0]) square([20,25]);
-      for(y=[0,17])
-	{
-	  translate([15+y,0]) square([3,28]);
-	}
-      translate([0,15]) square([10,25]);
-    }
-    translate([5,35]) circle(d=3);
-  }
-}
-
-module reader_swing_arm_2d() {
-  l1 = 33;
-  difference() {
-    union() {
-      circle(d=10);
-      translate([-5,-l1]) square([10,l1]);
-    }
-    circle(d=3);
-  }
-  
-}
-
 module decoder_rods() {
   for(i=[0:2]) {
     translate([0,10*i,0])
