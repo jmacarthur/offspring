@@ -249,12 +249,15 @@ module follower_comb_2d() {
     }
     for(i=[0:7]) {
       translate([10+14*i,-11]) offset(r=clearance) square([3,21]);
+      translate([10+14*i+1.5,10]) offset(r=clearance) circle(d=3);
     }
 
     for(i=[0:5]) {
       xoffset = 10+14*8-6;
       translate([xoffset+23*i+16,-31]) offset(r=clearance) square([3,37]);
+      translate([xoffset+23*i+16+1.5,6]) offset(r=clearance) circle(d=3);
       translate([xoffset+23*i,-31]) offset(r=clearance) square([3,37]);
+      translate([xoffset+23*i+1.5,6]) offset(r=clearance) circle(d=3);
     }
   }
 }
@@ -270,7 +273,9 @@ module universal_follower_comb_2d() {
     for(i=[0:5]) {
       xoffset = -19;
       translate([xoffset+23*i+16,-26]) offset(r=clearance) square([3,32]);
+      translate([xoffset+23*i+16+1.5,6]) offset(r=clearance) circle(d=3);
       translate([xoffset+23*i,-26]) offset(r=clearance) square([3,32]);
+      translate([xoffset+23*i+1.5,6]) offset(r=clearance) circle(d=3);
     }
   }
 }
