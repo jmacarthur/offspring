@@ -60,8 +60,14 @@ function mounting_holes_x(n_positions) = [ 20, xbar_length(n_positions)-20, floo
 mounting_screw_diameter = 10;
 
 
-
-
+module enumerator_cutouts(value, positions, follower_spacing, actual_travel, rise_height) {
+  for(i=[0:positions-1]) {
+    align = (floor(i/pow(2,value)) % 2);
+    top_chamfer = 1;
+    bottom_chamfer = 2;
+    translate([15+follower_spacing*i+actual_travel*align+(i>=gap_position?gap:0),10]) polygon(points = [[0,bottom_chamfer], [bottom_chamfer,0], [actual_travel+thin-bottom_chamfer,0], [actual_travel+thin,bottom_chamfer], [actual_travel+thin,rise_height+thin-top_chamfer], [actual_travel+thin+top_chamfer,rise_height+thin], [0-top_chamfer, rise_height+thin], [0, rise_height+thin-top_chamfer]]);
+  }
+}
 
 // Enumerator rod - one per input; follower rods drop into the gaps in these.
 // Parameters:
@@ -83,12 +89,7 @@ module enumerator_rod(value, n_inputs, follower_spacing, travel, rise_height)
       translate([2,-2]) square([5,24]);
     }
     positions = pow(2,n_inputs);
-    for(i=[0:positions-1]) {
-      align = (floor(i/pow(2,value)) % 2);
-      top_chamfer = 1;
-      bottom_chamfer = 2;
-      translate([15+follower_spacing*i+actual_travel*align+(i>=gap_position?gap:0),10]) polygon(points = [[0,bottom_chamfer], [bottom_chamfer,0], [actual_travel+thin-bottom_chamfer,0], [actual_travel+thin,bottom_chamfer], [actual_travel+thin,rise_height+thin-top_chamfer], [actual_travel+thin+top_chamfer,rise_height+thin], [0-top_chamfer, rise_height+thin], [0, rise_height+thin-top_chamfer]]);
-    }
+    enumerator_cutouts(value, positions, follower_spacing, actual_travel, rise_height);
     // Slot to allow connection to levers
     translate([-1,0]) {
       translate([0,8]) circle(d=3);
