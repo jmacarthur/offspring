@@ -77,15 +77,15 @@ cam_and_follower_assembly();
 
 module trimmed_enumerator_rod_2d(i)
 {
-  intersection() {
-    enumerator_rod(i, 3, 10, 5, 10);
-    translate([20,0]) square([8*10,20]);
+  difference() {
+    square([8*10,20]);
+    enumerator_cutouts(i, 8, 10, 5, 10);
   }
 }
 
 for(i=[0:2]) {
   seq = $t*10;
   offset = floor(seq/(pow(2,i))) % 2;
-  translate([84-offset*5,-50-i*4,40]) rotate([90,0,0]) linear_extrude(height=3) trimmed_enumerator_rod_2d(i);
+  translate([99-offset*5,-50-i*4,40]) rotate([90,0,0]) linear_extrude(height=3) trimmed_enumerator_rod_2d(i);
 }
 
