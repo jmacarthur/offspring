@@ -1,5 +1,7 @@
 // The small scale sequencer
 
+use <decoder.scad>;
+
 cam_max_diameter = 100;
 cam_min_diameter = 80;
 cam_boss_diameter = 50;
@@ -64,12 +66,26 @@ module follower() {
 }
 
 module cam_and_follower_assembly() {
-  for(i=[0:ncams]) {
-    translate([i*cam_spacing,0,0]) rotate([0,90,0]) example_cam();
+  for(i=[0:ncams-1]) {
+    translate([i*cam_spacing,0,0]) rotate([0,90,0]) rotate([0,0,90])example_cam();
     translate([i*cam_spacing,follower_length/2,cam_max_diameter/2+10]) follower();
   }
 }
 
 cam_and_follower_assembly();
 
+
+module trimmed_enumerator_rod_2d(i)
+{
+  intersection() {
+    enumerator_rod(i, 3, 10, 5, 10);
+    translate([20,0]) square([8*10,20]);
+  }
+}
+
+for(i=[0:2]) {
+  seq = $t*10;
+  offset = floor(seq/(pow(2,i))) % 2;
+  translate([84-offset*5,-50-i*4,40]) rotate([90,0,0]) linear_extrude(height=3) trimmed_enumerator_rod_2d(i);
+}
 
