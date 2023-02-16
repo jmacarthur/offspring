@@ -15,6 +15,9 @@ cam_spacing = 10;
 ncams = 18;
 follower_length = 150;
 
+
+enumerator_y_spacing = 4;
+
 module example_cam_2d() {
   union() {
     difference() {
@@ -72,20 +75,32 @@ module cam_and_follower_assembly() {
   }
 }
 
-cam_and_follower_assembly();
-
 
 module trimmed_enumerator_rod_2d(i)
 {
   difference() {
-    square([8*10,20]);
+    square([8*10+100,20]);
     enumerator_cutouts(i, 8, 10, 5, 10);
   }
 }
 
-for(i=[0:2]) {
-  seq = $t*10;
-  offset = floor(seq/(pow(2,i))) % 2;
-  translate([99-offset*5,-50-i*4,40]) rotate([90,0,0]) linear_extrude(height=3) trimmed_enumerator_rod_2d(i);
+module enumerator_base() {
+  difference() {
+    cube([30,enumerator_y_spacing*2+10,15]);
+    for(i=[0:2]) {
+      translate([-1,3+enumerator_y_spacing*i-0.25,5]) cube([32,3.5,20]);
+    }
+  }
 }
 
+module enumerator_rods() {
+  for(i=[0:2]) {
+    seq = $t*10;
+    offset = floor(seq/(pow(2,i))) % 2;
+    translate([99-offset*5,-50+i*enumerator_y_spacing,40]) rotate([90,0,0]) linear_extrude(height=3) trimmed_enumerator_rod_2d(i);
+  }
+}
+
+cam_and_follower_assembly();
+enumerator_rods();
+for(x=[100,150]) translate([x,-50-3-3,35-1]) enumerator_base();
