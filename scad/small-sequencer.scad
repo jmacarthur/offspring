@@ -101,6 +101,45 @@ module enumerator_rods() {
   }
 }
 
+
+module side_plate_generic_2d() {
+  hook_y = 60;
+  perf_angle_spacing = 50;
+  difference() {
+    translate([-100,-20]) square([200,100]);
+
+    // Cam axle hole
+    circle(d=10);
+
+    // Hooks to mount to frame
+    translate([hook_y,-10]) circle(d=6);
+    translate([hook_y-3,-21]) square([6,11]);
+
+    translate([hook_y, -10 + perf_angle_spacing]) circle(d=6);
+  }
+}
+
+
+module enumerator_mount_plate_2d() {
+  square([cam_spacing*18+40, 20]);
+}
+
+module frame() {
+  frame_x = [-20,cam_spacing*18+20];
+  for(x=frame_x) {
+    translate([x,0,0]) rotate([0,90,0]) linear_extrude(height=5) rotate(90) side_plate_generic_2d();
+  }
+  translate([-20,-56,30]) rotate([90,0,0]) linear_extrude(height=5) enumerator_mount_plate_2d();
+}
+
 cam_and_follower_assembly();
 enumerator_rods();
 for(x=[100,150]) translate([x,-50-3-3,35-1]) enumerator_base();
+color([0,1,0]) frame();
+
+
+// Emulate perf angle
+translate([-50,0,-200]) {
+  cube([25,25,400]);
+  translate([295,0,0]) cube([25,25,400]);
+}
