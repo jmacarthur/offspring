@@ -18,13 +18,16 @@ follower_length = 150;
 
 // Where is the follower axis, in relation to the camshaft?
 follower_axle_y = follower_length/2-5;
-follower_axle_z = cam_max_diameter/2+15;
+follower_axle_z = cam_max_diameter/2+18;
 
 enumerator_y_spacing = 4;
 
 // Location of the front X bar, which supports the decoder
 front_support_y = -61;
-front_support_z = 30;
+front_support_z = 33;
+
+back_support_y = follower_axle_y;
+back_support_z = 30;
 
 module example_cam_2d() {
   union() {
@@ -111,7 +114,7 @@ module enumerator_rods() {
   for(i=[0:2]) {
     seq = $t*10;
     offset = floor(seq/(pow(2,i))) % 2;
-    translate([99-offset*5,-50+i*enumerator_y_spacing,40]) rotate([90,0,0]) linear_extrude(height=3) trimmed_enumerator_rod_2d(i);
+    translate([99-offset*5,-50+i*enumerator_y_spacing,front_support_z+10]) rotate([90,0,0]) linear_extrude(height=3) trimmed_enumerator_rod_2d(i);
   }
 }
 
@@ -135,13 +138,18 @@ module side_panel_cutouts_2d() {
   // Space for the front support rod
   translate([front_support_y, front_support_z]) square([5,20]);
 
+  // Space for teh back support rod
+  translate([back_support_y, back_support_z]) square([5,20]);
+  
   // Space for the enumerator rods
   translate([front_support_y+5,front_support_z+8]) square([4+enumerator_y_spacing*3,30]);
+
 }
 
 module side_plate_generic_2d() {
   difference() {
     offset(r=10) hull() side_panel_cutouts_2d();
+    translate([-100,49]) square([80,50]);
     side_panel_cutouts_2d();
   }
 }
@@ -164,7 +172,7 @@ module frame() {
 module sequencer() {
   cam_and_follower_assembly();
   enumerator_rods();
-  for(x=[100,150]) translate([x,-50-3-3,35-1]) enumerator_base();
+  for(x=[100,150]) translate([x,-50-3-3,front_support_z+5]) enumerator_base();
   color([0,1,0]) frame();
 
 
