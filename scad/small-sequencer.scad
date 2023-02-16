@@ -29,6 +29,9 @@ front_support_z = 33;
 back_support_y = follower_axle_y;
 back_support_z = 30;
 
+// This is about half the length! It's the max length from the fulcrum to one arm end.
+instruction_lever_len = 100;
+
 module example_cam_2d() {
   union() {
     difference() {
@@ -94,8 +97,8 @@ module cam_and_follower_assembly() {
 module trimmed_enumerator_rod_2d(i)
 {
   difference() {
-    square([8*10+100,20]);
-    translate([100,0]) enumerator_cutouts(i, 8, 10, 5, 10);
+    square([8*10+50,20]);
+    translate([50,0]) enumerator_cutouts(i, 8, 10, 5, 10);
   }
 }
 
@@ -108,11 +111,26 @@ module enumerator_base() {
   }
 }
 
+module instruction_lever_2d() {
+  difference() {
+    union() {
+      square([instruction_lever_len,10]);
+      translate([instruction_lever_len,0]) square([instruction_lever_len/2,20]);
+      translate([instruction_lever_len-5,-20]) square([10,20]);
+      translate([instruction_lever_len-15,-10]) square([30,20]);
+    }
+    translate([instruction_lever_len-15,-10]) circle(r=10);
+    translate([instruction_lever_len+15,-10]) circle(r=10);
+    translate([instruction_lever_len,5]) circle(d=3);
+  }
+}
+
 module enumerator_rods() {
   for(i=[0:2]) {
     seq = $t*10;
     offset = floor(seq/(pow(2,i))) % 2;
-    translate([-106+offset*5,-50+i*enumerator_y_spacing,front_support_z+10]) rotate([90,0,0]) linear_extrude(height=3) trimmed_enumerator_rod_2d(i);
+    translate([-56+offset*5,-50+i*enumerator_y_spacing,front_support_z+10]) rotate([90,0,0]) linear_extrude(height=3) trimmed_enumerator_rod_2d(i);
+    translate([-166,-50+i*enumerator_y_spacing,front_support_z+40]) rotate([90,0,0]) linear_extrude(height=3) instruction_lever_2d();
   }
 }
 
