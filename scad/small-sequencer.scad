@@ -146,7 +146,6 @@ module side_panel_cutouts_2d() {
 
   // Hooks to mount to frame
   translate([hook_y,-10]) circle(d=6);
-  translate([hook_y-3,-21]) square([6,11]);
   translate([hook_y, -10 + perf_angle_spacing]) circle(d=6);
 
   // Space for the front support rod
@@ -155,9 +154,15 @@ module side_panel_cutouts_2d() {
   // Space for teh back support rod
   translate([back_support_y, back_support_z]) square([5,20]);
 
+}
+
+module side_panel_outside_cutouts_2d() {
+  hook_y = 10+17.5;
+  // Cutouts which don't need to be wholly within the side panel (they can extend outside it)
+  translate([hook_y-3,-30]) square([6,20]);
+
   // Space for the enumerator rods
   translate([front_support_y+5,front_support_z+8]) square([4+enumerator_y_spacing*3,30]);
-
 }
 
 module side_plate_generic_2d() {
@@ -165,6 +170,7 @@ module side_plate_generic_2d() {
     offset(r=10) hull() side_panel_cutouts_2d();
     translate([-100,49]) square([80,50]);
     side_panel_cutouts_2d();
+    side_panel_outside_cutouts_2d();
   }
 }
 
