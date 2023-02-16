@@ -132,14 +132,20 @@ module frame() {
   translate([-20,-56,30]) rotate([90,0,0]) linear_extrude(height=5) enumerator_mount_plate_2d();
 }
 
-cam_and_follower_assembly();
-enumerator_rods();
-for(x=[100,150]) translate([x,-50-3-3,35-1]) enumerator_base();
-color([0,1,0]) frame();
+module sequencer() {
+
+  cam_and_follower_assembly();
+  enumerator_rods();
+  for(x=[100,150]) translate([x,-50-3-3,35-1]) enumerator_base();
+  color([0,1,0]) frame();
 
 
-// Emulate perf angle
-translate([-50,0,-200]) {
-  cube([25,25,400]);
-  translate([295,0,0]) cube([25,25,400]);
+  // Emulate perf angle
+  translate([-50,0,-200]) {
+    cube([25,25,400]);
+    translate([295,0,0]) cube([25,25,400]);
+  }
+
 }
+
+sequencer();
