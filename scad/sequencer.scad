@@ -189,6 +189,11 @@ module universal_follower_rod_2d() {
   difference() {
     union() {
       translate([-5,-5]) square([len,10]);
+      intersection() {
+	translate([-5,-15]) square([len,20]);
+	p = 500;
+	translate([len/2-5,p-3]) circle(r=sqrt(p*p+(len/2)*(len/2)),$fn=200);
+      }
       translate([drop_pos,0])
       hull() {
 	translate([18,15]) circle(r=6.5);
