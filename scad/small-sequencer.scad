@@ -69,9 +69,7 @@ module cam_bearing() {
 
     // Entry ramps
     translate([4.5,0,-1]) rotate([0,0,45]) translate([-2.5,-2.5,0]) cube([5,5,13]);
-
   }
-
 }
 
 module follower() {
@@ -118,8 +116,6 @@ module enumerator_rods() {
   }
 }
 
-
-
 module side_panel_cutouts_2d() {
   hook_y = 10+17.5;
   perf_angle_spacing = 50;
@@ -154,7 +150,6 @@ module side_plate_generic_2d() {
   }
 }
 
-
 module enumerator_mount_plate_2d() {
   square([angle_iron_internal_space + 20, 20]);
 }
@@ -166,8 +161,6 @@ module frame() {
   }
   translate([-25-10,front_support_y+5,front_support_z]) rotate([90,0,0]) linear_extrude(height=5) enumerator_mount_plate_2d();
 }
-
-
 
 module sequencer() {
   cam_and_follower_assembly();
