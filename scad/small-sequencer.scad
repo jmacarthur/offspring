@@ -97,7 +97,7 @@ module trimmed_enumerator_rod_2d(i)
 {
   difference() {
     square([8*10+100,20]);
-    enumerator_cutouts(i, 8, 10, 5, 10);
+    translate([100,0]) enumerator_cutouts(i, 8, 10, 5, 10);
   }
 }
 
@@ -114,7 +114,7 @@ module enumerator_rods() {
   for(i=[0:2]) {
     seq = $t*10;
     offset = floor(seq/(pow(2,i))) % 2;
-    translate([99-offset*5,-50+i*enumerator_y_spacing,front_support_z+10]) rotate([90,0,0]) linear_extrude(height=3) trimmed_enumerator_rod_2d(i);
+    translate([-106+offset*5,-50+i*enumerator_y_spacing,front_support_z+10]) rotate([90,0,0]) linear_extrude(height=3) trimmed_enumerator_rod_2d(i);
   }
 }
 
@@ -140,7 +140,7 @@ module side_panel_cutouts_2d() {
 
   // Space for teh back support rod
   translate([back_support_y, back_support_z]) square([5,20]);
-  
+
   // Space for the enumerator rods
   translate([front_support_y+5,front_support_z+8]) square([4+enumerator_y_spacing*3,30]);
 
@@ -172,7 +172,7 @@ module frame() {
 module sequencer() {
   cam_and_follower_assembly();
   enumerator_rods();
-  for(x=[100,150]) translate([x,-50-3-3,front_support_z+5]) enumerator_base();
+  for(x=[0,50]) translate([x,-50-3-3,front_support_z+5]) enumerator_base();
   color([0,1,0]) frame();
 
 
