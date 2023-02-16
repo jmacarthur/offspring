@@ -20,8 +20,11 @@ follower_length = 150;
 follower_axle_y = follower_length/2-5;
 follower_axle_z = cam_max_diameter/2+15;
 
-
 enumerator_y_spacing = 4;
+
+// Location of the front X bar, which supports the decoder
+front_support_y = -61;
+front_support_z = 30;
 
 module example_cam_2d() {
   union() {
@@ -57,7 +60,7 @@ module cam_bearing() {
   difference() {
     cube([9,20,20]);
     translate([-1,10,2.5]) rotate([0,90,0]) cylinder(d=3,h=12, $fn=10);
-    translate([3,-1,-1]) cube([3,32,13]);
+    translate([3-0.5,-1,-1]) cube([4,32,13]);
     translate([3,-1,16]) cube([3,25,20]);
     translate([3,5,15]) cube([3,10,10]);
 
@@ -113,22 +116,33 @@ module enumerator_rods() {
 }
 
 
-module side_plate_generic_2d() {
+
+module side_panel_cutouts_2d() {
   hook_y = 10+17.5;
   perf_angle_spacing = 50;
+
+  // Cam axle hole
+  circle(d=10);
+
+  // Follower axle hole
+  translate([follower_axle_y, follower_axle_z]) circle(d=3);
+
+  // Hooks to mount to frame
+  translate([hook_y,-10]) circle(d=6);
+  translate([hook_y-3,-21]) square([6,11]);
+  translate([hook_y, -10 + perf_angle_spacing]) circle(d=6);
+
+  // Space for the front support rod
+  translate([front_support_y, front_support_z]) square([5,20]);
+
+  // Space for the enumerator rods
+  translate([front_support_y+5,front_support_z+8]) square([4+enumerator_y_spacing*3,30]);
+}
+
+module side_plate_generic_2d() {
   difference() {
-    translate([-80,-20]) square([160,100]);
-
-    // Cam axle hole
-    circle(d=10);
-
-    // Follower axle hole
-    translate([follower_axle_y, follower_axle_z]) circle(d=3);
-
-    // Hooks to mount to frame
-    translate([hook_y,-10]) circle(d=6);
-    translate([hook_y-3,-21]) square([6,11]);
-    translate([hook_y, -10 + perf_angle_spacing]) circle(d=6);
+    offset(r=10) hull() side_panel_cutouts_2d();
+    side_panel_cutouts_2d();
   }
 }
 
@@ -142,13 +156,12 @@ module frame() {
   for(x=frame_x) {
     translate([x,0,0]) rotate([0,90,0]) linear_extrude(height=5) rotate(90) side_plate_generic_2d();
   }
-  translate([-25-10,-56,30]) rotate([90,0,0]) linear_extrude(height=5) enumerator_mount_plate_2d();
+  translate([-25-10,front_support_y+5,front_support_z]) rotate([90,0,0]) linear_extrude(height=5) enumerator_mount_plate_2d();
 }
 
 
 
 module sequencer() {
-
   cam_and_follower_assembly();
   enumerator_rods();
   for(x=[100,150]) translate([x,-50-3-3,35-1]) enumerator_base();
