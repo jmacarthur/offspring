@@ -169,22 +169,47 @@ module side_plate_generic_2d() {
 }
 
 module enumerator_mount_plate_2d() {
-  square([angle_iron_internal_space + 20, 20]);
+  difference() {
+    union() {
+      square([angle_iron_internal_space + 20, 20]);
+
+      // Extended start so we can mount the instruction levers
+      translate([-30,0]) square([35,50]);
+    }
+    translate([-26,45]) circle(d=3);
+  }
+}
+
+module instruction_lever_support_2d() {
+  difference() {
+    union() {
+      translate([-30,0]) square([50,50]);
+    }
+    // Instruction lever axle
+    translate([-26,45]) circle(d=3);
+
+    // Cutout for the side plate
+    translate([10,-1]) square([5,17]);
+  }
 }
 
 module frame() {
   frame_x = [-25,-20+265-5];
   for(x=frame_x) {
-    translate([x,0,0]) rotate([0,90,0]) linear_extrude(height=5) rotate(90) side_plate_generic_2d();
+    color([0,1,0]) translate([x,0,0]) rotate([0,90,0]) linear_extrude(height=5) rotate(90) side_plate_generic_2d();
   }
-  translate([-25-10,front_support_y+5,front_support_z]) rotate([90,0,0]) linear_extrude(height=5) enumerator_mount_plate_2d();
+  color([0.5,0.5,0.5]) 
+  translate([-25-10,0,front_support_z]) {
+    translate([0,front_support_y+5,0]) rotate([90,0,0]) linear_extrude(height=5) enumerator_mount_plate_2d();
+    translate([0,front_support_y+25,0]) rotate([90,0,0]) linear_extrude(height=5) instruction_lever_support_2d();
+  }
 }
 
 module sequencer() {
   cam_and_follower_assembly();
   enumerator_rods();
   for(x=[0,50]) translate([x,-50-3-3,front_support_z+5]) enumerator_base();
-  color([0,1,0]) frame();
+  frame();
 
 
   // Emulate perf angle
