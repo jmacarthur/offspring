@@ -97,7 +97,11 @@ module cam_and_follower_assembly() {
 module trimmed_enumerator_rod_2d(i)
 {
   difference() {
-    square([8*10+50,20]);
+    union() {
+      square([8*10+50,20]);
+      translate([16,-5]) square([10,10]);
+      translate([36,-5]) square([10,10]);
+    }
     translate([50,0]) enumerator_cutouts(i, 8, 10, 5, 10);
   }
 }
