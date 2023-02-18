@@ -182,7 +182,15 @@ module enumerator_mount_plate_2d() {
       // Extended start so we can mount the instruction levers
       translate([-30,0]) square([35,50]);
     }
+
+    // Instruction lever axle
     translate([-26,45]) circle(d=3);
+
+    // Hole for a pulley which can be used to bias the instruction reset lever
+    translate([angle_iron_internal_space - 30, 10]) circle(d=3);
+
+    // Hole for instruction reset pulley
+    translate([120, 16]) circle(d=3);
   }
 }
 
@@ -204,19 +212,32 @@ module frame() {
   for(x=frame_x) {
     color([0,1,0]) translate([x,0,0]) rotate([0,90,0]) linear_extrude(height=5) rotate(90) side_plate_generic_2d();
   }
-  color([0.5,0.5,0.5]) 
+  color([0.5,0.5,0.5])
   translate([-25-10,0,front_support_z]) {
     translate([0,front_support_y+5,0]) rotate([90,0,0]) linear_extrude(height=5) enumerator_mount_plate_2d();
     translate([0,front_support_y+25,0]) rotate([90,0,0]) linear_extrude(height=5) instruction_lever_support_2d();
   }
 }
 
+module instruction_reset_tube() {
+  difference() {
+    cube([50,10,10]);
+    translate([-1,1,1]) cube([52,8,8]);
+  }
+  color([0,0,1]) union() {
+    color([0,0,1]) translate([-20,1.5,1.5]) cube([80,7,7]);
+    color([0,0,1]) translate([-20,1.5,1.5]) cube([7,20,7]);
+    translate([-1.5,5,0]) cylinder(d=3,h=15);
+  }
+}
+
 module sequencer() {
   cam_and_follower_assembly();
   enumerator_rods();
-  for(x=[0,50]) translate([x,-50-3-3,front_support_z+5]) enumerator_base();
+  for(x=[0,40]) translate([x,-50-3-3,front_support_z+5]) enumerator_base();
   frame();
 
+  translate([100,front_support_y+5,front_support_z+5]) instruction_reset_tube();
 
   // Emulate perf angle
   translate([-50,10,-200]) {
