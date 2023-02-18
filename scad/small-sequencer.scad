@@ -152,8 +152,9 @@ module side_panel_cutouts_2d() {
   translate([hook_y,-10]) circle(d=6);
   translate([hook_y, -10 + perf_angle_spacing]) circle(d=6);
 
-  // Space for the front support rod
+  // Space for the front support rod and instruction support
   translate([front_support_y, front_support_z]) square([5,20]);
+  translate([front_support_y+20, front_support_z+10]) square([5,20]);
 
   // Space for teh back support rod
   translate([back_support_y, back_support_z]) square([5,20]);
@@ -167,14 +168,32 @@ module side_panel_outside_cutouts_2d() {
 
   // Space for the enumerator rods
   translate([front_support_y+5,front_support_z+8]) square([4+enumerator_y_spacing*3,30]);
+
+  // Notches to add a squaring plate to the top
+  for(y=[-10,50]) {
+    translate([y,77]) square([10,5]);
+  }
 }
 
 module side_plate_generic_2d() {
   difference() {
-    offset(r=10) hull() side_panel_cutouts_2d();
+    offset(r=10) hull() {
+      side_panel_cutouts_2d();
+      // This ensures a flat top (so we can add the squaring plate)
+      translate([-50,65]) square([100,5]);
+    }
     translate([-100,49]) square([80,50]);
     side_panel_cutouts_2d();
     side_panel_outside_cutouts_2d();
+  }
+}
+
+
+module squaring_plate_2d() {
+  union() {
+    translate([5,0]) square([angle_iron_internal_space-5, 70]);
+    translate([0,0]) square([angle_iron_internal_space+5, 10]);
+    translate([0,60]) square([angle_iron_internal_space+5, 10]);
   }
 }
 
@@ -195,6 +214,10 @@ module enumerator_mount_plate_2d() {
 
     // Hole for instruction reset pulley
     translate([120, 16]) circle(d=3);
+
+    // Holes to align with side plates
+    translate([10,-5]) square([5,10]);
+    translate([angle_iron_internal_space+10,-5]) square([5,10]);
   }
 }
 
@@ -207,7 +230,7 @@ module instruction_lever_support_2d() {
     translate([-26,45]) circle(d=3);
 
     // Cutout for the side plate
-    translate([10,-1]) square([5,17]);
+    translate([10,-1]) square([5,12]);
   }
 }
 
@@ -221,6 +244,8 @@ module frame() {
     translate([0,front_support_y+5,0]) rotate([90,0,0]) linear_extrude(height=5) enumerator_mount_plate_2d();
     translate([0,front_support_y+25,0]) rotate([90,0,0]) linear_extrude(height=5) instruction_lever_support_2d();
   }
+
+  translate([-25,-10,77]) linear_extrude(height=3) squaring_plate_2d();
 }
 
 module instruction_reset_tube() {
