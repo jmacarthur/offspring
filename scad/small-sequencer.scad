@@ -191,9 +191,9 @@ module side_plate_generic_2d() {
 
 module squaring_plate_2d() {
   union() {
-    translate([5,0]) square([angle_iron_internal_space-5, 70]);
-    translate([0,0]) square([angle_iron_internal_space+5, 10]);
-    translate([0,60]) square([angle_iron_internal_space+5, 10]);
+    translate([5,0]) square([angle_iron_internal_space-10, 70]);
+    translate([0,0]) square([angle_iron_internal_space, 10]);
+    translate([0,60]) square([angle_iron_internal_space, 10]);
   }
 }
 
@@ -217,7 +217,7 @@ module enumerator_mount_plate_2d() {
 
     // Holes to align with side plates
     translate([10,-5]) square([5,10]);
-    translate([angle_iron_internal_space+10,-5]) square([5,10]);
+    translate([angle_iron_internal_space+5,-5]) square([5,10]);
   }
 }
 
@@ -235,7 +235,7 @@ module instruction_lever_support_2d() {
 }
 
 module frame() {
-  frame_x = [-25,-20+265-5];
+  frame_x = [-25,-25+angle_iron_internal_space-5];
   for(x=frame_x) {
     color([0,1,0]) translate([x,0,0]) rotate([0,90,0]) linear_extrude(height=5) rotate(90) side_plate_generic_2d();
   }
@@ -271,7 +271,7 @@ module sequencer() {
   // Emulate perf angle
   translate([-50,10,-200]) {
     cube([25,25,400]);
-    translate([295,0,0]) cube([25,25,400]);
+    translate([angle_iron_internal_space+25,0,0]) cube([25,25,400]);
   }
 }
 
