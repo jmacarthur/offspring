@@ -200,7 +200,7 @@ module squaring_plate_2d() {
 module enumerator_mount_plate_2d() {
   difference() {
     union() {
-      square([angle_iron_internal_space + 20, 20]);
+      translate([0,-5]) square([angle_iron_internal_space + 10, 25]);
 
       // Extended start so we can mount the instruction levers
       translate([-30,0]) square([35,50]);
@@ -216,8 +216,8 @@ module enumerator_mount_plate_2d() {
     translate([120, 16]) circle(d=3);
 
     // Holes to align with side plates
-    translate([10,-5]) square([5,10]);
-    translate([angle_iron_internal_space+5,-5]) square([5,10]);
+    translate([10,-10]) square([5,10]);
+    translate([angle_iron_internal_space+5,-10]) square([5,10]);
   }
 }
 
