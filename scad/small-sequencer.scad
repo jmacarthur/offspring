@@ -32,6 +32,12 @@ back_support_z = 30;
 // This is about half the length! It's the max length from the fulcrum to one arm end.
 instruction_lever_len = 100;
 
+// Space from the left inside edge of the frame to the first cam edge
+left_xoffset = 35;
+
+// Places where rear axle supports are placed; these are in units of cam spacing
+follower_axle_supports = [0,4,8,12,16];
+
 module example_cam_2d() {
   union() {
     difference() {
@@ -234,8 +240,21 @@ module back_support_plate_2d() {
       translate([15,-5]) square([10, 20]);
       translate([angle_iron_internal_space-5,-5]) square([10, 20]);
     }
+    for(i=follower_axle_supports) {
+      translate([left_xoffset + cam_spacing/2 + cam_spacing*i,10]) square([3,15]);
+    }
   }
 }
+
+module follower_axle_support_2d() {
+  z = follower_axle_z - back_support_z;
+  difference() {
+    translate([-10,0]) square([15, z+5]);
+    translate([0,z]) circle(d=3);
+    translate([-5,-10]) square([5,20]);
+  }
+}
+
 
 module instruction_lever_support_2d() {
   difference() {
@@ -256,7 +275,7 @@ module frame() {
     color([0,1,0]) translate([x,0,0]) rotate([0,90,0]) linear_extrude(height=5) rotate(90) side_plate_generic_2d();
   }
   color([0.5,0.5,0.5])
-  translate([-25-10,0,front_support_z]) {
+  translate([-left_xoffset,0,front_support_z]) {
     translate([0,front_support_y+5,0]) rotate([90,0,0]) linear_extrude(height=5) enumerator_mount_plate_2d();
     translate([0,front_support_y+25,0]) rotate([90,0,0]) linear_extrude(height=5) instruction_lever_support_2d();
   }
@@ -265,7 +284,11 @@ module frame() {
     translate([0,back_support_y+5,0]) rotate([90,0,0]) linear_extrude(height=5) back_support_plate_2d();
   }
 
+  for(i=follower_axle_supports) {
+    translate([3+cam_spacing*(i+0.5),back_support_y,back_support_z]) rotate([0,0,-90]) rotate([90,0,0]) linear_extrude(height=3) follower_axle_support_2d();
+  }
   translate([-25,-10,77]) linear_extrude(height=3) squaring_plate_2d();
+
 }
 
 module instruction_reset_tube() {
