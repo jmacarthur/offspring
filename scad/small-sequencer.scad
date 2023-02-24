@@ -224,7 +224,16 @@ module enumerator_mount_plate_2d() {
     // Holes to align with side plates
     translate([10,-10]) square([5,10]);
     translate([angle_iron_internal_space+5,-10]) square([5,10]);
+  }
+}
 
+module back_support_plate_2d() {
+  difference() {
+    union() {
+      translate([10,0]) square([angle_iron_internal_space, 20]);
+      translate([15,-5]) square([10, 20]);
+      translate([angle_iron_internal_space-5,-5]) square([10, 20]);
+    }
   }
 }
 
@@ -250,6 +259,10 @@ module frame() {
   translate([-25-10,0,front_support_z]) {
     translate([0,front_support_y+5,0]) rotate([90,0,0]) linear_extrude(height=5) enumerator_mount_plate_2d();
     translate([0,front_support_y+25,0]) rotate([90,0,0]) linear_extrude(height=5) instruction_lever_support_2d();
+  }
+
+  translate([-25-10,0,back_support_z]) {
+    translate([0,back_support_y+5,0]) rotate([90,0,0]) linear_extrude(height=5) back_support_plate_2d();
   }
 
   translate([-25,-10,77]) linear_extrude(height=3) squaring_plate_2d();
