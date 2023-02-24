@@ -200,10 +200,16 @@ module squaring_plate_2d() {
 module enumerator_mount_plate_2d() {
   difference() {
     union() {
-      translate([0,-5]) square([angle_iron_internal_space + 10, 25]);
+      translate([0,-5]) square([angle_iron_internal_space + 15, 25]);
 
       // Extended start so we can mount the instruction levers
-      translate([-30,0]) square([35,50]);
+      offset(r=4) {
+	hull() {
+	  translate([-26,45]) circle(d=3);
+	  translate([0,0]) circle(d=3);
+	  translate([0,15]) circle(d=3);
+	}
+      }
     }
 
     // Instruction lever axle
@@ -218,6 +224,7 @@ module enumerator_mount_plate_2d() {
     // Holes to align with side plates
     translate([10,-10]) square([5,10]);
     translate([angle_iron_internal_space+5,-10]) square([5,10]);
+
   }
 }
 
