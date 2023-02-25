@@ -8,6 +8,12 @@ cam_boss_diameter = 50;
 
 cam_spacing = 10;
 
+cam_bore = 12;
+
+// Cam ties are the rods which lock against rotation
+cam_tie_bore = 6;
+cam_tie_radius = 18;
+
 // Internal space in frame is 230mm (inside openbeam)
 // 265mm (inside angle iron)
 angle_iron_internal_space = 265;
@@ -50,9 +56,14 @@ module example_cam_2d() {
 }
 
 module example_cam() {
-  union() {
-    linear_extrude(height=3) example_cam_2d();
-    cylinder(d=cam_boss_diameter,h=cam_spacing);
+  difference() {
+    union() {
+      linear_extrude(height=3) example_cam_2d();
+      cylinder(d=cam_boss_diameter,h=cam_spacing);
+    }
+    translate([0,0,-1]) cylinder(d=cam_bore, h=cam_spacing+2);
+    translate([cam_tie_radius,0,-1]) cylinder(d=cam_tie_bore, h=cam_spacing+2);
+    translate([-cam_tie_radius,0,-1]) cylinder(d=cam_tie_bore, h=cam_spacing+2);
   }
 }
 
@@ -149,7 +160,7 @@ module side_panel_cutouts_2d() {
   perf_angle_spacing = 50;
 
   // Cam axle hole
-  circle(d=10);
+  circle(d=cam_bore);
 
   // Follower axle hole
   translate([follower_axle_y, follower_axle_z]) circle(d=3);
@@ -319,3 +330,5 @@ module sequencer() {
 }
 
 sequencer();
+
+translate([0,-200,0]) example_cam();
