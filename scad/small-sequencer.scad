@@ -228,6 +228,7 @@ module follower_comb_2d() {
     }
     for(x=[1:ncams]) {
       translate([x*cam_spacing-clearance,-25]) square([3+clearance*2,25]);
+      translate([x*cam_spacing-clearance+1.5,-23]) rotate(45) square([10,10], center=true);
     }
   }
 }
