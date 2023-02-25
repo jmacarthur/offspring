@@ -207,10 +207,28 @@ module side_plate_generic_2d() {
 
 
 module squaring_plate_2d() {
-  union() {
-    translate([5,0]) square([angle_iron_internal_space-10, 70]);
-    translate([0,0]) square([angle_iron_internal_space, 10]);
-    translate([0,60]) square([angle_iron_internal_space, 10]);
+  difference() {
+    union() {
+      translate([5,-20]) square([angle_iron_internal_space-10, 90]);
+      translate([0,0]) square([angle_iron_internal_space, 10]);
+      translate([0,60]) square([angle_iron_internal_space, 10]);
+    }
+    for(y=[-15,70-5-3]) {
+      translate([left_xoffset-cam_spacing-10,y]) square([cam_spacing*ncams+10, 3]);
+    }
+  }
+}
+
+module follower_comb_2d() {
+  clearance = 0.2;
+  difference() {
+    union() {
+      translate([0,-20]) square([cam_spacing*ncams+10,30]);
+      translate([-5,0]) square([cam_spacing*ncams+20,10]);
+    }
+    for(x=[1:ncams]) {
+      translate([x*cam_spacing-clearance,-25]) square([3+clearance*2,25]);
+    }
   }
 }
 
@@ -298,7 +316,8 @@ module frame() {
   for(i=follower_axle_supports) {
     translate([3+cam_spacing*(i+0.5),back_support_y,back_support_z]) rotate([0,0,-90]) rotate([90,0,0]) linear_extrude(height=3) follower_axle_support_2d();
   }
-  translate([-25,-10,77]) linear_extrude(height=3) squaring_plate_2d();
+  translate([-left_xoffset+10,-10,77]) linear_extrude(height=3) squaring_plate_2d();
+  for(y=[-22,55]) translate([-left_xoffset+25,y,77]) rotate([90,0,0]) color([0,1,1]) linear_extrude(height=3) follower_comb_2d();
 
 }
 
