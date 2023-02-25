@@ -26,14 +26,19 @@ events = [
     Event(0.05, "MID-REGEN", to_level=1.0),
     Event(0, "DEC-LINEHOLD", to_level=1.0),
 
+    Event(0, "MID-REGEN", to_level=1), # Open the mid regen so the injected data falls right through
+
+    # Discard from acc sender
+    Event(0, "ADDRSEND-RELEASE", to_level=1),
+    Event(0.1, "ADDRSEND-RELEASE", to_level=0),
+
     # First inject all event, which sends ball bearings to read the PC
     Event(0.1, "INJ-ALL", to_level=1.0),
     Event(0.13, "INJ-ALL", to_level=0.0,transition_time=0),
 
     # Wait for accumulator to read into address sender and instruction...
-
+    Event(0.2, "MID-REGEN", to_level=0.5), # Mid regen now ready to receive data
     Event(0.2, "DEC-RODHOLD", to_level=0, transition_time=0),
-    Event(0.2, "MID-REGEN", to_level=0.5),
     Event(0.25, "DEC-LINEHOLD", to_level=0, transition_time=0),
     Event(0.3, "DEC-LINEHOLD", to_level=1),
     Event(0.35, "DEC-LINEHOLD", to_level=0, transition_time=0),
@@ -43,41 +48,56 @@ events = [
     Event(0.35, "MID-REGEN", to_level=0, transition_time=0),
     # And store back in memory.
     Event(0.4, "MEM-RESET", to_level=1),
-    Event(0.45, "DEC-LINEHOLD", to_level=1),
-    Event(0.5, "DEC-RODHOLD", to_level=1),
-    Event(0.55, "ADDRSEND-RELEASE", to_level=1),
-    Event(0.55, "MID-REGEN", to_level=1),
+    Event(0.42, "DEC-LINEHOLD", to_level=1),
+    Event(0.45, "DEC-RODHOLD", to_level=1),
+    Event(0.45, "ADDRSEND-RELEASE", to_level=1),
+    Event(0.47, "ADDRSEND-RELEASE", to_level=0, transition_time=0),
+    Event(0.5, "MID-REGEN", to_level=1),
     # Wait for instruction data to reach address sender and set up the instruction decoder
+    # Now drop the memory decoder
     Event(0.65, "DEC-RODHOLD", to_level=0, transition_time=0),
 
     # Now we enter the instruction-dependent section.
     # Firstly, use STO to set the discard line...
-    Event(0.65, "STO", to_level=0, transition_time=0),
+    Event(0.65, "STO", to_level=0, transition_time=0), # Opens DISCARD
     Event(0.65, "SUB1", to_level=0, transition_time=0), # This is connected to DIVERTER-ACCUPDATE (does that need a separate line?)
     Event(0.65, "JMP", to_level=0, transition_time=0), # Resets PC
     Event(0.65, "LDN", to_level=0, transition_time=0), # Resets ACC
+    Event(0.65, "JRE", to_level=0, transition_time=0), # Connects to DIVERTER-PCUPDATE (does that need a separate line?) - TODO: This also needs to fire for JMP!
     Event(0.7, "JMP", to_level=1), # Resets PC
     Event(0.7, "LDN", to_level=1), # Resets ACC
 
     # Now, eject from memory - this performs actions for JMP, JRE, LDN and SUB
     Event(0.7, "DEC-LINEHOLD", to_level=0, transition_time=0),
     Event(0.75, "DEC-LINEHOLD", to_level=1),
-    Event(0.8, "DEC-LINEHOLD", to_level=0, transition_time=0),
-    Event(0.8, "STO", to_level=1),
+    Event(0.8, "DEC-LINEHOLD", to_level=0, transition_time=0), # Opening up memory again, ready for regenerated or stored data
 
     # Perform regen
-    Event(0.85, "MID-REGEN", to_level=0, transition_time=0),
-    Event(0.9, "MEM-RESET", to_level=1),
-    Event(0.9, "MID-REGEN", to_level=1), # Ejecting from regen, performing all actions for JMP, JRE, LDN, SUB
-    Event(0.95, "DEC-LINEHOLD", to_level=1),
+    Event(0.8, "MID-REGEN", to_level=0, transition_time=0),
+    Event(0.85, "MID-REGEN", to_level=1), # Ejecting from regen, performing all actions for JMP, JRE, LDN, SUB
+    Event(0.85, "STO", to_level=1), # Closes DISCARD again
+    Event(0.9, "MID-REGEN", to_level=0.5), # Prepare regen for new data
 
     # By now, all actions are complete apart from STO and CMP
-    
 
     # Second inject all event, which sends ball bearings to read the accumulator for stores
-    Event(0.7, "INJ-ALL", to_level=1.0),
-    Event(0.75, "INJ-ALL", to_level=0.0, transition_time=0)
-    ]
+    Event(0.95, "INJ-ALL", to_level=1.0),
+    Event(1.0, "INJ-ALL", to_level=0.0, transition_time=0),
+
+    # Mid-regen is now loaded with ball bearings; we now need to send them into the accumulator read plane
+    # Close all the flaps which might have been open before
+    Event(1.0, "SUB1", to_level=1, transition_time=0),
+    Event(1.0, "JRE", to_level=1, transition_time=0),
+    Event(1.0, "STO", to_level=0, transition_time=0), # Opens DISCARD again and opens DIVERTER-ACCREAD; enables lower regen (which would otherwise be blocked)
+    Event(1.1, "MID-REGEN", to_level=0, transition_time=0), # Eject from mid regen; read data will shortly be in lower regen
+
+    Event(1.2, "LOWER-REGEN", to_level=0, transition_time=0),
+
+    # All that remains is to close the memory
+    Event(1.3, "MEM-RESET", to_level=1),
+    Event(1.4, "DEC-LINEHOLD", to_level=1),
+    Event(1.5, "DEC-RODHOLD", to_level=1),
+]
 
 svg_output_filename = "timing.svg"
 openscad_output_filename = "cams.scad"
@@ -103,6 +123,7 @@ cams = {
     15: Cam("DEC-LINEHOLD", "Pull all memory rods right"),
     16: Cam("MEM-RESET", "Memory left reset"),
     17: Cam("ADDRSEND-RELEASE", "Release memory sender ball bearings"),
+    18: Cam("LOWER-REGEN", "Lower regenerator"),
     }
 
 def most_recent_value(timing_points, time):
@@ -168,7 +189,9 @@ def write_svg(svg_filename, cams):
             path_data = f"M {x*100} {y*-10+yoffset}"
             for (x,y) in c.timing_points[1:]:
                 path_data += f" L {x*100} {y*-10+yoffset}"
-            f.write(f"<path d=\"{path_data}\" fill=\"none\" stroke=\"black\"/>\n")
+            f.write(f"<line x1=\"0\" y1=\"{yoffset}\" x2=\"100\" y2=\"{yoffset}\" stroke=\"black\" stroke-width=\"0.25px\" />\n")
+            f.write(f"<line x1=\"0\" y1=\"{yoffset-10}\" x2=\"100\" y2=\"{yoffset-10}\" stroke=\"black\" stroke-width=\"0.25px\" />\n")
+            f.write(f"<path d=\"{path_data}\" fill=\"none\" stroke=\"red\" stroke-width=\"0.5px\"/>\n")
             f.write(f"<text x=\"-50\" y=\"{yoffset}\">{c.short_name}</text>\n")
             f.write(f"<text x=\"110\" y=\"{yoffset}\">{c.short_name}</text>\n")
         f.write("</svg>\n")
