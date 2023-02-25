@@ -10,7 +10,7 @@ class Event:
     time: float = None
     cam_short_name: str = None
     to_level: float = None
-    transition_time: float = 0.05
+    transition_time: float = 0.03
 
 @dataclass
 class Cam:
@@ -20,13 +20,63 @@ class Cam:
     index: int = None
 
 events = [
+    # Open diverter to PC read plane; config mid regen and address decoder rod hold
+    Event(0.05, "DIVERTER-PCREAD", to_level=1.0),
+    Event(0, "DEC-RODHOLD", to_level=1.0),
+    Event(0.05, "MID-REGEN", to_level=1.0),
+    Event(0, "DEC-LINEHOLD", to_level=1.0),
+
     # First inject all event, which sends ball bearings to read the PC
     Event(0.1, "INJ-ALL", to_level=1.0),
-    Event(0.2, "INJ-ALL", to_level=0.0),
+    Event(0.13, "INJ-ALL", to_level=0.0,transition_time=0),
 
-    # Second inject all event, which sends ball bearings to read the accumulator
+    # Wait for accumulator to read into address sender and instruction...
+
+    Event(0.2, "DEC-RODHOLD", to_level=0, transition_time=0),
+    Event(0.2, "MID-REGEN", to_level=0.5),
+    Event(0.25, "DEC-LINEHOLD", to_level=0, transition_time=0),
+    Event(0.3, "DEC-LINEHOLD", to_level=1),
+    Event(0.35, "DEC-LINEHOLD", to_level=0, transition_time=0),
+    Event(0.35, "DIVERTER-PCREAD", to_level=0),
+    # Data is now out of memory and headed for regen...
+    # Regenerate it
+    Event(0.35, "MID-REGEN", to_level=0, transition_time=0),
+    # And store back in memory.
+    Event(0.4, "MEM-RESET", to_level=1),
+    Event(0.45, "DEC-LINEHOLD", to_level=1),
+    Event(0.5, "DEC-RODHOLD", to_level=1),
+    Event(0.55, "ADDRSEND-RELEASE", to_level=1),
+    Event(0.55, "MID-REGEN", to_level=1),
+    # Wait for instruction data to reach address sender and set up the instruction decoder
+    Event(0.65, "DEC-RODHOLD", to_level=0, transition_time=0),
+
+    # Now we enter the instruction-dependent section.
+    # Firstly, use STO to set the discard line...
+    Event(0.65, "STO", to_level=0, transition_time=0),
+    Event(0.65, "SUB1", to_level=0, transition_time=0), # This is connected to DIVERTER-ACCUPDATE (does that need a separate line?)
+    Event(0.65, "JMP", to_level=0, transition_time=0), # Resets PC
+    Event(0.65, "LDN", to_level=0, transition_time=0), # Resets ACC
+    Event(0.7, "JMP", to_level=1), # Resets PC
+    Event(0.7, "LDN", to_level=1), # Resets ACC
+
+    # Now, eject from memory - this performs actions for JMP, JRE, LDN and SUB
+    Event(0.7, "DEC-LINEHOLD", to_level=0, transition_time=0),
+    Event(0.75, "DEC-LINEHOLD", to_level=1),
+    Event(0.8, "DEC-LINEHOLD", to_level=0, transition_time=0),
+    Event(0.8, "STO", to_level=1),
+
+    # Perform regen
+    Event(0.85, "MID-REGEN", to_level=0, transition_time=0),
+    Event(0.9, "MEM-RESET", to_level=1),
+    Event(0.9, "MID-REGEN", to_level=1), # Ejecting from regen, performing all actions for JMP, JRE, LDN, SUB
+    Event(0.95, "DEC-LINEHOLD", to_level=1),
+
+    # By now, all actions are complete apart from STO and CMP
+    
+
+    # Second inject all event, which sends ball bearings to read the accumulator for stores
     Event(0.7, "INJ-ALL", to_level=1.0),
-    Event(0.8, "INJ-ALL", to_level=0.0)
+    Event(0.75, "INJ-ALL", to_level=0.0, transition_time=0)
     ]
 
 svg_output_filename = "timing.svg"
@@ -44,6 +94,15 @@ cams = {
     6: Cam("CMP", "Compare and skip"),
     7: Cam("HLT", "Halt"),
     8: Cam("INJ-ALL", "Inject ball bearings into all columns"),
+    9: Cam("DIVERTER-PCREAD", "Set diverter to PC read"),
+    10: Cam("DIVERTER-ACCUPDATE", "Set diverter to accumulator update"),
+    11: Cam("DIVERTER-PCUPDATE", "Set diverter to PC update"),
+    12: Cam("DIVERTER-ACCREAD", "Set diverter to accumulator read"),
+    13: Cam("DEC-RODHOLD", "Pull all decoder rods high"),
+    14: Cam("MID-REGEN", "Mid regenerator"),
+    15: Cam("DEC-LINEHOLD", "Pull all memory rods right"),
+    16: Cam("MEM-RESET", "Memory left reset"),
+    17: Cam("ADDRSEND-RELEASE", "Release memory sender ball bearings"),
     }
 
 def most_recent_value(timing_points, time):
@@ -70,17 +129,16 @@ def process_cams(cams, events):
 
     # Check for events at t=0 which override the first timing point.
     for e in events:
-        if e.time == 0.0:
-            cam = cams_by_short_name[e.cam_short_name]
-            cam.timing_points = [(0.0, e.to_level)]
-
-    # Now add all events to the respective cams
-    for e in events:
         cam = cams_by_short_name[e.cam_short_name]
-        (last_time, last_value) = most_recent_value(cam.timing_points, e.time)
-        assert e.time - e.transition_time >= last_time
-        cam.timing_points.append((e.time - e.transition_time, last_value))
-        cam.timing_points.append((e.time, e.to_level))
+        if e.time == 0.0:
+            cam.timing_points = [(0.0, e.to_level)]
+        else:
+            (last_time, last_value) = most_recent_value(cam.timing_points, e.time)
+            if(e.time - e.transition_time < last_time):
+                print(f"While processing event: {e.cam_short_name} to {e.to_level} by time {e.time}, in {e.transition_time} - not enough time since last event at time {last_time}")
+                assert False
+            cam.timing_points.append((e.time - e.transition_time, last_value))
+            cam.timing_points.append((e.time, e.to_level))
 
     # Close cams - write final point
     for c in cams.values():
@@ -122,7 +180,7 @@ def write_openscad(filename, cams):
             no_steps = int(1/openscad_time_step)
             steps = [ str(interpolate(cam, step*openscad_time_step)) for step in range(0,no_steps) ]
             f.write("[" + ", ".join(steps) + "],\n")
-        f.write("]\n")
+        f.write("];\n")
 
 process_cams(cams, events)
 write_svg(svg_output_filename, cams)
