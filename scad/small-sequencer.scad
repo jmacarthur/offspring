@@ -1,9 +1,10 @@
 // The small scale sequencer
 
 use <decoder.scad>;
-
+include <cams.scad>;
 cam_max_diameter = 100;
 cam_min_diameter = 80;
+cam_range = (cam_max_diameter-cam_min_diameter)/2;
 cam_boss_diameter = 50;
 
 cam_spacing = 10;
@@ -55,16 +56,40 @@ module example_cam_2d() {
   }
 }
 
+module real_cam_2d(cam_index) {
+  point_count = len(cam_levels[cam_index]);
+  cam_points = [ for(i=[0:point_count-1]) [(cam_levels[cam_index][i]*cam_range+cam_min_diameter/2)*cos(i/point_count*360),
+					   (cam_levels[cam_index][i]*cam_range+cam_min_diameter/2)*sin(i/point_count*360)]
+		 ];
+  polygon(points=cam_points);
+}
+
+module cam_holes() {
+  bore_clearance = 0.1;
+  translate([0,0]) circle(d=cam_bore+bore_clearance);
+  translate([cam_tie_radius,0]) circle(d=cam_tie_bore);
+  translate([-cam_tie_radius,0]) circle(d=cam_tie_bore);
+}
+
+module cam_separator() {
+  linear_extrude(height=cam_spacing-3) {
+    difference() {
+      offset(r=3) hull() cam_holes();
+      cam_holes();
+    }
+  }
+}
+
 module example_cam() {
   difference() {
     union() {
-      linear_extrude(height=3) example_cam_2d();
-      cylinder(d=cam_boss_diameter,h=cam_spacing);
+      linear_extrude(height=3) real_cam_2d(0);
     }
     translate([0,0,-1]) cylinder(d=cam_bore, h=cam_spacing+2);
     translate([cam_tie_radius,0,-1]) cylinder(d=cam_tie_bore, h=cam_spacing+2);
     translate([-cam_tie_radius,0,-1]) cylinder(d=cam_tie_bore, h=cam_spacing+2);
   }
+  color([0,1,1]) translate([0,0,3]) cam_separator();
 }
 
 module follower_2d() {
@@ -129,6 +154,8 @@ module enumerator_base() {
     for(i=[0:2]) {
       translate([-1,3+enumerator_y_spacing*i-0.25,5]) cube([32,3.5,20]);
     }
+    // Shorten the separator bars
+    translate([-1, 3-0.25, 7]) cube([32, 3*2+3.5,20]);
   }
 }
 

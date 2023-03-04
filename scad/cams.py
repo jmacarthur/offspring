@@ -89,14 +89,14 @@ events = [
     Event(1.0, "SUB1", to_level=1, transition_time=0),
     Event(1.0, "JRE", to_level=1, transition_time=0),
     Event(1.0, "STO", to_level=0, transition_time=0), # Opens DISCARD again and opens DIVERTER-ACCREAD; enables lower regen (which would otherwise be blocked)
-    Event(1.1, "MID-REGEN", to_level=0, transition_time=0), # Eject from mid regen; read data will shortly be in lower regen
+    Event(1.15, "MID-REGEN", to_level=0, transition_time=0), # Eject from mid regen; read data will shortly be in lower regen
 
     Event(1.2, "LOWER-REGEN", to_level=0, transition_time=0),
 
     # All that remains is to close the memory
-    Event(1.3, "MEM-RESET", to_level=1),
-    Event(1.4, "DEC-LINEHOLD", to_level=1),
-    Event(1.5, "DEC-RODHOLD", to_level=1),
+    Event(1.25, "MEM-RESET", to_level=1),
+    Event(1.25, "LOWER-REGEN", to_level=1), # Empty lower regen
+    Event(1.3, "DEC-LINEHOLD", to_level=1),
 ]
 
 svg_output_filename = "timing.svg"
