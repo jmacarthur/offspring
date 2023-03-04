@@ -106,14 +106,14 @@ module follower_2d() {
 module cam_bearing() {
   color([1,1,0])
   difference() {
-    cube([9,20,20]);
+    translate([0,0,-10]) cube([9,20,30]);
     translate([-1,10,2.5]) rotate([0,90,0]) cylinder(d=3,h=12, $fn=10);
-    translate([3-0.5,-1,-1]) cube([4,32,13]);
+    translate([3-0.5,-1,-11]) cube([4,32,23]);
     translate([3,-1,16]) cube([3,25,20]);
     translate([3,5,15]) cube([3,10,10]);
 
     // Entry ramps
-    translate([4.5,0,-1]) rotate([0,0,45]) translate([-2.5,-2.5,0]) cube([5,5,13]);
+    translate([4.5,0,-11]) rotate([0,0,45]) translate([-2.5,-2.5,0]) cube([5,5,23]);
   }
 }
 
