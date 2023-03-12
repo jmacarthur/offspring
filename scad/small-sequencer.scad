@@ -159,6 +159,24 @@ module enumerator_base() {
   }
 }
 
+module enumerator_comb() {
+  difference() {
+    union() {
+      translate([0,0,-10]) cube([5,20,43]);
+      translate([0,5,25]) cube([10,15,5]);
+      translate([0,5,-10]) cube([10,15,5]);
+    }
+    translate([-1,-1,-11]) cube([7,6,13+11]);
+    translate([-1,8,-5]) cube([7,30,30]);
+
+    for(i=[0:3]) {
+      gap=0.7;
+      translate([5,7.5+enumerator_y_spacing*i-gap/2,-15]) cube([32,gap,50]);
+    }
+
+  }
+}
+
 module instruction_lever_2d(reduce) {
   difference() {
     union() {
@@ -378,4 +396,22 @@ module sequencer() {
 
 sequencer();
 
+module pulley_plate_holes()
+{
+  translate([0,0]) circle(d=6);
+  translate([0,50]) circle(d=6);
+  translate([-100,50]) circle(d=3);
+  translate([-100,60]) circle(d=3);
+}
+
+module pulley_plate_2d() {
+  difference() {
+    offset(r=10) hull() pulley_plate_holes();
+    pulley_plate_holes();
+    translate([-100-1.5,60]) square([3,15]);
+  }
+}
+
+
 translate([0,-200,0]) example_cam();
+translate([-25,10+18.5,-100]) rotate([0,0,90]) rotate([90,0,0]) linear_extrude(height=3) pulley_plate_2d();
