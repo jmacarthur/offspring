@@ -379,9 +379,20 @@ module instruction_reset_tube() {
   }
 }
 
+module left_cam_spacer() {
+  l = 20;
+  clearance = 0.2;
+  rotate([0,90,0])
+  difference() {
+    cylinder(d=cam_bore+7, h=l);
+    translate([0,0,-1]) cylinder(d=cam_bore+clearance*2, h=l+2);
+  }
+}
+
 module sequencer() {
   cam_and_follower_assembly();
   enumerator_rods();
+  translate([-25+5,front_support_y,40]) enumerator_comb();
   for(x=[0,40]) translate([x,-50-3-3,front_support_z+5]) enumerator_base();
   frame();
 
@@ -392,6 +403,7 @@ module sequencer() {
     cube([25,25,400]);
     translate([angle_iron_internal_space+25,0,0]) cube([25,25,400]);
   }
+  translate([-25+5,0,0]) left_cam_spacer();
 }
 
 sequencer();
