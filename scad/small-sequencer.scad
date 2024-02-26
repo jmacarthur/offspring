@@ -45,6 +45,8 @@ left_xoffset = 35;
 // Places where rear axle supports are placed; these are in units of cam spacing
 follower_axle_supports = [0,4,8,12,16];
 
+instruction_lever_rotation = 0; // Max about 12 to fully translate the enum rod
+
 module example_cam_2d() {
   union() {
     difference() {
@@ -178,7 +180,12 @@ module enumerator_rods() {
     seq = $t*10;
     offset = floor(seq/(pow(2,i))) % 2;
     translate([-56+offset*5,-50+i*enumerator_y_spacing,front_support_z+10]) rotate([90,0,0]) linear_extrude(height=3) trimmed_enumerator_rod_2d(i);
-    color([0,1,1]) translate([-161,-50+i*enumerator_y_spacing,front_support_z+40]) rotate([90,0,0]) linear_extrude(height=3) instruction_lever_2d(i*10);
+    color([0,1,1]) translate([-161,-50+i*enumerator_y_spacing,front_support_z+40]) rotate([90,0,0]) {
+      translate([instruction_lever_len,5])
+	rotate([0,0,instruction_lever_rotation])
+	translate([-instruction_lever_len,-5])
+	linear_extrude(height=3) instruction_lever_2d(i*10);
+    }
   }
 }
 
