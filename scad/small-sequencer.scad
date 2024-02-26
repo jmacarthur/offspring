@@ -406,24 +406,36 @@ module sequencer() {
   translate([-25+5,0,0]) left_cam_spacer();
 }
 
-sequencer();
-
 module pulley_plate_holes()
 {
   translate([0,0]) circle(d=6);
   translate([0,50]) circle(d=6);
-  translate([-100,50]) circle(d=3);
-  translate([-100,60]) circle(d=3);
+  translate([-110,50]) circle(d=3);
+  translate([-90,60]) circle(d=3);
 }
 
 module pulley_plate_2d() {
   difference() {
     offset(r=10) hull() pulley_plate_holes();
     pulley_plate_holes();
-    translate([-100-1.5,60]) square([3,15]);
+    translate([-90-1.5,60-1.5]) square([3,15]);
   }
 }
 
+module pulley_support_2d() {
+  difference() {
+    translate([-10,0]) square([angle_iron_internal_space+20,20]);
+    for(x=[0,angle_iron_internal_space-3]) {
+      translate([x,-1]) square([3,11]);
+    }
+  }
+}
+
+sequencer();
 
 translate([0,-200,0]) example_cam();
-translate([-25,10+18.5,-100]) rotate([0,0,90]) rotate([90,0,0]) linear_extrude(height=3) pulley_plate_2d();
+for(x=[-25,-25+angle_iron_internal_space-3]) {
+  translate([x,10+18.5,-100]) rotate([0,0,90]) rotate([90,0,0]) linear_extrude(height=3) pulley_plate_2d();
+}
+
+translate([-25,-60,-20]) color([0,1,1]) rotate([90,0,0]) linear_extrude(height=3) pulley_support_2d();
