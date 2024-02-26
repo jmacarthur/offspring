@@ -159,24 +159,6 @@ module enumerator_base() {
   }
 }
 
-module enumerator_comb() {
-  difference() {
-    union() {
-      translate([0,0,-10]) cube([5,20,43]);
-      translate([0,5,25]) cube([10,15,5]);
-      translate([0,5,-10]) cube([10,15,5]);
-    }
-    translate([-1,-1,-11]) cube([7,6,13+11]);
-    translate([-1,8,-5]) cube([7,30,30]);
-
-    for(i=[0:3]) {
-      gap=0.7;
-      translate([5,7.5+enumerator_y_spacing*i-gap/2,-15]) cube([32,gap,50]);
-    }
-
-  }
-}
-
 module instruction_lever_2d(reduce) {
   difference() {
     union() {
@@ -400,7 +382,6 @@ module left_cam_spacer() {
 module sequencer() {
   cam_and_follower_assembly();
   enumerator_rods();
-  translate([-25+5,front_support_y,40]) enumerator_comb();
   for(x=[0,40]) translate([x,-50-3-3,front_support_z+5]) enumerator_base();
   frame();
 
