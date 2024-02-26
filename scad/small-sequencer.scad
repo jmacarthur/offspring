@@ -234,10 +234,16 @@ module side_plate_generic_2d() {
 }
 
 module side_plate_extended_2d() {
-  union() {
-    side_plate_generic_2d();
-    translate([-36,48]) square([21,65]);
-    translate([-60,105]) square([45,10]);
+  difference() {
+    union() {
+      side_plate_generic_2d();
+      translate([-36,48]) square([21,65]);
+      translate([-60,105]) square([45,10]);
+    }
+    for(i=[-1:2]) {
+      translate([-50+i*enumerator_y_spacing,38]) square([1,70]);
+    }
+
   }
 }
 
