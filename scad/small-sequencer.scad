@@ -238,6 +238,7 @@ module side_panel_outside_cutouts_2d() {
 }
 
 module side_plate_generic_2d() {
+  // Main plate which bolts to the frame and supports the camshaft
   difference() {
     offset(r=10) hull() {
       side_panel_cutouts_2d();
@@ -250,6 +251,13 @@ module side_plate_generic_2d() {
   }
 }
 
+module side_plate_extended_2d() {
+  union() {
+    side_plate_generic_2d();
+    translate([-36,48]) square([21,65]);
+    translate([-60,105]) square([45,10]);
+  }
+}
 
 module squaring_plate_2d() {
   difference() {
@@ -346,9 +354,9 @@ module instruction_lever_support_2d() {
 
 module frame() {
   frame_x = [-25,-25+angle_iron_internal_space-5];
-  for(x=frame_x) {
-    color([0,1,0]) translate([x,0,0]) rotate([0,90,0]) linear_extrude(height=5) rotate(90) side_plate_generic_2d();
-  }
+  color([0,1,0]) translate([frame_x[0],0,0]) rotate([0,90,0]) linear_extrude(height=5) rotate(90) side_plate_extended_2d();
+  color([0,1,0]) translate([frame_x[1],0,0]) rotate([0,90,0]) linear_extrude(height=5) rotate(90) side_plate_generic_2d();
+
   color([0.5,0.5,0.5])
   translate([-left_xoffset,0,front_support_z]) {
     translate([0,front_support_y+5,0]) rotate([90,0,0]) linear_extrude(height=5) enumerator_mount_plate_2d();
